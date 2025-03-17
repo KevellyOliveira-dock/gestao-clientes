@@ -16,10 +16,10 @@ public class Main {
                     "Aperte Ctrl + c para sair");
             System.out.print("Digite o serviço gostaria de acessar: ");
 
-            String inicial = scanner.nextLine();
+            String comando = scanner.nextLine();
 
-            if (!inicial.isEmpty()) {
-                switch (inicial) {
+            if (!comando.isEmpty()) {
+                switch (comando) {
                     case "cartoes":
                         System.out.println(" -------------------------------");
                         System.out.println(" | Bloquear {número do cartao} |");
