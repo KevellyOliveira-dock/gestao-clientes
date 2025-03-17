@@ -9,6 +9,8 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
+        var frontController = new FrontController();
+
         while (true) {
             System.out.println("""
                 Insira um comando ou aperte Enter para exibir os comandos possíveis
@@ -16,7 +18,9 @@ public class Main {
 
             String comando = scanner.nextLine();
 
-            new FrontController(comando);
+            String resultado = frontController.executar(comando);
+
+            System.out.println(resultado);
         }
     }
 }

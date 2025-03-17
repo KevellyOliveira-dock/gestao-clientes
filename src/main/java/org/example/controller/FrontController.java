@@ -1,15 +1,16 @@
 package org.example.controller;
 
 public class FrontController {
-    public FrontController(String comando) {
+    public String executar(String comando) {
         if (!comando.isEmpty()) {
             switch (comando) {
                 case "cartoes":
-                    System.out.println("    -------------------------------");
-                    System.out.println("    | Bloquear {número do cartao} |");
-                    System.out.println("    | Cadastrar                   |");
-                    System.out.println("    -------------------------------");
-                    break;
+                    return """
+                        -------------------------------
+                        | Bloquear {número do cartao} |
+                        | Cadastrar                   |
+                        -------------------------------
+                    """;
 
                 case "cartoes bloquear":
                     System.out.println("não implementado");
@@ -97,10 +98,10 @@ public class FrontController {
                     break;
 
                 case "faturas":
-                    System.out.println("    -----------------------------");
-                    System.out.println("    | fechar {número do cartão} |");
-                    System.out.println("    -----------------------------");
-                    break;
+                    return """
+                        -----------------------------
+                        | fechar {número do cartão} |
+                        -----------------------------""";
 
                 case "faturas fechar":
                     System.out.println("não implementado");
@@ -117,5 +118,7 @@ public class FrontController {
             System.out.println("    | faturas  |");
             System.out.println("    ------------");
         }
+
+        return "";
     }
 }
