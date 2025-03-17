@@ -10,12 +10,14 @@ public class Main {
         System.out.println("----------- Seja bem-vindo! -----------");
 
         while (true) {
-            System.out.println("Insira um comando ou aperte Enter para exibir os comandos possíveis.\n" +
-                    "Aperte Ctrl + c para sair");
+            System.out.println("""
+                Insira um comando ou aperte Enter para exibir os comandos possíveis
+                "Aperte Ctrl + c para sair
+                """);
 
             String comando = scanner.nextLine();
 
-            var frontController = new FrontController(comando);
+            new FrontController(comando);
         }
     }
 }
