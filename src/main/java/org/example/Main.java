@@ -7,11 +7,9 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        boolean loop = true;
-
         System.out.println("----------- Seja bem-vindo! -----------");
 
-        while (loop) {
+        while (true) {
             System.out.println("Insira um comando ou aperte Enter para exibir os comandos possíveis.\n" +
                     "Aperte Ctrl + c para sair");
             System.out.print("Digite o serviço gostaria de acessar: ");
