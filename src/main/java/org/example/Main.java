@@ -12,8 +12,7 @@ public class Main {
         while (true) {
             System.out.println("""
                 Insira um comando ou aperte Enter para exibir os comandos possíveis
-                "Aperte Ctrl + c para sair
-                """);
+                "Aperte Ctrl + c para sair""");
 
             String comando = scanner.nextLine();
 
