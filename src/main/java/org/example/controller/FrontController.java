@@ -1,11 +1,7 @@
 package org.example.controller;
 
 public class FrontController {
-    private String comando;
-
     public FrontController(String comando) {
-        this.comando = comando;
-
         if (!comando.isEmpty()) {
             switch (comando) {
                 case "cartoes":
