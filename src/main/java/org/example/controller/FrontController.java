@@ -1,6 +1,7 @@
 package org.example.controller;
 
 public class FrontController {
+
     public String executar(String comando) {
 
         if (!comando.isEmpty()) {
@@ -85,13 +86,12 @@ public class FrontController {
                     return "não implementado";
 
                 case "faturas":
-                    return """
-                            -----------------------------
-                            | fechar {número do cartão} |
-                            -----------------------------""";
+                    FaturasController faturas = new FaturasController();
+                    return faturas.executar(comando);
 
                 case "faturas fechar":
-                    return "não implementado";
+                    FaturasController faturasFechar = new FaturasController();
+                    return faturasFechar.executar(comando);
 
                 default:
                     return "operação inválida";

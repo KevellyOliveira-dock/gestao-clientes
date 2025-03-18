@@ -1,7 +1,21 @@
-public class FaturasController {
-    private String comando;
+package org.example.controller;
 
-    public FaturasController(String comando) {
-        this.comando = comando;
+public class FaturasController {
+
+    public String executar(String comando) {
+
+        switch (comando) {
+            case "faturas":
+                return """
+                        -----------------------------
+                        | fechar {número do cartão} |
+                        -----------------------------""";
+
+            case "faturas fechar":
+                return "não implementado";
+
+            default:
+                return "operação inválida";
+        }
     }
 }
