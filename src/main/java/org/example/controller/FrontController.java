@@ -2,123 +2,108 @@ package org.example.controller;
 
 public class FrontController {
     public String executar(String comando) {
+
         if (!comando.isEmpty()) {
             switch (comando) {
                 case "cartoes":
                     return """
-                        -------------------------------
-                        | Bloquear {número do cartao} |
-                        | Cadastrar                   |
-                        -------------------------------
-                    """;
+                            -------------------------------
+                            | Bloquear {número do cartao} |
+                            | Cadastrar                   |
+                            -------------------------------""";
 
                 case "cartoes bloquear":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "cartoes cadastrar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "clientes":
-                    System.out.println("    ------------------------------");
-                    System.out.println("    | atualizar {cpf do cliente} |");
-                    System.out.println("    | cadastrar                  |");
-                    System.out.println("    | desativar {cpf do cliente} |");
-                    System.out.println("    | pesquisar                  |");
-                    System.out.println("    ------------------------------");
-                    break;
+                    return """
+                            ------------------------------
+                            | atualizar {cpf do cliente} |
+                            | cadastrar                  |
+                            | desativar {cpf do cliente} |
+                            | pesquisar                  |
+                            ------------------------------""";
 
                 case "clientes atualizar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "clientes cadastrar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "clientes desativar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "clientes pesquisar":
-                    System.out.println("    --------------------------");
-                    System.out.println("    | cpf {cpf do cliente}   |");
-                    System.out.println("    | nome {nome do cliente} |");
-                    System.out.println("    --------------------------");
-                    break;
+                    return """
+                            --------------------------
+                            | cpf {cpf do cliente}   |
+                            | nome {nome do cliente} |
+                            -------------------------""";
 
                 case "clientes pesquisar cpf":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "clientes pesquisar nome":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas":
-                    System.out.println("    -------------------------------");
-                    System.out.println("    | cadastrar                   |");
-                    System.out.println("    | desativar {numero da conta} |");
-                    System.out.println("    | extrato {numero da conta}   |");
-                    System.out.println("    | pesquisar                   |");
-                    System.out.println("    -------------------------------");
-                    break;
+                    return """
+                            -------------------------------
+                            | cadastrar                   |
+                            | desativar {numero da conta} |
+                            | extrato {numero da conta}   |
+                            | pesquisar                   |
+                            -------------------------------""";
 
                 case "contas cadastrar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas desativar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas extrato":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas pesquisar":
-                    System.out.println("    ----------------------------------");
-                    System.out.println("    | cpf-titular {cpf do cliente}   |");
-                    System.out.println("    | nome-titular {nome do cliente} |");
-                    System.out.println("    | numero {número da conta}       |");
-                    System.out.println("    ----------------------------------");
-                    break;
+                    return """
+                            ----------------------------------
+                            | cpf-titular {cpf do cliente}   |
+                            | nome-titular {nome do cliente} |
+                            | numero {número da conta}       |
+                            ----------------------------------""";
 
                 case "contas pesquisar cpf-titular":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas pesquisar nome-titular":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "contas pesquisar numero":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 case "faturas":
                     return """
-                        -----------------------------
-                        | fechar {número do cartão} |
-                        -----------------------------""";
+                            -----------------------------
+                            | fechar {número do cartão} |
+                            -----------------------------""";
 
                 case "faturas fechar":
-                    System.out.println("não implementado");
-                    break;
+                    return "não implementado";
 
                 default:
-                    System.out.println("operação inválida");
+                    return "operação inválida";
             }
         } else {
-            System.out.println("    ------------");
-            System.out.println("    | cartoes  |");
-            System.out.println("    | clientes |");
-            System.out.println("    | contas   |");
-            System.out.println("    | faturas  |");
-            System.out.println("    ------------");
+            return """
+                    ------------
+                    | cartoes  |
+                    | clientes |
+                    | contas   |
+                    | faturas  |
+                    ------------""";
         }
-
-        return "";
     }
 }
