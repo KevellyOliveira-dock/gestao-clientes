@@ -1,7 +1,8 @@
 package org.example;
 
 import java.util.Scanner;
-import org.example.controller.FrontController;
+
+import org.example.controller.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,7 +10,17 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
-        var frontController = new FrontController();
+        var cartoesController = new CartoesController();
+        var clientesController = new ClientesController();
+        var contasController = new ContasController();
+        var faturasController = new FaturasController();
+
+        var frontController = new FrontController(
+                cartoesController,
+                clientesController,
+                contasController,
+                faturasController
+        );
 
         while (true) {
             System.out.println("""
