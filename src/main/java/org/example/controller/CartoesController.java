@@ -1,6 +1,6 @@
 package org.example.controller;
 
-public class CartoesController {
+public class CartoesController implements Controller {
 
     public String executar(String comando) {
         switch (comando) {
