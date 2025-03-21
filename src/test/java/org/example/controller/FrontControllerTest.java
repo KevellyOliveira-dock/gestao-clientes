@@ -37,13 +37,16 @@ public class FrontControllerTest {
         //executa o comando
         controller.executar("cartoes");
 
-        /**Verifica se o comando foi direcionado para a controller correta(no caso fakeCartoesController)
+        /*Verifica se o comando foi direcionado para a controller correta(no caso fakeCartoesController)
          faz um cast(conversão de tipo) de fakeCartoesController para o tipo FakeController e acessa
-         atributo comando**/
+         atributo comando */
         String comandoRecebido = ((FakeController) this.fakeCartoesController).comando;
 
         //Verifica se o comando recebido é o esperado
         assertEquals("cartoes", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
@@ -51,6 +54,9 @@ public class FrontControllerTest {
         controller.executar("clientes");
         String comandoRecebido = ((FakeController) this.fakeClientesController).comando;
         assertEquals("clientes", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
@@ -58,6 +64,9 @@ public class FrontControllerTest {
         controller.executar("contas");
         String comandoRecebido = ((FakeController) this.fakeContasController).comando;
         assertEquals("contas", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
@@ -65,6 +74,9 @@ public class FrontControllerTest {
         controller.executar("faturas");
         String comandoRecebido = ((FakeController) this.fakeFaturasController).comando;
         assertEquals("faturas", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
     }
 
     //Simula o comportamento dos Controllers reais para o teste
