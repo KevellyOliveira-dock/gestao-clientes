@@ -1,6 +1,6 @@
 package org.example.controller;
 
-public class FaturasController {
+public class FaturasController implements Controller {
 
     public String executar(String comando) {
 

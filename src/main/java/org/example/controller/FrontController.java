@@ -1,16 +1,19 @@
 package org.example.controller;
 
-public class FrontController {
-    private final CartoesController cartoesController;
-    private final ClienteController clienteController;
-    private final ContasController contasController;
-    private final FaturasController faturasController;
+public class FrontController implements Controller {
+    private final Controller cartoesController;
+    private final Controller clienteController;
+    private final Controller contasController;
+    private final Controller faturasController;
 
-    public FrontController() {
-        this.cartoesController = new CartoesController();
-        this.clienteController = new ClienteController();
-        this.contasController = new ContasController();
-        this.faturasController = new FaturasController();
+    public FrontController(Controller cartoesController,
+                           Controller clientesController,
+                           Controller contasController,
+                           Controller faturasController) {
+        this.cartoesController = cartoesController;
+        this.clienteController = clientesController;
+        this.contasController = contasController;
+        this.faturasController = faturasController;
     }
 
     public String executar(String comando) {

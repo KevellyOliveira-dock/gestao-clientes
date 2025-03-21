@@ -6,178 +6,88 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FrontControllerTest {
+
+    //declaração das variáveis e seus tipos, usadas para testes
     private FrontController controller;
+    private Controller fakeCartoesController;
+    private Controller fakeClientesController;
+    private Controller fakeContasController;
+    private Controller fakeFaturasController;
 
     @BeforeEach
     public void setup() {
-        controller = new FrontController();
+        //Criando instâncias fake de cada controller, usadas como "substitutas" para os reais
+        this.fakeCartoesController = new FakeController();
+        this.fakeClientesController = new FakeController();
+        this.fakeContasController = new FakeController();
+        this.fakeFaturasController = new FakeController();
+
+        //criando a instancia da FrontController, passando os controlers fakes
+        controller = new FrontController(
+                this.fakeCartoesController,
+                this.fakeClientesController,
+                this.fakeContasController,
+                this.fakeFaturasController
+        );
+    }
+
+    //Testes que verificam se a FrontController chama o respectivo Controller
+    @Test
+    public void QuandoComandoForCartoesEntaoChamarCartoesController() {
+        //executa o comando
+        controller.executar("cartoes");
+
+        /*Verifica se o comando foi direcionado para a controller correta(no caso fakeCartoesController)
+         faz um cast(conversão de tipo) de fakeCartoesController para o tipo FakeController e acessa
+         atributo comando */
+        String comandoRecebido = ((FakeController) this.fakeCartoesController).comando;
+
+        //Verifica se o comando recebido é o esperado
+        assertEquals("cartoes", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
-    public void quandoComandoEhCartoesEntaoExibaOpcoesDeCartoes() {
-        var resultadoEsperado = """
-                -------------------------------
-                | Bloquear {número do cartao} |
-                | Cadastrar                   |
-                -------------------------------""";
-        var resultadoReal = controller.executar("cartoes");
-        assertEquals(resultadoEsperado, resultadoReal);
+    public void QuandoComandoForClientesEntaoChamarClientesController() {
+        controller.executar("clientes");
+        String comandoRecebido = ((FakeController) this.fakeClientesController).comando;
+        assertEquals("clientes", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
-    public void quandoComandoEhCartoesBloquearEntaoBloqueieOsCartoes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("cartoes bloquear");
-        assertEquals(resultadoEsperado, resultadoReal);
+    public void QuandoComandoForContasEntaoChamarContasController() {
+        controller.executar("contas");
+        String comandoRecebido = ((FakeController) this.fakeContasController).comando;
+        assertEquals("contas", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeFaturasController).comando);
     }
 
     @Test
-    public void quandoComandoEhCartoesCadastrarEntaoCadastreOsCartoes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("cartoes cadastrar");
-        assertEquals(resultadoEsperado, resultadoReal);
+    public void QuandoComandoForFaturasEntaoChamarFaturasController() {
+        controller.executar("faturas");
+        String comandoRecebido = ((FakeController) this.fakeFaturasController).comando;
+        assertEquals("faturas", comandoRecebido);
+        assertEquals(null, ((FakeController) this.fakeCartoesController).comando);
+        assertEquals(null, ((FakeController) this.fakeClientesController).comando);
+        assertEquals(null, ((FakeController) this.fakeContasController).comando);
     }
 
-    @Test
-    public void quandoComandoEhClientesEntaoExibaOpcoesDeClientes() {
-        var resultadoEsperado = """
-                ------------------------------
-                | atualizar {cpf do cliente} |
-                | cadastrar                  |
-                | desativar {cpf do cliente} |
-                | pesquisar                  |
-                ------------------------------""";
-        var resultadoReal = controller.executar("clientes");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
+    //Simula o comportamento dos Controllers reais para o teste
+    class FakeController implements Controller {
+        public String comando; //Armazena o comando recebido
 
-    @Test
-    public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes atualizar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes cadastrar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhClientesDesativarEntaoDesativeOsClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes desativar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarEntaoExibaOpcoesDeClientesPesquisar() {
-        var resultadoEsperado = """
-                --------------------------
-                | cpf {cpf do cliente}   |
-                | nome {nome do cliente} |
-                -------------------------""";
-        var resultadoReal = controller.executar("clientes pesquisar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarCpfEntaoExibaDetalhesDosClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes pesquisar cpf");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarNomeEntaoExibaDetalhesDosClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes pesquisar nome");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasEntaoExibaOpcoesDeContas() {
-        var resultadoEsperado = """
-                -------------------------------
-                | cadastrar                   |
-                | desativar {numero da conta} |
-                | extrato {numero da conta}   |
-                | pesquisar                   |
-                -------------------------------""";
-        var resultadoReal = controller.executar("contas");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas cadastrar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasDesativarEntaoDesativeAsContas() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas desativar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasExtratoEntaoExibaOExtradoDasContas() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas extrato");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarEntaoExibaOpcoesDeContasPesquisar() {
-        var resultadoEsperado = """
-                ----------------------------------
-                | cpf-titular {cpf do cliente}   |
-                | nome-titular {nome do cliente} |
-                | numero {número da conta}       |
-                ----------------------------------""";
-        var resultadoReal = controller.executar("contas pesquisar");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar cpf-titular");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar nome-titular");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar numero");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhFaturasEntaoExibaOpcoesDeFaturas() {
-        var resultadoEsperado = """
-                -----------------------------
-                | fechar {número do cartão} |
-                -----------------------------""";
-        var resultadoReal = controller.executar("faturas");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhFaturasFecharEntaoFecheAFatura() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("faturas fechar");
-        assertEquals(resultadoEsperado, resultadoReal);
+        //implementação do metodo executar, armazena o comando recebido
+        @Override
+        public String executar(String comando) {
+            this.comando = comando; //guarda o comando recebido
+            return "";
+        }
     }
 }
