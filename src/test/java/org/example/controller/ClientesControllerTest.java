@@ -45,11 +45,7 @@ public class ClientesControllerTest {
 
     @Test
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
-        this.inputStream.setInputs(List.of(
-                "Kevelly\n",
-                "0123456789\n",
-                "Rua Fictícia 123\n"
-        ));
+        this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
         var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
