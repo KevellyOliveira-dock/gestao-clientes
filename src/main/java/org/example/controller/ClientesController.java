@@ -32,8 +32,7 @@ public class ClientesController implements Controller {
                 return "não implementado";
 
             case "clientes cadastrar":
-                cadastrarCliente(); //metodo para cadastrar o cliente
-                return "Cliente cadastrado com sucesso";
+               return cadastrarCliente();
 
             case "clientes desativar":
                 return "não implementado";
@@ -56,7 +55,7 @@ public class ClientesController implements Controller {
         }
     }
 
-    public void cadastrarCliente() {
+    public String cadastrarCliente() {
         System.out.println("Informe seu nome completo: ");
         String nomeCompleto = scanner.nextLine();
 
@@ -67,5 +66,7 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
+
+        return "Cliente cadastrado com sucesso";
     }
 }
