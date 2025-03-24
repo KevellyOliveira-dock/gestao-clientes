@@ -1,23 +1,23 @@
 package org.example.controller;
 
+import java.io.InputStream;
 import org.example.service.ClienteService;
 
 import java.util.Scanner;
 
 public class ClientesController implements Controller {
-
-    Scanner scanner = new Scanner(System.in);
+    Scanner scanner;
 
     //atributo que será injetado no construtor
     private ClienteService clienteService;
 
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClientesController(ClienteService clienteService) {
+    public ClientesController(ClienteService clienteService, Scanner scanner) {
+        this.scanner = scanner;
         this.clienteService = clienteService;
     }
 
     public String executar(String comando) {
-
         switch (comando) {
             case "clientes":
                 return """

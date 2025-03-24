@@ -1,13 +1,11 @@
 package org.example.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 //@Data -> getter e setter
-@AllArgsConstructor //gera o construtor
+@AllArgsConstructor // Gera o construtor com todos of fields da classe
 public class Cliente {
     private String nomeCompleto;
     private String cpf;

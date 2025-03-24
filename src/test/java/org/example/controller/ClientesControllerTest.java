@@ -1,5 +1,10 @@
 package org.example.controller;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Scanner;
+import org.example.service.ClienteService;
+import org.example.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -7,10 +12,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClientesControllerTest {
     private ClientesController controller;
+    private Scanner scanner;
+    private TesteInputStream inputStream;
 
     @BeforeEach
     public void setup() {
-        controller = new ClientesController();
+        ClienteService clienteService = new ClienteServiceImpl();
+        inputStream = new TesteInputStream();
+        scanner = new Scanner(inputStream);
+        controller = new ClientesController(clienteService, scanner);
     }
 
     @Test
@@ -35,7 +45,12 @@ public class ClientesControllerTest {
 
     @Test
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
-        var resultadoEsperado = "não implementado";
+        this.inputStream.setInputs(List.of(
+                "Kevelly",
+                "0123456789",
+                "Rua Fictícia 123"
+        ));
+        var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
     }
