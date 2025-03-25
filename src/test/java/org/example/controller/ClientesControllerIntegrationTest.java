@@ -1,7 +1,5 @@
 package org.example.controller;
 
-import java.io.InputStream;
-import java.util.List;
 import java.util.Scanner;
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
@@ -10,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ClientesControllerTest {
+public class ClientesControllerIntegrationTest {
     private ClientesController controller;
     private Scanner scanner;
     private TesteInputStream inputStream;
@@ -20,6 +18,10 @@ public class ClientesControllerTest {
         ClienteService clienteService = new ClienteServiceImpl();
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
+
+        //Redireciona o System.in para p nosso inputStream
+        System.setIn(this.inputStream);
+
         controller = new ClientesController(clienteService, scanner);
     }
 
@@ -48,9 +50,6 @@ public class ClientesControllerTest {
         //o \n é um delimitador para o Scanner(espaço e tabulação também),
         //sempre q ele lê sabe acabou e passa para a próxima linha
         this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
-
-        //Redireciona o System.in para p nosso inputStream
-        System.setIn(this.inputStream);
 
         var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
