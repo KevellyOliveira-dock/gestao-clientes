@@ -45,10 +45,19 @@ public class ClientesControllerTest {
 
     @Test
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
+        //o \n é um delimitador para o Scanner(espaço e tabulação também),
+        //sempre q ele lê sabe acabou e passa para a próxima linha
         this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
+
+        //Redireciona o System.in para p nosso inputStream
+        System.setIn(this.inputStream);
+
         var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
+
+        //necessidade de direcionar novamente para o System.in
+        //System.setIn(System.in);
     }
 
     @Test
