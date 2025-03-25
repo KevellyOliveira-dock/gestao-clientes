@@ -14,26 +14,5 @@ public class ClienteServiceImpl implements ClienteService {
         Cliente novoCliente = new Cliente(nomeCompleto, cpf, endereco);
         listaClientes.add(novoCliente);
     }
-
-    @Override
-    //Retorna Cliente para assim poder acessar Getters e Setters
-    public Cliente verificarCPF(String cpf) {
-        for (Cliente cliente : listaClientes) {
-            if (cliente.getCpf().equals(cpf)){
-                return cliente;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void atualizarCliente(String nomeAtualizado, String cpf, String enderecoAtualizado) {
-        Cliente atualizarCliente = verificarCPF(cpf);
-
-        if (atualizarCliente != null) {
-            atualizarCliente.setNomeCompleto(nomeAtualizado);
-            atualizarCliente.setEndereco(enderecoAtualizado);
-        }
-    }
 }
 
