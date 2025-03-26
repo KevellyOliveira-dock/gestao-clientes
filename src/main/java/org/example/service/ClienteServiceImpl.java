@@ -1,18 +1,36 @@
 package org.example.service;
 
 import org.example.model.Cliente;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class ClienteServiceImpl implements ClienteService {
-    Set<Cliente> listaClientes = new HashSet<>();
+    Map<String, Cliente> listaClientes = new HashMap<>();
 
     @Override
-    public void cadastrarCliente(String nomeCompleto, String cpf, String endereco) {
+    public String cadastrarCliente(String nomeCompleto, String cpf, String endereco) {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            return "CPF não pode ser nulo ou vazio";
+        }
+
+        if (listaClientes.containsKey(cpf)) {
+            return "CPF já cadastrado";
+        }
+
         //Cria um novo cliente do tipo cliente com os dados fornecidos
-        Cliente novoCliente = new Cliente(nomeCompleto, cpf, endereco);
-        listaClientes.add(novoCliente);
+        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+
+        return "Cliente cadastrado com sucesso";
+    }
+
+    @Override
+    public Cliente verificarCPF(String cpf) {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            return null;
+        }
+
+        return listaClientes.get(cpf);
     }
 }
 
