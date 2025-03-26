@@ -54,9 +54,6 @@ public class ClientesControllerIntegrationTest {
         var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
-
-        //necessidade de direcionar novamente para o System.in
-        //System.setIn(System.in);
     }
 
     @Test
