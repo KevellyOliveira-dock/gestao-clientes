@@ -1,25 +1,14 @@
 package org.example.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+//@Getter
+//@Setter
+@Data // -> getter e setter
+@AllArgsConstructor // Gera o construtor com todos of fields da classe
 public class Cliente {
     private String nomeCompleto;
     private String cpf;
     private String endereco;
-
-    public Cliente(String nomeCompleto, String cpf, String endereco) {
-        this.nomeCompleto = nomeCompleto;
-        this.cpf = cpf;
-        this.endereco = endereco;
-    }
-
-    public String getNomeCompleto() {
-        return nomeCompleto;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
 }

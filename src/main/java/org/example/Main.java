@@ -3,6 +3,8 @@ package org.example;
 import java.util.Scanner;
 
 import org.example.controller.*;
+import org.example.service.ClienteService;
+import org.example.service.ClienteServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,8 +12,12 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
+        //inicializa a ClienteService | dependencia criada fora da controller
+        ClienteService clienteService = new ClienteServiceImpl();
+
         var cartoesController = new CartoesController();
-        var clientesController = new ClientesController();
+        //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
+        var clientesController = new ClientesController(clienteService, scanner); //injeção de dependencia
         var contasController = new ContasController();
         var faturasController = new FaturasController();
 

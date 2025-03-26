@@ -1,16 +1,29 @@
 package org.example.controller;
 
+import java.util.Scanner;
+import org.example.service.ClienteService;
+import org.example.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ClientesControllerTest {
+public class ClientesControllerIntegrationTest {
     private ClientesController controller;
+    private Scanner scanner;
+    private TesteInputStream inputStream;
+    private ClienteService clienteService;
 
     @BeforeEach
     public void setup() {
-        controller = new ClientesController();
+        clienteService = new ClienteServiceImpl();
+        inputStream = new TesteInputStream();
+        scanner = new Scanner(inputStream);
+
+        //Redireciona o System.in para p nosso inputStream
+        System.setIn(this.inputStream);
+
+        controller = new ClientesController(clienteService, scanner);
     }
 
     @Test
@@ -35,9 +48,18 @@ public class ClientesControllerTest {
 
     @Test
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
-        var resultadoEsperado = "não implementado";
+        //o \n é um delimitador para o Scanner(espaço e tabulação também),
+        //sempre q ele lê sabe acabou e passa para a próxima linha
+        this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
+
+        var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
+
+        var cliente = clienteService.buscarClientePorCPF("0123456789");
+        assertEquals("Kevelly", cliente.getNomeCompleto());
+        assertEquals("0123456789", cliente.getCpf());
+        assertEquals("Rua Fictícia 123", cliente.getEndereco());
     }
 
     @Test
