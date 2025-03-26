@@ -65,8 +65,6 @@ public class ClientesController implements Controller {
         System.out.println("Informe seu endereço: ");
         String endereco = scanner.nextLine();
 
-        clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
-
-        return "Cliente cadastrado com sucesso";
+        return clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
     }
 }
