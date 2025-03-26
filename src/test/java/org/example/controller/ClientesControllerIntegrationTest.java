@@ -12,10 +12,11 @@ public class ClientesControllerIntegrationTest {
     private ClientesController controller;
     private Scanner scanner;
     private TesteInputStream inputStream;
+    private ClienteService clienteService;
 
     @BeforeEach
     public void setup() {
-        ClienteService clienteService = new ClienteServiceImpl();
+        clienteService = new ClienteServiceImpl();
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
@@ -54,6 +55,11 @@ public class ClientesControllerIntegrationTest {
         var resultadoEsperado = "Cliente cadastrado com sucesso";
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
+
+        var cliente = clienteService.buscarClientePorCPF("0123456789");
+        assertEquals("Kevelly", cliente.getNomeCompleto());
+        assertEquals("0123456789", cliente.getCpf());
+        assertEquals("Rua Fictícia 123", cliente.getEndereco());
     }
 
     @Test
