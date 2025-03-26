@@ -25,7 +25,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Cliente verificarCPF(String cpf) {
+    public Cliente buscarClientePorCPF(String cpf) {
         if (cpf == null || cpf.trim().isEmpty()) {
             return null;
         }
