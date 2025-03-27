@@ -76,21 +76,22 @@ public class ClientesController implements Controller {
 
         if (clienteExistente == null) {
             return "CPF não cadastrado";
-        } else {
-            System.out.println("Nome: [" + clienteExistente.getNomeCompleto() + "]");
-            String nomeCompleto = scanner.nextLine();
-
-            if (nomeCompleto.isEmpty()) {
-                nomeCompleto = clienteExistente.getNomeCompleto();
-            }
-
-            System.out.println("Endereço: [" + clienteExistente.getEndereco() + "]");
-            String endereco = scanner.nextLine();
-            if (endereco.isEmpty()) {
-                endereco = clienteExistente.getEndereco();
-            }
-
-            return clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
         }
+
+        System.out.println("Nome: [" + clienteExistente.getNomeCompleto() + "]");
+        String nomeCompleto = scanner.nextLine();
+
+        if (nomeCompleto.isEmpty()) {
+            nomeCompleto = clienteExistente.getNomeCompleto();
+        }
+
+        System.out.println("Endereço: [" + clienteExistente.getEndereco() + "]");
+        String endereco = scanner.nextLine();
+
+        if (endereco.isEmpty()) {
+            endereco = clienteExistente.getEndereco();
+        }
+
+        return clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
     }
 }
