@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import java.util.Scanner;
+
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,17 @@ public class ClientesControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() {
-        var resultadoEsperado = "não implementado";
+        clienteService.cadastrarCliente("Kevelly", "0123456789", "Rua Fictícia 123");
+        this.inputStream.setInputs("0123456789\n");
+
+        var cliente = clienteService.buscarClientePorCPF("0123456789");
+        assertEquals("Kevelly", cliente.getNomeCompleto());
+        assertEquals("0123456789", cliente.getCpf());
+        assertEquals("Rua Fictícia 123", cliente.getEndereco());
+
+        this.inputStream.setInputs("Kevelly\nRua Fictícia 123\n");
+
+        var resultadoEsperado = "Cliente atualizado com sucesso";
         var resultadoReal = controller.executar("clientes atualizar");
         assertEquals(resultadoEsperado, resultadoReal);
     }
