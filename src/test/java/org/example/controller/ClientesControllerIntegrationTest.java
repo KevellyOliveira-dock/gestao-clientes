@@ -61,6 +61,22 @@ public class ClientesControllerIntegrationTest {
     }
 
     @Test
+    public void quandoComandoEhClientesAtualizarEntaoNaoAtualizeOsClientes() {
+        this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
+        controller.executar("clientes cadastrar");
+
+        // arrange
+        this.inputStream.setInputs("0000000000\nKevelly\nRua Teste 234\n");
+        var resultadoEsperado = "CPF não cadastrado";
+
+        // act
+        var resultadoReal = controller.executar("clientes atualizar");
+
+        // assert
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() {
         //o \n é um delimitador para o Scanner(espaço e tabulação também),
         //sempre q ele lê sabe acabou e passa para a próxima linha
