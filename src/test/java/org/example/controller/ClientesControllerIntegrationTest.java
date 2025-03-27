@@ -42,19 +42,22 @@ public class ClientesControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() {
-        clienteService.cadastrarCliente("Kevelly", "0123456789", "Rua Fictícia 123");
-        this.inputStream.setInputs("0123456789\n");
+        this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
+        controller.executar("clientes cadastrar");
 
+        // arrange
+        this.inputStream.setInputs("0123456789\nKevelly\nRua Teste 234\n");
+        var resultadoEsperado = "Cliente atualizado com sucesso";
+
+        // act
+        var resultadoReal = controller.executar("clientes atualizar");
+
+        // assert
+        assertEquals(resultadoEsperado, resultadoReal);
         var cliente = clienteService.buscarClientePorCPF("0123456789");
         assertEquals("Kevelly", cliente.getNomeCompleto());
         assertEquals("0123456789", cliente.getCpf());
-        assertEquals("Rua Fictícia 123", cliente.getEndereco());
-
-        this.inputStream.setInputs("Kevelly\nRua Fictícia 123\n");
-
-        var resultadoEsperado = "Cliente atualizado com sucesso";
-        var resultadoReal = controller.executar("clientes atualizar");
-        assertEquals(resultadoEsperado, resultadoReal);
+        assertEquals("Rua Teste 234", cliente.getEndereco());
     }
 
     @Test
