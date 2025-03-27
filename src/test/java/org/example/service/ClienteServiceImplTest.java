@@ -54,14 +54,15 @@ public class ClienteServiceImplTest {
                 "Joao",
                 "5689778",
                 "Rua dos testes 123");
-        var resultadoEsperado = "CPF já cadastrado";
 
+        var resultadoEsperado = "CPF já cadastrado";
         assertEquals(resultadoEsperado, resultado);
     }
 
     @Test
     public void quandoBuscarClientePorCpfEntaoVerifiqueSeCadastrouChaveAntes() {
         clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "Rua teste");
+
         var resultado = clienteServiceImpl.cadastrarCliente(
                 "Kevelly",
                 "5689778",
@@ -87,7 +88,6 @@ public class ClienteServiceImplTest {
                 "Rua teste da silva");
 
         var resultadoEsperado = "Cliente atualizado com sucesso";
-
         assertEquals(resultadoEsperado, resultado);
 
         Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
@@ -96,7 +96,6 @@ public class ClienteServiceImplTest {
         assertEquals("5689778", cliente.getCpf());
         assertEquals("Rua teste da silva", cliente.getEndereco());
     }
-
 
     @ParameterizedTest
     //permite executar o mesmo teste várias vezes com valores diferentes
