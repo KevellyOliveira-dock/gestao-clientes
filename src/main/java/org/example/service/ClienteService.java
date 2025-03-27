@@ -6,4 +6,6 @@ public interface ClienteService {
     String cadastrarCliente(String nomeCompleto, String cpf, String endereco);
 
     Cliente buscarClientePorCPF(String cpf);
+
+    String atualizarCliente(String nomeCompleto, String cpf, String endereco);
 }

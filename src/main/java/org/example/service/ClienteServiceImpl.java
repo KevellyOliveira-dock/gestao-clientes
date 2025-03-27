@@ -32,5 +32,17 @@ public class ClienteServiceImpl implements ClienteService {
 
         return listaClientes.get(cpf);
     }
+
+    @Override
+    public String atualizarCliente(String nomeCompleto, String cpf, String endereco) {
+
+//        if (!listaClientes.containsKey(cpf)) {
+//            return "CPF não encontrado";
+//        }
+        //Cria um novo cliente do tipo cliente com os dados fornecidos
+        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+
+        return "Dados atualizados com sucesso";
+    }
 }
 

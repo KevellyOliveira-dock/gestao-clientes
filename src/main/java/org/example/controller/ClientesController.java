@@ -29,7 +29,7 @@ public class ClientesController implements Controller {
                         ------------------------------""";
 
             case "clientes atualizar":
-                return "não implementado";
+                return atualizarCliente();
 
             case "clientes cadastrar":
                 return cadastrarCliente();
@@ -66,5 +66,31 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         return clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
+    }
+
+    public String atualizarCliente() {
+        System.out.println("Informe seu CPF: ");
+        String cpf = scanner.nextLine();
+
+        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+
+        if (clienteExistente == null) {
+            return "CPF não cadastrado";
+        } else {
+            System.out.println("Nome: [" + clienteExistente.getNomeCompleto() + "]");
+            String nomeCompleto = scanner.nextLine();
+
+            if (nomeCompleto.isEmpty()) {
+                nomeCompleto = clienteExistente.getNomeCompleto();
+            }
+
+            System.out.println("Endereço: [" + clienteExistente.getEndereco() + "]");
+            String endereco = scanner.nextLine();
+            if (endereco.isEmpty()) {
+                endereco = clienteExistente.getEndereco();
+            }
+
+            return clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
+        }
     }
 }
