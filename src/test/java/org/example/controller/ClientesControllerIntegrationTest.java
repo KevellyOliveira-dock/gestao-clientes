@@ -61,12 +61,12 @@ public class ClientesControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhClientesAtualizarEntaoNaoAtualizeOsClientes() {
+    public void quandoComandoEhClientesAtualizarECpfNaoForCadastradoEntaoNaoAtualizeOCLiente() {
         this.inputStream.setInputs("Kevelly\n0123456789\nRua Fictícia 123\n");
         controller.executar("clientes cadastrar");
 
         // arrange
-        this.inputStream.setInputs("0000000000\nKevelly\nRua Teste 234\n");
+        this.inputStream.setInputs("0000000000\n");
         var resultadoEsperado = "CPF não cadastrado";
 
         // act

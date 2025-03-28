@@ -38,7 +38,7 @@ public class ClienteServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoBuscarClientePorCpfForVaziaEntaoCadastra(String cpf) {
+    public void quandoBuscarClientePorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) {
         var resultado = clienteServiceImpl.cadastrarCliente("Kevelly", cpf, "Rua teste");
         Cliente cliente = clienteServiceImpl.buscarClientePorCPF(cpf);
 
