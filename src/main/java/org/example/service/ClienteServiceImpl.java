@@ -32,5 +32,27 @@ public class ClienteServiceImpl implements ClienteService {
 
         return listaClientes.get(cpf);
     }
+
+    @Override
+    public String atualizarCliente(String nomeCompleto, String cpf, String endereco) {
+        Cliente clienteExistente = buscarClientePorCPF(cpf);
+
+        if (clienteExistente == null) {
+            return "CPF não cadastrado";
+        }
+
+        if (nomeCompleto.isEmpty()) {
+            nomeCompleto = clienteExistente.getNomeCompleto();
+        }
+
+        if (endereco.isEmpty()) {
+            endereco = clienteExistente.getEndereco();
+        }
+
+        //Cria um novo cliente do tipo cliente com os dados fornecidos
+        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+
+        return "Cliente atualizado com sucesso";
+    }
 }
 

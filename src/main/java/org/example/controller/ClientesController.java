@@ -18,37 +18,35 @@ public class ClientesController implements Controller {
     }
 
     public String executar(String comando) {
-        switch (comando) {
-            case "clientes":
-                return """
-                        ------------------------------
-                        | atualizar {cpf do cliente} |
-                        | cadastrar                  |
-                        | desativar {cpf do cliente} |
-                        | pesquisar                  |
-                        ------------------------------""";
+        if (comando.equals("clientes")) {
+            return """
+                    ------------------------------
+                    | atualizar {cpf do cliente} |
+                    | cadastrar                  |
+                    | desativar {cpf do cliente} |
+                    | pesquisar                  |
+                    ------------------------------""";
+        }
 
-            case "clientes atualizar":
-                return "não implementado";
+        String[] partes = comando.split(" ");
+        var acao = partes[1];
 
-            case "clientes cadastrar":
+        switch (acao) {
+            case "atualizar":
+                if (partes.length == 3) {
+                    return atualizarCliente(partes[2]);
+                } else {
+                    return "Para atualizar é necessário informar o CPF. Ex: clientes atualizar 12345678901";
+                }
+
+            case "cadastrar":
                 return cadastrarCliente();
 
-            case "clientes desativar":
+            case "desativar":
                 return "não implementado";
 
-            case "clientes pesquisar":
-                return """
-                        --------------------------
-                        | cpf {cpf do cliente}   |
-                        | nome {nome do cliente} |
-                        -------------------------""";
-
-            case "clientes pesquisar cpf":
-                return "não implementado";
-
-            case "clientes pesquisar nome":
-                return "não implementado";
+            case "pesquisar":
+                return pesquisarCliente(partes);
 
             default:
                 return "operação inválida";
@@ -66,5 +64,42 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         return clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
+    }
+
+    public String atualizarCliente(String cpf) {
+        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+
+        if (clienteExistente == null) {
+            return "CPF não cadastrado";
+        }
+
+        System.out.println("Nome: [" + clienteExistente.getNomeCompleto() + "]");
+        String nomeCompleto = scanner.nextLine();
+
+        System.out.println("Endereço: [" + clienteExistente.getEndereco() + "]");
+        String endereco = scanner.nextLine();
+
+        return clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
+    }
+
+    private String pesquisarCliente(String[] partes) {
+        if (partes.length == 2) {
+            return """
+                    --------------------------
+                    | cpf {cpf do cliente}   |
+                    | nome {nome do cliente} |
+                    -------------------------""";
+        }
+
+        switch (partes[2]) {
+            case "cpf":
+                return "não implementado";
+
+            case "nome":
+                return "não implementado";
+
+            default:
+                return "operação inválida";
+        }
     }
 }

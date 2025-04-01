@@ -2,8 +2,6 @@ package org.example.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class TesteInputStream extends InputStream {
     private String input;
@@ -22,17 +20,6 @@ public class TesteInputStream extends InputStream {
         }
 
         //Pega o caractere atual da String e add mais um ao indice
-        char caractere =  input.charAt(indiceMaisRecente++);
-
-        //char sendo convertido diretamente em int (type casting explícito - maior para menor)
-        return (int) caractere;
-
-        //Não daria certo porque o inputStrem retorna valores de 0 a 255, transformar em bytes gera valores invalidos
-        //var bytes = String.valueOf(this.input.charAt(indiceMaisRecente)).getBytes(StandardCharsets.UTF_8);
-        //indiceMaisRecente++;
-        //ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        //buffer.put(bytes);
-        //buffer.rewind();
-        //return buffer.getInt();
+        return input.charAt(indiceMaisRecente++);
     }
 }
