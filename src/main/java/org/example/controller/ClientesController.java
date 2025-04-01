@@ -18,7 +18,6 @@ public class ClientesController implements Controller {
     }
 
     public String executar(String comando) {
-
         if (comando.equals("clientes")) {
             return """
                     ------------------------------
@@ -83,7 +82,6 @@ public class ClientesController implements Controller {
     }
 
     private String pesquisarCliente(String[] partes) {
-
         if (partes.length == 2) {
             return """
                     --------------------------
