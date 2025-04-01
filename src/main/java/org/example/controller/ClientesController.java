@@ -27,6 +27,7 @@ public class ClientesController implements Controller {
                     | pesquisar                  |
                     ------------------------------""";
         }
+
         String[] partes = comando.split(" ");
         var acao = partes[1];
 
