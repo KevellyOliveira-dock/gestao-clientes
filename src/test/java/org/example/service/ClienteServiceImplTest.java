@@ -145,11 +145,12 @@ public class ClienteServiceImplTest {
     //PESQUISAR CLIENTE
     @Test
     public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() {
-        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
-//        clienteServiceImpl.cadastrarCliente("KeveLly", "0000000", "rua Unitarios 123");
+        clienteServiceImpl.cadastrarCliente("Kevelly", "1111111", "rua Unitarios 123");
+        clienteServiceImpl.cadastrarCliente("Joana Silva", "0000000", "rua Unitarios 123");
+        clienteServiceImpl.cadastrarCliente("Carol silveira", "9999999", "rua Unitarios 123");
 
         //Retornar um lista
-        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome("Kevelly");
+        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome("sil");
 
         //Retorna o número de elementos dentro da lista
         assertEquals(2, resultado.size());
@@ -161,7 +162,7 @@ public class ClienteServiceImplTest {
                 .anyMatch( //Verifica se algum elemento da lista atende a condição
                         //para cada cliente(c) na lista, compara o nome do cliente
                         // e ignora as diferenças entre maiusculas e minusculas
-                c -> c.getNomeCompleto().equalsIgnoreCase("Kevelly"))
+                        c -> c.getNomeCompleto().toLowerCase().contains("sil"))
         );
     }
 }
