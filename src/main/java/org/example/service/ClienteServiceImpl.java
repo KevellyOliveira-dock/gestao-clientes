@@ -61,9 +61,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<Cliente> pesquisarClientePorNome(String nome) {
         List<Cliente> clientesEncontrados = new ArrayList<>();
+        String nomePesquisa = nome.toLowerCase();
 
         for (Cliente cliente : listaClientes.values()) {
-            if (cliente.getNomeCompleto().equals(nome)) {
+            if (cliente.getNomeCompleto().toLowerCase().contains(nomePesquisa)) {
                 clientesEncontrados.add(cliente);
             }
         }
