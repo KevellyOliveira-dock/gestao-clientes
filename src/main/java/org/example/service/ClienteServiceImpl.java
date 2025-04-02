@@ -1,7 +1,10 @@
 package org.example.service;
 
 import org.example.model.Cliente;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,6 +56,20 @@ public class ClienteServiceImpl implements ClienteService {
         listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
 
         return "Cliente atualizado com sucesso";
+    }
+
+    @Override
+    public List<Cliente> pesquisarClientePorNome(String nome) {
+        List<Cliente> clientesEncontrados = new ArrayList<>();
+        String nomePesquisa = nome.toLowerCase();
+
+        for (Cliente cliente : listaClientes.values()) {
+            if (cliente.getNomeCompleto().toLowerCase().contains(nomePesquisa)) {
+                clientesEncontrados.add(cliente);
+            }
+        }
+
+        return clientesEncontrados;
     }
 }
 

@@ -2,6 +2,7 @@ package org.example.controller;
 
 import java.util.Scanner;
 
+import org.example.model.Cliente;
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -129,9 +130,31 @@ public class ClientesControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhClientesPesquisarNomeEntaoExibaDetalhesDosClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes pesquisar nome");
+    public void quandoComandoEhClientesPesquisarNomeEEncontrarClientesEntaoExibaListaDeClientes() {
+        this.inputStream.setInputs("Kevelly\n0987654321\nRua Ficticia 123\n");
+        controller.executar("clientes cadastrar");
+
+        this.inputStream.setInputs("Kevelly\n1234567890\nRua Ficticia 123\n");
+        controller.executar("clientes cadastrar");
+
+        clienteService.pesquisarClientePorNome("Kevelly");
+
+        var resultadoEsperado = "Clientes encontrados: \n" +
+                "Cliente(nomeCompleto=Kevelly, cpf=1234567890, endereco=Rua Ficticia 123)\n" +
+                "Cliente(nomeCompleto=Kevelly, cpf=0987654321, endereco=Rua Ficticia 123)\n";
+
+        var resultadoReal = controller.executar("clientes pesquisar nome Kevelly");
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() {
+        clienteService.pesquisarClientePorNome("Kevelly");
+
+        var resultadoEsperado = "Nenhum cliente com esse nome foi encontrado.";
+
+        var resultadoReal = controller.executar("clientes pesquisar nome Kevelly");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 }
+

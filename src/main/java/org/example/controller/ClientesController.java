@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.Cliente;
 import org.example.service.ClienteService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ClientesController implements Controller {
@@ -96,10 +97,25 @@ public class ClientesController implements Controller {
                 return "não implementado";
 
             case "nome":
-                return "não implementado";
+                return pesquisarClientesPorNome(partes[3]);
 
             default:
                 return "operação inválida";
         }
+    }
+
+    public String pesquisarClientesPorNome(String nome) {
+        List<Cliente> clientes = clienteService.pesquisarClientePorNome(nome);
+
+        if (clientes.isEmpty()) {
+            return "Nenhum cliente com esse nome foi encontrado.";
+        }
+
+        StringBuilder resultado = new StringBuilder("Clientes encontrados: \n");
+        for (Cliente cliente : clientes) {
+            resultado.append(cliente.toString()).append("\n");
+        }
+
+        return resultado.toString();
     }
 }
