@@ -149,20 +149,23 @@ public class ClienteServiceImplTest {
         clienteServiceImpl.cadastrarCliente("Joana Silva", "0000000", "rua Unitarios 123");
         clienteServiceImpl.cadastrarCliente("Carol silveira", "9999999", "rua Unitarios 123");
 
-        //Retornar um lista
-        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome("sil");
+        var busca = "sil";
 
-        //Retorna o número de elementos dentro da lista
+        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome(busca);
+
+        // Testando usando a função get da lista (modo imperativo)
         assertEquals(2, resultado.size());
+        assertTrue(resultado.get(0).getNomeCompleto().toLowerCase().contains(busca));
+        assertTrue(resultado.get(1).getNomeCompleto().toLowerCase().contains(busca));
 
-        //get(index) -> retorna um elemento especifico da lista pelo indice
-
-        //Verifica se a condição é verdadeira
-        assertTrue(resultado.stream() // Stream transforma a lista em um fluxo de dados
-                .anyMatch( //Verifica se algum elemento da lista atende a condição
-                        //para cada cliente(c) na lista, compara o nome do cliente
-                        // e ignora as diferenças entre maiusculas e minusculas
-                        c -> c.getNomeCompleto().toLowerCase().contains("sil"))
+        // Testando usando streams (modo funcional)
+        assertTrue(resultado
+                .stream()  // Stream transforma a lista em um fluxo de dados
+                .allMatch( // Verifica se todos os elementos da lista atendem à condição.
+                           // Para cada cliente na lista, compara o nome do cliente
+                           // e ignora as diferenças entre maiusculas e minusculas
+                        c -> c.getNomeCompleto().toLowerCase().contains(busca)
+                )
         );
     }
 }
