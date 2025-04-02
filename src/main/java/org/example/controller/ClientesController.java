@@ -111,11 +111,11 @@ public class ClientesController implements Controller {
             return "Nenhum cliente com esse nome foi encontrado.";
         }
 
-        //Sugestão do StringBuilder
-        String resultado = "Clientes encontrados: \n";
+        StringBuilder resultado = new StringBuilder("Clientes encontrados: \n");
         for (Cliente cliente : clientes) {
-            resultado += cliente.toString() + "\n";
+            resultado.append(cliente.toString()).append("\n");
         }
-        return resultado;
+
+        return resultado.toString();
     }
 }
