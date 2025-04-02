@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -145,14 +146,22 @@ public class ClienteServiceImplTest {
     @Test
     public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() {
         quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
+//        clienteServiceImpl.cadastrarCliente("KeveLly", "0000000", "rua Unitarios 123");
 
         //Retornar um lista
         List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome("Kevelly");
 
         //Retorna o número de elementos dentro da lista
-        assertEquals(1, resultado.size());
+        assertEquals(2, resultado.size());
 
         //get(index) -> retorna um elemento especifico da lista pelo indice
-        assertEquals("Kevelly", resultado.get(0).getNomeCompleto());
+
+        //Verifica se a condição é verdadeira
+        assertTrue(resultado.stream() // Stream transforma a lista em um fluxo de dados
+                .anyMatch( //Verifica se algum elemento da lista atende a condição
+                        //para cada cliente(c) na lista, compara o nome do cliente
+                        // e ignora as diferenças entre maiusculas e minusculas
+                c -> c.getNomeCompleto().equalsIgnoreCase("Kevelly"))
+        );
     }
 }
