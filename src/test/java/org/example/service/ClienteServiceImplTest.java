@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -138,5 +139,20 @@ public class ClienteServiceImplTest {
 
         Cliente clienteAtualizado = clienteServiceImpl.buscarClientePorCPF("5689778");
         assertEquals(enderecoEsperado, clienteAtualizado.getEndereco());
+    }
+
+    //PESQUISAR CLIENTE
+    @Test
+    public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() {
+        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
+
+        //Retornar um lista
+        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome("Kevelly");
+
+        //Retorna o número de elementos dentro da lista
+        assertEquals(1, resultado.size());
+
+        //get(index) -> retorna um elemento especifico da lista pelo indice
+        assertEquals("Kevelly", resultado.get(0).getNomeCompleto());
     }
 }
