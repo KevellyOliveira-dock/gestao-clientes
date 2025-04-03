@@ -94,7 +94,7 @@ public class ClientesController implements Controller {
 
         switch (partes[2]) {
             case "cpf":
-                return "não implementado";
+                return pesquisarClientesPorCPF(partes[3]);
 
             case "nome":
                 return pesquisarClientesPorNome(partes[3]);
@@ -117,5 +117,18 @@ public class ClientesController implements Controller {
         }
 
         return resultado.toString();
+    }
+
+    public String pesquisarClientesPorCPF(String cpf) {
+        Cliente cliente = clienteService.pesquisarClientePorCPF(cpf);
+
+        if (cliente == null) {
+            return "Nenhum cliente com esse CPF foi encontrado.";
+        }
+
+        String resultado = "Cliente encontrado: \n";
+        resultado += cliente + "\n";
+
+        return resultado;
     }
 }
