@@ -162,10 +162,21 @@ public class ClienteServiceImplTest {
         assertTrue(resultado
                 .stream()  // Stream transforma a lista em um fluxo de dados
                 .allMatch( // Verifica se todos os elementos da lista atendem à condição.
-                           // Para cada cliente na lista, compara o nome do cliente
-                           // e ignora as diferenças entre maiusculas e minusculas
+                        // Para cada cliente na lista, compara o nome do cliente
+                        // e ignora as diferenças entre maiusculas e minusculas
                         c -> c.getNomeCompleto().toLowerCase().contains(busca)
                 )
         );
+    }
+
+    @Test
+    public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() {
+        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
+
+        Cliente resultado = clienteServiceImpl.pesquisarClientePorCPF("5689778");
+
+        assertEquals("Kevelly", resultado.getNomeCompleto());
+        assertEquals("5689778", resultado.getCpf());
+        assertEquals("Rua teste", resultado.getEndereco());
     }
 }

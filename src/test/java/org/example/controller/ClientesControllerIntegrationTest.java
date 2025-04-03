@@ -156,5 +156,29 @@ public class ClientesControllerIntegrationTest {
         var resultadoReal = controller.executar("clientes pesquisar nome Kevelly");
         assertEquals(resultadoEsperado, resultadoReal);
     }
+
+    @Test
+    public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoSuasInformacoes() {
+        quandoComandoEhClientesCadastrarEntaoCadastreOsClientes();
+
+        clienteService.pesquisarClientePorCPF("0123456789");
+
+        var resultadoEsperado = "Cliente encontrado: \n" +
+                "Cliente(nomeCompleto=Kevelly, cpf=0123456789, endereco=Rua Ficticia 123)\n";
+
+        var resultadoReal = controller.executar("clientes pesquisar cpf 0123456789");
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
+        clienteService.pesquisarClientePorCPF("0123456789");
+
+        var resultadoEsperado = "Nenhum cliente com esse CPF foi encontrado.";
+
+        var resultadoReal = controller.executar("clientes pesquisar cpf 0123456789");
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
 }
 
