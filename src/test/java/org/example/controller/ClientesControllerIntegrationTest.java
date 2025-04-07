@@ -158,7 +158,7 @@ public class ClientesControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoSuasInformacoes() {
+    public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() {
         quandoComandoEhClientesCadastrarEntaoCadastreOsClientes();
 
         clienteService.pesquisarClientePorCPF("0123456789");
