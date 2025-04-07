@@ -106,6 +106,7 @@ public class ClientesController implements Controller {
 
     public String pesquisarClientesPorNome(String nome) {
         List<Cliente> clientes = clienteService.pesquisarClientePorNome(nome);
+        // String clientes2 = clientes.toString();
 
         if (clientes.isEmpty()) {
             return "Nenhum cliente com esse nome foi encontrado.";
