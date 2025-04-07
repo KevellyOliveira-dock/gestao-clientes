@@ -12,4 +12,6 @@ public interface ClienteService {
     String atualizarCliente(String nomeCompleto, String cpf, String endereco);
 
     List<Cliente> pesquisarClientePorNome(String nome);
+
+    Cliente pesquisarClientePorCPF(String cpf);
 }
