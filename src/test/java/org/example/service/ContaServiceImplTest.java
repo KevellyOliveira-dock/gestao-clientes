@@ -3,27 +3,23 @@ package org.example.service;
 import org.example.model.Cliente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class ContaServiceImplTest {
 
-    // cria uma intancia e injeta as dependências necessárias que estão anotadas com @Mock
-   // @InjectMocks
     private ContaServiceImpl contaServiceImpl;
 
-    // cria uma instancia de uma classe, porém Mockada, não chama o metodo real
+    // cria uma instância de uma classe, porém Mockada
     @Mock
     private ClienteService clienteService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this); // Inicializa os mocks
-
         contaServiceImpl = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
     }
 
@@ -38,8 +34,8 @@ public class ContaServiceImplTest {
         var resultadoEsperado = "Conta cadastrada com sucesso";
 
         assertEquals(resultadoEsperado, resultadoReal);
-//        assertEquals("1234567890123", resultadoReal);
-//        assertEquals("5689778", cliente.getCpf());
-//        assertEquals("Rua teste", cliente.getEndereco());
+        // assertEquals("1234567890123", resultadoReal);
+        // assertEquals("5689778", cliente.getCpf());
+        // assertEquals("Rua teste", cliente.getEndereco());
     }
 }
