@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ClientesController implements Controller {
-    Scanner scanner;
+    private Scanner scanner;
 
     //atributo que será injetado no construtor
     private ClienteService clienteService;
