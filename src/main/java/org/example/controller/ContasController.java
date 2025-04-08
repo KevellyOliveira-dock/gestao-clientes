@@ -82,6 +82,12 @@ public class ContasController implements Controller {
         System.out.println("Informe seu saldo: ");
         double saldo = scanner.nextDouble();
 
-        return contaService.cadastrarConta(numeroCartao, cpf, saldo);
+        try {
+            contaService.cadastrarConta(numeroCartao, cpf, saldo);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+        return "Conta cadastrado com sucesso";
     }
 }

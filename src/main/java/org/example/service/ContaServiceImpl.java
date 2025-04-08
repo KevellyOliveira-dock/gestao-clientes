@@ -16,22 +16,23 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public String cadastrarConta(String numeroConta, String cpf, double saldo) {
+    public Conta cadastrarConta(String numeroConta, String cpf, double saldo) throws Exception {
         if (numeroConta == null || numeroConta.trim().isEmpty()) {
-            return "O número da conta não pode ser nulo ou vazio";
+            throw new Exception("O número da conta não pode ser nulo ou vazio");
         }
 
         if (contas.containsKey(numeroConta)) {
-            return "Conta já cadastrado";
+            throw new Exception("Conta já cadastrado");
         }
 
         Cliente cliente = clienteService.pesquisarClientePorCPF(cpf);
         if (cliente == null) {
-            return "CPF informado não encontrado. Cadastre-se e tente novamente";
+            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente");
         }
 
-        contas.put(numeroConta, new Conta(numeroConta, cliente, saldo));
+        var conta = new Conta(numeroConta, cliente, saldo);
+        contas.put(numeroConta, conta);
 
-        return "Conta cadastrada com sucesso";
+        return conta;
     }
 }

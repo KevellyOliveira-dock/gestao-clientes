@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Cliente;
+import org.example.model.Conta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,18 +25,16 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() {
+    public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
         Cliente cliente = new Cliente("Kevelly", "5689778", "Rua teste");
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
         when(clienteService.pesquisarClientePorCPF("5689778")).thenReturn(cliente);
 
-        var resultadoReal = contaServiceImpl.cadastrarConta("1234567890123", "5689778", 123.34);
-        var resultadoEsperado = "Conta cadastrada com sucesso";
+        Conta resultadoReal = contaServiceImpl.cadastrarConta("1234567890123", "5689778", 123.34);
 
-        assertEquals(resultadoEsperado, resultadoReal);
-        // assertEquals("1234567890123", resultadoReal);
-        // assertEquals("5689778", cliente.getCpf());
-        // assertEquals("Rua teste", cliente.getEndereco());
+        assertEquals("1234567890123", resultadoReal.getNumeroConta());
+        assertEquals("5689778", resultadoReal.getTitular().getCpf());
+        assertEquals(123.34, resultadoReal.getSaldo());
     }
 }

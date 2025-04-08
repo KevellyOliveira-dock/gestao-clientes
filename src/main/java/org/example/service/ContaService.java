@@ -1,8 +1,8 @@
 package org.example.service;
 
-import org.example.model.Cliente;
+import org.example.model.Conta;
 
 public interface ContaService {
 
-    String cadastrarConta(String numeroConta, String cpf, double saldo);
+    Conta cadastrarConta(String numeroConta, String cpf, double saldo) throws Exception;
 }
