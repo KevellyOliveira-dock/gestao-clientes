@@ -32,7 +32,6 @@ public class ClienteServiceImplTest {
         var resultadoEsperado = "Cliente cadastrado com sucesso";
 
         assertEquals(resultadoEsperado, resultado);
-        assertNotNull(cliente);
         assertEquals("Kevelly", cliente.getNomeCompleto());
         assertEquals("5689778", cliente.getCpf());
         assertEquals("Rua teste", cliente.getEndereco());
