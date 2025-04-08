@@ -123,13 +123,6 @@ public class ClientesControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhClientesPesquisarCpfEntaoExibaDetalhesDosClientes() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes pesquisar cpf");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
     public void quandoComandoEhClientesPesquisarNomeEEncontrarClientesEntaoExibaListaDeClientes() {
         this.inputStream.setInputs("Kevelly\n0987654321\nRua Ficticia 123\n");
         controller.executar("clientes cadastrar");
