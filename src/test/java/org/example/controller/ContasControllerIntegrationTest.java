@@ -1,17 +1,39 @@
 package org.example.controller;
 
+import org.example.service.ClienteServiceImpl;
+import org.example.service.ContaService;
+import org.example.service.ContaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContasControllerTest {
+public class ContasControllerIntegrationTest {
 
     private ContasController controller;
+    private Scanner scanner;
+    private TesteInputStream inputStream;
+    private ContaService contaService;
+
+    @Mock
+    private ClienteServiceImpl clienteService; // Mock do ClienteService
 
     @BeforeEach
     public void setup() {
-        controller = new ContasController();
+        MockitoAnnotations.openMocks(this); // Inicializa os mocks
+
+        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
+        inputStream = new TesteInputStream();
+        scanner = new Scanner(inputStream);
+
+        //Redireciona o System.in para p nosso inputStream
+        System.setIn(this.inputStream);
+
+        controller = new ContasController(contaService, scanner);
     }
 
     @Test
