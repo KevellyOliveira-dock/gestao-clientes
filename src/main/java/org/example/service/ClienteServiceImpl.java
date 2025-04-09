@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Cliente;
+import org.example.model.Conta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,19 +13,19 @@ public class ClienteServiceImpl implements ClienteService {
     Map<String, Cliente> listaClientes = new HashMap<>();
 
     @Override
-    public String cadastrarCliente(String nomeCompleto, String cpf, String endereco) {
+    public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         if (cpf == null || cpf.trim().isEmpty()) {
-            return "CPF não pode ser nulo ou vazio";
+            throw new Exception("CPF não pode ser nulo ou vazio");
         }
 
         if (listaClientes.containsKey(cpf)) {
-            return "CPF já cadastrado";
+            throw new Exception("CPF já cadastrado");
         }
 
-        //Cria um novo cliente do tipo cliente com os dados fornecidos
-        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco);
+        listaClientes.put(cpf, clienteCadastrar);
 
-        return "Cliente cadastrado com sucesso";
+        return clienteCadastrar;
     }
 
     @Override
@@ -37,11 +38,11 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public String atualizarCliente(String nomeCompleto, String cpf, String endereco) {
+    public Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         Cliente clienteExistente = buscarClientePorCPF(cpf);
 
         if (clienteExistente == null) {
-            return "CPF não cadastrado";
+            throw new Exception("CPF não cadastrado");
         }
 
         if (nomeCompleto.isEmpty()) {
@@ -52,10 +53,10 @@ public class ClienteServiceImpl implements ClienteService {
             endereco = clienteExistente.getEndereco();
         }
 
-        //Cria um novo cliente do tipo cliente com os dados fornecidos
-        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco);
+        listaClientes.put(cpf, clienteAtualizar);
 
-        return "Cliente atualizado com sucesso";
+        return clienteAtualizar;
     }
 
     @Override

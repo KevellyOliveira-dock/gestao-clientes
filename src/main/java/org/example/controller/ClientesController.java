@@ -64,7 +64,12 @@ public class ClientesController implements Controller {
         System.out.println("Informe seu endereço: ");
         String endereco = scanner.nextLine();
 
-        return clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
+        try {
+            clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
+            return "Cliente cadastrado com sucesso";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String atualizarCliente(String cpf) {
@@ -80,7 +85,12 @@ public class ClientesController implements Controller {
         System.out.println("Endereço: [" + clienteExistente.getEndereco() + "]");
         String endereco = scanner.nextLine();
 
-        return clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
+        try {
+            clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return "Cliente atualizado com sucesso";
     }
 
     private String pesquisarCliente(String[] partes) {
