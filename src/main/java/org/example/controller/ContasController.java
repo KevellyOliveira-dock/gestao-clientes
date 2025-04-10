@@ -78,7 +78,7 @@ public class ContasController implements Controller {
         String cpf = scanner.nextLine();
 
         System.out.println("Informe seu saldo: ");
-        double saldo = scanner.nextDouble();
+        double saldo = Double.parseDouble(scanner.nextLine());
 
         try {
             contaService.cadastrarConta(cpf, saldo);

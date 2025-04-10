@@ -56,12 +56,11 @@ public class ContasControllerIntegrationTest {
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
-
-        this.inputStream.setInputs("0123456789\n123,43\n");
-
         when(clienteService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
 
         var resultadoEsperado = "Conta cadastrada com sucesso";
+
+        this.inputStream.setInputs("0123456789\n123.43\n");
         var resultadoReal = controller.executar("contas cadastrar");
 
         Conta conta = contaService.buscarContaPorNumeroConta("0");
@@ -69,7 +68,7 @@ public class ContasControllerIntegrationTest {
         assertEquals(resultadoEsperado, resultadoReal);
         assertEquals("0123456789", conta.getTitular().getCpf());
         assertEquals("0", conta.getNumeroConta());
-//        assertEquals("123,43", conta.getSaldo());
+        assertEquals(123.43, conta.getSaldo());
     }
 
     @Test
