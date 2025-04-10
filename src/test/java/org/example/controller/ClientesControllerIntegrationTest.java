@@ -154,7 +154,7 @@ public class ClientesControllerIntegrationTest {
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() {
         quandoComandoEhClientesCadastrarEntaoCadastreOsClientes();
 
-        clienteService.pesquisarClientePorCPF("0123456789");
+        clienteService.buscarClientePorCPF("0123456789");
 
         var resultadoEsperado = "Cliente encontrado: \n" +
                 "Cliente(nomeCompleto=Kevelly, cpf=0123456789, endereco=Rua Ficticia 123)\n";
@@ -165,7 +165,7 @@ public class ClientesControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
-        clienteService.pesquisarClientePorCPF("0123456789");
+        clienteService.buscarClientePorCPF("0123456789");
 
         var resultadoEsperado = "Nenhum cliente com esse CPF foi encontrado.";
 

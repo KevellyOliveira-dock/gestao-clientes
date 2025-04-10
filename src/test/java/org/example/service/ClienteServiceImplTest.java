@@ -44,9 +44,10 @@ public class ClienteServiceImplTest {
                     cpf,
                     "Rua teste");
         });
-        assertTrue(exception.getMessage().contains("CPF não pode ser nulo ou vazio"));
+        assertEquals("CPF não pode ser nulo ou vazio", exception.getMessage());
     }
 
+    // O que diferencia do teste a cima é o @ParameterizedTest, mantido aqui para fins educativos
     @Test
     public void quandoBuscarClientePorCpfForVaziaEntaoNaoCadastra() throws Exception {
         quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
@@ -57,7 +58,7 @@ public class ClienteServiceImplTest {
                         "",
                         "Rua teste"));
 
-        assertTrue(exception.getMessage().contains("CPF não pode ser nulo ou vazio"));
+        assertEquals("CPF não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
@@ -76,12 +77,6 @@ public class ClienteServiceImplTest {
 
         // assertTrue(exception.getMessage().contains("CPF já cadastrado"));
         assertEquals("CPF já cadastrado", exception.getMessage());
-    }
-
-    @Test
-    public void quandoBuscarClientePorCpfECpfNaoExistirEntaoRetorneNulo() {
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("");
-        assertNull(cliente);
     }
 
     //TESTE ATUALIZAR
@@ -104,7 +99,9 @@ public class ClienteServiceImplTest {
     //permite executar o mesmo teste várias vezes com valores diferentes
     //Simula a entrada vazia, esperando que o nome continue "Kevelly"
     @CsvSource({" , Kevelly"})
-    public void quandoAtualizarClienteVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior(String novoNome, String nomeEsperado) throws Exception {
+    public void quandoAtualizarClienteVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior
+            (String novoNome, String nomeEsperado) throws Exception
+    {
         clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "Rua teste");
         Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
 
@@ -123,7 +120,9 @@ public class ClienteServiceImplTest {
     @ParameterizedTest
     //permite executar o mesmo teste várias vezes com valores diferentes
     @CsvSource({" , rua Unitarios 123"})
-    public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior(String novoEndereco, String enderecoEsperado) throws Exception {
+    public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior
+            (String novoEndereco, String enderecoEsperado) throws Exception
+    {
         clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "rua Unitarios 123");
         Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
 
@@ -165,10 +164,16 @@ public class ClienteServiceImplTest {
     public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() throws Exception {
         quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
 
-        Cliente resultado = clienteServiceImpl.pesquisarClientePorCPF("5689778");
+        Cliente resultado = clienteServiceImpl.buscarClientePorCPF("5689778");
 
         assertEquals("Kevelly", resultado.getNomeCompleto());
         assertEquals("5689778", resultado.getCpf());
         assertEquals("Rua teste", resultado.getEndereco());
+    }
+
+    @Test
+    public void quandoBuscarClientePorCpfECpfNaoExistirEntaoRetorneNulo() {
+        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("");
+        assertNull(cliente);
     }
 }

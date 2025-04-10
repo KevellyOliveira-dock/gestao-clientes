@@ -72,16 +72,5 @@ public class ClienteServiceImpl implements ClienteService {
 
         return clientesEncontrados;
     }
-
-    @Override
-    public Cliente pesquisarClientePorCPF(String cpf) {
-        Cliente cliente = buscarClientePorCPF(cpf);
-
-        if (listaClientes.containsKey(cpf)) {
-            return cliente;
-        }
-
-        return null;
-    }
 }
 
