@@ -47,7 +47,12 @@ public class ClientesController implements Controller {
                 return "não implementado";
 
             case "pesquisar":
-                return pesquisarCliente(partes);
+                if (partes.length == 3) {
+                    return pesquisarCliente(partes);
+                } else {
+                    return "Para pesquisar é necessário informar o tipo do dado que deseja pesquisar." +
+                            " Ex: clientes pesquisar nome João Oliveira";
+                }
 
             default:
                 return "operação inválida";
@@ -68,7 +73,7 @@ public class ClientesController implements Controller {
             clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
             return "Cliente cadastrado com sucesso";
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return e.getMessage();
         }
     }
 
@@ -88,7 +93,7 @@ public class ClientesController implements Controller {
         try {
             clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return e.getMessage();
         }
         return "Cliente atualizado com sucesso";
     }
@@ -104,10 +109,10 @@ public class ClientesController implements Controller {
 
         switch (partes[2]) {
             case "cpf":
-                return pesquisarClientesPorCPF(partes[3]);
+                return pesquisarClientesPorCPF(partes[2]);
 
             case "nome":
-                return pesquisarClientesPorNome(partes[3]);
+                return pesquisarClientesPorNome(partes[2]);
 
             default:
                 return "operação inválida";
@@ -119,7 +124,7 @@ public class ClientesController implements Controller {
         // String clientes2 = clientes.toString();
 
         if (clientes.isEmpty()) {
-            return "Nenhum cliente com esse nome foi encontrado.";
+            return "Nenhum cliente com esse nome foi encontrado. Informe um nome valído.";
         }
 
         StringBuilder resultado = new StringBuilder("Clientes encontrados: \n");
@@ -134,7 +139,7 @@ public class ClientesController implements Controller {
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
         if (cliente == null) {
-            return "Nenhum cliente com esse CPF foi encontrado.";
+            return "Nenhum cliente com esse CPF foi encontrado. Informe um CPF válido";
         }
 
         String resultado = "Cliente encontrado: \n";

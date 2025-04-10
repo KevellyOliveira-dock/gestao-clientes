@@ -14,8 +14,11 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("CPF não pode ser nulo ou vazio");
+        if ((nomeCompleto == null || nomeCompleto.trim().isEmpty()) ||
+            (cpf == null || cpf.trim().isEmpty()) ||
+            (endereco == null || endereco.trim().isEmpty())
+        ) {
+            throw new Exception("Preencha todos os campos");
         }
 
         if (listaClientes.containsKey(cpf)) {

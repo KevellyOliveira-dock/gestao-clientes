@@ -44,7 +44,7 @@ public class ClienteServiceImplTest {
                     cpf,
                     "Rua teste");
         });
-        assertEquals("CPF não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals("Preencha todos os campos", exception.getMessage());
     }
 
     // O que diferencia do teste a cima é o @ParameterizedTest, mantido aqui para fins educativos
@@ -58,7 +58,7 @@ public class ClienteServiceImplTest {
                         "",
                         "Rua teste"));
 
-        assertEquals("CPF não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals("Preencha todos os campos", exception.getMessage());
     }
 
     @Test
