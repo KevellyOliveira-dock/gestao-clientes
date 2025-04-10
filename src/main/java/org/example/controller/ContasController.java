@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.model.Conta;
 import org.example.service.ContaService;
 
 import java.util.Scanner;
@@ -65,7 +66,7 @@ public class ContasController implements Controller {
                 return "não implementado";
 
             case "numero":
-                return "não implementado";
+                return pesquisarContaPorNumeroCartao(partes[3]);
 
             default:
                 return "operação inválida";
@@ -76,18 +77,27 @@ public class ContasController implements Controller {
         System.out.println("Informe seu CPF: ");
         String cpf = scanner.nextLine();
 
-        System.out.println("Informe o número do seu cartão: ");
-        String numeroCartao = scanner.nextLine();
-
         System.out.println("Informe seu saldo: ");
         double saldo = scanner.nextDouble();
 
         try {
-            contaService.cadastrarConta(numeroCartao, cpf, saldo);
+            contaService.cadastrarConta(cpf, saldo);
+        return "Conta cadastrada com sucesso";
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
 
-        return "Conta cadastrado com sucesso";
+    public String pesquisarContaPorNumeroCartao(String numeroCartao) {
+        Conta conta = contaService.buscarContaPorNumeroConta(numeroCartao);
+
+        if (conta == null) {
+            return "Nenhuma conta com esse número foi encontrado.";
+        }
+
+        String resultado = "Conta encontrada: \n";
+        resultado += conta + "\n";
+
+        return resultado;
     }
 }

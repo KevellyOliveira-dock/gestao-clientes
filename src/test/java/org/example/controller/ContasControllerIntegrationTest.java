@@ -1,6 +1,8 @@
 package org.example.controller;
 
-import org.example.service.ClienteServiceImpl;
+import org.example.model.Cliente;
+import org.example.model.Conta;
+import org.example.service.ClienteService;
 import org.example.service.ContaService;
 import org.example.service.ContaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
 import java.util.Scanner;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContasControllerIntegrationTest {
@@ -22,7 +26,7 @@ public class ContasControllerIntegrationTest {
     private ContaService contaService;
 
     @Mock
-    private ClienteServiceImpl clienteService; // Mock do ClienteService
+    private ClienteService clienteService; // Mock do ClienteService
 
     @BeforeEach
     public void setup() {
@@ -50,10 +54,22 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() {
-        var resultadoEsperado = "não implementado";
+    public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
+        var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
+
+        this.inputStream.setInputs("0123456789\n123,43\n");
+
+        when(clienteService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
+
+        var resultadoEsperado = "Conta cadastrada com sucesso";
         var resultadoReal = controller.executar("contas cadastrar");
+
+        Conta conta = contaService.buscarContaPorNumeroConta("0");
+
         assertEquals(resultadoEsperado, resultadoReal);
+        assertEquals("0123456789", conta.getTitular().getCpf());
+        assertEquals("0", conta.getNumeroConta());
+//        assertEquals("123,43", conta.getSaldo());
     }
 
     @Test
@@ -97,9 +113,26 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar numero");
+    public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
+        quandoComandoEhContasCadastrarEntaoCadastreAsContas();
+
+        contaService.buscarContaPorNumeroConta("0");
+
+        var resultadoEsperado = "Conta encontrada: \n" +
+                "Conta(numeroConta=0, titular=Cliente(nomeCompleto=Kevelly, cpf=0123456789, " +
+                "endereco=Rua teste, 123), saldo=123.43)\n";
+
+        var resultadoReal = controller.executar("contas pesquisar numero 0");
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhContasPesquisarNumeroENaoEncontrarContaEntaoRetorneErro() {
+        contaService.buscarContaPorNumeroConta("0");
+
+        var resultadoEsperado = "Nenhuma conta com esse número foi encontrado.";
+
+        var resultadoReal = controller.executar("contas pesquisar numero 0");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 }

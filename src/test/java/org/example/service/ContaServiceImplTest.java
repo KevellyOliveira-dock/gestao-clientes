@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +30,10 @@ public class ContaServiceImplTest {
         Cliente cliente = new Cliente("Kevelly", "5689778", "Rua teste");
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
-        when(clienteService.pesquisarClientePorCPF("5689778")).thenReturn(cliente);
+        when(clienteService.buscarClientePorCPF("5689778")).thenReturn(cliente);
 
-        Conta resultadoReal = contaServiceImpl.cadastrarConta("1234567890123", "5689778", 123.34);
+        Conta resultadoReal = contaServiceImpl.cadastrarConta("5689778", 123.34);
 
-        assertEquals("1234567890123", resultadoReal.getNumeroConta());
         assertEquals("5689778", resultadoReal.getTitular().getCpf());
         assertEquals(123.34, resultadoReal.getSaldo());
     }

@@ -16,16 +16,14 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public Conta cadastrarConta(String numeroConta, String cpf, double saldo) throws Exception {
-        if (numeroConta == null || numeroConta.trim().isEmpty()) {
-            throw new Exception("O número da conta não pode ser nulo ou vazio");
+    public Conta cadastrarConta(String cpf, double saldo) throws Exception {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new Exception("O CPF não pode ser nulo ou vazio");
         }
 
-        if (contas.containsKey(numeroConta)) {
-            throw new Exception("Conta já cadastrado");
-        }
+        var numeroConta = String.valueOf(contas.size());
 
-        Cliente cliente = clienteService.pesquisarClientePorCPF(cpf);
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
         if (cliente == null) {
             throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente");
         }
@@ -34,5 +32,14 @@ public class ContaServiceImpl implements ContaService {
         contas.put(numeroConta, conta);
 
         return conta;
+    }
+
+    @Override
+    public Conta buscarContaPorNumeroConta(String numeroConta) {
+        if (numeroConta == null || numeroConta.trim().isEmpty()) {
+            return null;
+        }
+
+        return contas.get(numeroConta);
     }
 }
