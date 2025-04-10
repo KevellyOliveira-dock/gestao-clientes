@@ -131,7 +131,7 @@ public class ClientesController implements Controller {
     }
 
     public String pesquisarClientesPorCPF(String cpf) {
-        Cliente cliente = clienteService.pesquisarClientePorCPF(cpf);
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
         if (cliente == null) {
             return "Nenhum cliente com esse CPF foi encontrado.";
