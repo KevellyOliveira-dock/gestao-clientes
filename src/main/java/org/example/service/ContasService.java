@@ -1,11 +1,10 @@
 package org.example.service;
 
-import org.example.model.Cliente;
 import org.example.model.Conta;
 
-public interface ContaService {
+public interface ContasService {
 
     Conta cadastrarConta(String cpf, double saldo) throws Exception;
 
-    Conta buscarContaPorNumeroConta(String numeroConta);
+    Conta buscarContaPorNumero(String numeroConta) throws Exception;
 }

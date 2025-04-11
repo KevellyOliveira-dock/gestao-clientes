@@ -1,20 +1,20 @@
 package org.example.controller;
 
 import org.example.model.Conta;
-import org.example.service.ContaService;
+import org.example.service.ContasService;
 
 import java.util.Scanner;
 
 public class ContasController implements Controller {
     private Scanner scanner;
-    private ContaService contaService;
+    private ContasService contaService;
 
-    public ContasController(ContaService contaService, Scanner scanner) {
+    public ContasController(ContasService contaService, Scanner scanner) {
         this.scanner = scanner;
         this.contaService = contaService;
     }
 
-    public String executar(String comando) {
+    public String executar(String comando) throws Exception {
 
         if (comando.equals("contas")) {
             return """
@@ -47,7 +47,7 @@ public class ContasController implements Controller {
         }
     }
 
-    private String pesquisarConta(String[] partes) {
+    private String pesquisarConta(String[] partes) throws Exception {
 
         if (partes.length == 2) {
             return """
@@ -66,7 +66,7 @@ public class ContasController implements Controller {
                 return "não implementado";
 
             case "numero":
-                return pesquisarContaPorNumeroCartao(partes[3]);
+                return pesquisarContaPorNumero(partes[3]);
 
             default:
                 return "operação inválida";
@@ -82,14 +82,14 @@ public class ContasController implements Controller {
 
         try {
             contaService.cadastrarConta(cpf, saldo);
-        return "Conta cadastrada com sucesso";
+            return "Conta cadastrada com sucesso";
         } catch (Exception e) {
             return e.getMessage();
         }
     }
 
-    public String pesquisarContaPorNumeroCartao(String numeroCartao) {
-        Conta conta = contaService.buscarContaPorNumeroConta(numeroCartao);
+    public String pesquisarContaPorNumero(String numeroConta) throws Exception {
+        Conta conta = contaService.buscarContaPorNumero(numeroConta);
 
         if (conta == null) {
             return "Nenhuma conta com esse número foi encontrado.";

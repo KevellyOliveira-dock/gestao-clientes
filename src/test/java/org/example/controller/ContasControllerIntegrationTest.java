@@ -2,9 +2,9 @@ package org.example.controller;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
-import org.example.service.ClienteService;
-import org.example.service.ContaService;
-import org.example.service.ContaServiceImpl;
+import org.example.service.ClientesService;
+import org.example.service.ContasService;
+import org.example.service.ContasServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +23,14 @@ public class ContasControllerIntegrationTest {
     private ContasController controller;
     private Scanner scanner;
     private TesteInputStream inputStream;
-    private ContaService contaService;
+    private ContasService contaService;
 
     @Mock
-    private ClienteService clienteService; // Mock do ClienteService
+    private ClientesService clientesService; // Mock do ClienteService
 
     @BeforeEach
     public void setup() {
-        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
+        contaService = new ContasServiceImpl(clientesService); // Passa o mock para a implementação
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
@@ -41,7 +41,7 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasEntaoExibaOpcoesDeContas() {
+    public void quandoComandoEhContasEntaoExibaOpcoesDeContas() throws Exception {
         var resultadoEsperado = """
                 -------------------------------
                 | cadastrar                   |
@@ -56,14 +56,14 @@ public class ContasControllerIntegrationTest {
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
-        when(clienteService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
+        when(clientesService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
 
         var resultadoEsperado = "Conta cadastrada com sucesso";
 
         this.inputStream.setInputs("0123456789\n123.43\n");
         var resultadoReal = controller.executar("contas cadastrar");
 
-        Conta conta = contaService.buscarContaPorNumeroConta("0");
+        Conta conta = contaService.buscarContaPorNumero("0");
 
         assertEquals(resultadoEsperado, resultadoReal);
         assertEquals("0123456789", conta.getTitular().getCpf());
@@ -72,21 +72,21 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasDesativarEntaoDesativeAsContas() {
+    public void quandoComandoEhContasDesativarEntaoDesativeAsContas() throws Exception {
         var resultadoEsperado = "não implementado";
         var resultadoReal = controller.executar("contas desativar");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
-    public void quandoComandoEhContasExtratoEntaoExibaOExtradoDasContas() {
+    public void quandoComandoEhContasExtratoEntaoExibaOExtradoDasContas() throws Exception {
         var resultadoEsperado = "não implementado";
         var resultadoReal = controller.executar("contas extrato");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
-    public void quandoComandoEhContasPesquisarEntaoExibaOpcoesDeContasPesquisar() {
+    public void quandoComandoEhContasPesquisarEntaoExibaOpcoesDeContasPesquisar() throws Exception {
         var resultadoEsperado = """
                 ----------------------------------
                 | cpf-titular {cpf do cliente}   |
@@ -98,14 +98,14 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() {
+    public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() throws Exception {
         var resultadoEsperado = "não implementado";
         var resultadoReal = controller.executar("contas pesquisar cpf-titular");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
-    public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() {
+    public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
         var resultadoEsperado = "não implementado";
         var resultadoReal = controller.executar("contas pesquisar nome-titular");
         assertEquals(resultadoEsperado, resultadoReal);
@@ -115,7 +115,7 @@ public class ContasControllerIntegrationTest {
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
         quandoComandoEhContasCadastrarEntaoCadastreAsContas();
 
-        contaService.buscarContaPorNumeroConta("0");
+        contaService.buscarContaPorNumero("0");
 
         var resultadoEsperado = "Conta encontrada: \n" +
                 "Conta(numeroConta=0, titular=Cliente(nomeCompleto=Kevelly, cpf=0123456789, " +
@@ -126,8 +126,8 @@ public class ContasControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhContasPesquisarNumeroENaoEncontrarContaEntaoRetorneErro() {
-        contaService.buscarContaPorNumeroConta("0");
+    public void quandoComandoEhContasPesquisarNumeroENaoEncontrarContaEntaoRetorneErro() throws Exception {
+        contaService.buscarContaPorNumero("0");
 
         var resultadoEsperado = "Nenhuma conta com esse número foi encontrado.";
 
