@@ -1,7 +1,6 @@
 package org.example.service;
 
 import org.example.model.Cliente;
-import org.example.model.Conta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ClienteServiceImpl implements ClienteService {
+public class ClientesServiceImpl implements ClientesService {
     Map<String, Cliente> listaClientes = new HashMap<>();
 
     @Override
     public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         if ((nomeCompleto == null || nomeCompleto.trim().isEmpty()) ||
-            (cpf == null || cpf.trim().isEmpty()) ||
-            (endereco == null || endereco.trim().isEmpty())
+                (cpf == null || cpf.trim().isEmpty()) ||
+                (endereco == null || endereco.trim().isEmpty())
         ) {
             throw new Exception("Preencha todos os campos");
         }
@@ -29,15 +28,6 @@ public class ClienteServiceImpl implements ClienteService {
         listaClientes.put(cpf, clienteCadastrar);
 
         return clienteCadastrar;
-    }
-
-    @Override
-    public Cliente buscarClientePorCPF(String cpf) {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            return null;
-        }
-
-        return listaClientes.get(cpf);
     }
 
     @Override
@@ -63,6 +53,15 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public Cliente buscarClientePorCPF(String cpf) throws Exception {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new Exception("O CPF informado não foi encontrado. Tente novamente");
+        }
+
+        return listaClientes.get(cpf);
+    }
+
+    @Override
     public List<Cliente> pesquisarClientePorNome(String nome) {
         List<Cliente> clientesEncontrados = new ArrayList<>();
         String nomePesquisa = nome.toLowerCase();
@@ -76,4 +75,3 @@ public class ClienteServiceImpl implements ClienteService {
         return clientesEncontrados;
     }
 }
-

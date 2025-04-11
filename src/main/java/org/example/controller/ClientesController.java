@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Cliente;
-import org.example.service.ClienteService;
+import org.example.service.ClientesService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -10,15 +10,15 @@ public class ClientesController implements Controller {
     private Scanner scanner;
 
     //atributo que será injetado no construtor
-    private ClienteService clienteService;
+    private ClientesService clientesService;
 
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClientesController(ClienteService clienteService, Scanner scanner) {
+    public ClientesController(ClientesService clientesService, Scanner scanner) {
         this.scanner = scanner;
-        this.clienteService = clienteService;
+        this.clientesService = clientesService;
     }
 
-    public String executar(String comando) {
+    public String executar(String comando) throws Exception {
         if (comando.equals("clientes")) {
             return """
                     ------------------------------
@@ -37,7 +37,7 @@ public class ClientesController implements Controller {
                 if (partes.length == 3) {
                     return atualizarCliente(partes[2]);
                 } else {
-                    return "Para atualizar é necessário informar o CPF. Ex: clientes atualizar 12345678901";
+                    return "Para atualizar é necessário informar o CPF. Ex: clientes atualizar 12345678901.\n";
                 }
 
             case "cadastrar":
@@ -47,12 +47,7 @@ public class ClientesController implements Controller {
                 return "não implementado";
 
             case "pesquisar":
-                if (partes.length == 3) {
-                    return pesquisarCliente(partes);
-                } else {
-                    return "Para pesquisar é necessário informar o tipo do dado que deseja pesquisar." +
-                            " Ex: clientes pesquisar nome João Oliveira";
-                }
+                return pesquisarCliente(partes);
 
             default:
                 return "operação inválida";
@@ -70,18 +65,18 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         try {
-            clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
-            return "Cliente cadastrado com sucesso";
+            clientesService.cadastrarCliente(nomeCompleto, cpf, endereco);
+            return "Cliente cadastrado com sucesso\n";
         } catch (Exception e) {
             return e.getMessage();
         }
     }
 
-    public String atualizarCliente(String cpf) {
-        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+    public String atualizarCliente(String cpf) throws Exception {
+        Cliente clienteExistente = clientesService.buscarClientePorCPF(cpf);
 
         if (clienteExistente == null) {
-            return "CPF não cadastrado";
+            return "CPF não cadastrado. Cadastre-se e tente novamente.\n";
         }
 
         System.out.println("Nome: [" + clienteExistente.getNomeCompleto() + "]");
@@ -91,14 +86,14 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         try {
-            clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
+            clientesService.atualizarCliente(nomeCompleto, cpf, endereco);
         } catch (Exception e) {
             return e.getMessage();
         }
-        return "Cliente atualizado com sucesso";
+        return "Cliente atualizado com sucesso\n";
     }
 
-    private String pesquisarCliente(String[] partes) {
+    private String pesquisarCliente(String[] partes) throws Exception {
         if (partes.length == 2) {
             return """
                     --------------------------
@@ -109,10 +104,18 @@ public class ClientesController implements Controller {
 
         switch (partes[2]) {
             case "cpf":
-                return pesquisarClientesPorCPF(partes[2]);
+                if (partes.length > 3) {
+                    return pesquisarClientesPorCPF(partes[3]);
+                } else {
+                    return "Informe o CPF que deseja pesquisar. Ex: clientes pesquisar cpf 12345678900.\n";
+                }
 
             case "nome":
-                return pesquisarClientesPorNome(partes[2]);
+                if (partes.length > 3) {
+                    return pesquisarClientesPorNome(partes[3]);
+                } else {
+                    return "Informe o nome que deseja pesquisar. Ex: clientes pesquisar nome Joao Silva.\n";
+                }
 
             default:
                 return "operação inválida";
@@ -120,11 +123,11 @@ public class ClientesController implements Controller {
     }
 
     public String pesquisarClientesPorNome(String nome) {
-        List<Cliente> clientes = clienteService.pesquisarClientePorNome(nome);
-        // String clientes2 = clientes.toString();
+        List<Cliente> clientes = clientesService.pesquisarClientePorNome(nome);
+        //String clientes2 = clientes.toString();
 
         if (clientes.isEmpty()) {
-            return "Nenhum cliente com esse nome foi encontrado. Informe um nome valído.";
+            return "Cliente não encontrado. Cadastre-se e tente novamente.\n";
         }
 
         StringBuilder resultado = new StringBuilder("Clientes encontrados: \n");
@@ -135,16 +138,13 @@ public class ClientesController implements Controller {
         return resultado.toString();
     }
 
-    public String pesquisarClientesPorCPF(String cpf) {
-        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+    public String pesquisarClientesPorCPF(String cpf) throws Exception {
+        Cliente cliente = clientesService.buscarClientePorCPF(cpf);
 
         if (cliente == null) {
-            return "Nenhum cliente com esse CPF foi encontrado. Informe um CPF válido";
+            return "Cliente não encontrado. Cadastre-se e tente novamente.\n";
         }
 
-        String resultado = "Cliente encontrado: \n";
-        resultado += cliente + "\n";
-
-        return resultado;
+        return cliente.toString();
     }
 }
