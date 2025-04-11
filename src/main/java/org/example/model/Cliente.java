@@ -11,4 +11,10 @@ public class Cliente {
     private String nomeCompleto;
     private String cpf;
     private String endereco;
+
+    @Override
+    public String toString() {
+        return "Cliente " + nomeCompleto + ", de CPF " + cpf + " e endereço " + endereco + ".";
+    }
+
 }
