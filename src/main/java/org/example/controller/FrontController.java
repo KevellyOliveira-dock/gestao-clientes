@@ -16,7 +16,7 @@ public class FrontController implements Controller {
         this.faturasController = faturasController;
     }
 
-    public String executar(String comando) {
+    public String executar(String comando) throws Exception {
         comando = comando.trim();
 
         if (comando.isEmpty()) {

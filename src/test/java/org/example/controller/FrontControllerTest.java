@@ -33,7 +33,7 @@ public class FrontControllerTest {
 
     //Testes que verificam se a FrontController chama o respectivo Controller
     @Test
-    public void QuandoComandoForCartoesEntaoChamarCartoesController() {
+    public void QuandoComandoForCartoesEntaoChamarCartoesController() throws Exception {
         //executa o comando
         controller.executar("cartoes");
 
@@ -50,7 +50,7 @@ public class FrontControllerTest {
     }
 
     @Test
-    public void QuandoComandoForClientesEntaoChamarClientesController() {
+    public void QuandoComandoForClientesEntaoChamarClientesController() throws Exception {
         controller.executar("clientes");
         String comandoRecebido = ((FakeController) this.fakeClientesController).comando;
         assertEquals("clientes", comandoRecebido);
@@ -60,7 +60,7 @@ public class FrontControllerTest {
     }
 
     @Test
-    public void QuandoComandoForContasEntaoChamarContasController() {
+    public void QuandoComandoForContasEntaoChamarContasController() throws Exception {
         controller.executar("contas");
         String comandoRecebido = ((FakeController) this.fakeContasController).comando;
         assertEquals("contas", comandoRecebido);
@@ -70,7 +70,7 @@ public class FrontControllerTest {
     }
 
     @Test
-    public void QuandoComandoForFaturasEntaoChamarFaturasController() {
+    public void QuandoComandoForFaturasEntaoChamarFaturasController() throws Exception {
         controller.executar("faturas");
         String comandoRecebido = ((FakeController) this.fakeFaturasController).comando;
         assertEquals("faturas", comandoRecebido);
