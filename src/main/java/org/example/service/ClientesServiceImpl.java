@@ -11,6 +11,7 @@ import java.util.Map;
 public class ClientesServiceImpl implements ClientesService {
     Map<String, Cliente> listaClientes = new HashMap<>();
 
+
     @Override
     public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         if ((nomeCompleto == null || nomeCompleto.trim().isEmpty()) ||
