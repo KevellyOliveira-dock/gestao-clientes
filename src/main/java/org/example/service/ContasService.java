@@ -4,7 +4,7 @@ import org.example.model.Conta;
 
 public interface ContasService {
 
-    Conta cadastrarConta(String cpf, double saldo) throws Exception;
+    Conta cadastrarConta(String cpf, String saldo) throws Exception;
 
     Conta buscarContaPorNumero(String numeroConta) throws Exception;
 }

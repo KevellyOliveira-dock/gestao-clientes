@@ -8,5 +8,13 @@ import lombok.Data;
 public class Conta {
     private String numeroConta;
     private Cliente titular;
-    private double saldo;
+    private Double saldo;
+
+    public String toString() {
+    return "Conta de número: " + numeroConta +
+            "\nSaldo: "+ saldo + "." +
+            "\nPertence ao titular: " + titular.getNomeCompleto() + "." +
+            "\nCPF: " + getTitular().getCpf() + "." +
+            "\nEndereço: " + titular.getEndereco() + ".\n";
+    }
 }
