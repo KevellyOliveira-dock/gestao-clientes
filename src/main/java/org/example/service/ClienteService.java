@@ -4,7 +4,7 @@ import org.example.model.Cliente;
 
 import java.util.List;
 
-public interface ClientesService {
+public interface ClienteService {
     Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception;
 
     Cliente buscarClientePorCPF(String cpf) throws Exception;

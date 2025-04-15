@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ClientesServiceImpl implements ClientesService {
+public class ClienteServiceImpl implements ClienteService {
     Map<String, Cliente> listaClientes = new HashMap<>();
 
 

@@ -2,7 +2,7 @@ package org.example.service;
 
 import org.example.model.Conta;
 
-public interface ContasService {
+public interface ContaService {
 
     Conta cadastrarConta(String cpf, String saldo) throws Exception;
 

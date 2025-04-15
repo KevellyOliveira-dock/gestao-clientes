@@ -2,9 +2,9 @@ package org.example.controller;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
-import org.example.service.ClientesService;
-import org.example.service.ContasService;
-import org.example.service.ContasServiceImpl;
+import org.example.service.ClienteService;
+import org.example.service.ContaService;
+import org.example.service.ContaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,26 +18,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ContasControllerIntegrationTest {
+public class ContaControllerIntegrationTest {
 
-    private ContasController controller;
+    private ContaController controller;
     private Scanner scanner;
     private TesteInputStream inputStream;
-    private ContasService contaService;
+    private ContaService contaService;
 
     @Mock
-    private ClientesService clientesService; // Mock do ClienteService
+    private ClienteService clienteService; // Mock do ClienteService
 
     @BeforeEach
     public void setup() {
-        contaService = new ContasServiceImpl(clientesService); // Passa o mock para a implementação
+        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ContasController(contaService, scanner);
+        controller = new ContaController(contaService, scanner);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class ContasControllerIntegrationTest {
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
-        when(clientesService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
+        when(clienteService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
 
         var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
                 "Conta de número: 0\n" +

@@ -6,13 +6,13 @@ import org.example.model.Conta;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContasServiceImpl implements ContasService {
+public class ContaServiceImpl implements ContaService {
     Map<String, Conta> contas = new HashMap<>();
 
-    ClientesService clientesService;
+    ClienteService clienteService;
 
-    public ContasServiceImpl(ClientesService clientesService) {
-        this.clientesService = clientesService;
+    public ContaServiceImpl(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ContasServiceImpl implements ContasService {
 
         var numeroConta = String.valueOf(contas.size());
 
-        Cliente cliente = clientesService.buscarClientePorCPF(cpf);
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
         if (cliente == null) {
             throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
         }

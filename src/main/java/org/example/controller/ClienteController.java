@@ -1,21 +1,21 @@
 package org.example.controller;
 
 import org.example.model.Cliente;
-import org.example.service.ClientesService;
+import org.example.service.ClienteService;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class ClientesController implements Controller {
+public class ClienteController implements Controller {
     private Scanner scanner;
 
     //atributo que será injetado no construtor
-    private ClientesService clientesService;
+    private ClienteService clienteService;
 
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClientesController(ClientesService clientesService, Scanner scanner) {
+    public ClienteController(ClienteService clienteService, Scanner scanner) {
         this.scanner = scanner;
-        this.clientesService = clientesService;
+        this.clienteService = clienteService;
     }
 
     public String executar(String comando) throws Exception {
@@ -65,7 +65,7 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         try {
-            clientesService.cadastrarCliente(nomeCompleto, cpf, endereco);
+            clienteService.cadastrarCliente(nomeCompleto, cpf, endereco);
             return "Cliente cadastrado com sucesso\n";
         } catch (Exception e) {
             return e.getMessage();
@@ -73,7 +73,7 @@ public class ClientesController implements Controller {
     }
 
     public String atualizarCliente(String cpf) throws Exception {
-        Cliente clienteExistente = clientesService.buscarClientePorCPF(cpf);
+        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
 
         if (clienteExistente == null) {
             return "CPF não cadastrado. Cadastre-se e tente novamente.\n";
@@ -86,7 +86,7 @@ public class ClientesController implements Controller {
         String endereco = scanner.nextLine();
 
         try {
-            clientesService.atualizarCliente(nomeCompleto, cpf, endereco);
+            clienteService.atualizarCliente(nomeCompleto, cpf, endereco);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -123,7 +123,7 @@ public class ClientesController implements Controller {
     }
 
     public String pesquisarClientesPorNome(String nome) {
-        List<Cliente> clientes = clientesService.pesquisarClientePorNome(nome);
+        List<Cliente> clientes = clienteService.pesquisarClientePorNome(nome);
         //String clientes2 = clientes.toString();
 
         if (clientes.isEmpty()) {
@@ -139,7 +139,7 @@ public class ClientesController implements Controller {
     }
 
     public String pesquisarClientesPorCPF(String cpf) throws Exception {
-        Cliente cliente = clientesService.buscarClientePorCPF(cpf);
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
         if (cliente == null) {
             return "Cliente não encontrado. Cadastre-se e tente novamente.\n";

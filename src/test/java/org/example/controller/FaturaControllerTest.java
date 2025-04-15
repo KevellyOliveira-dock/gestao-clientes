@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FaturasControllerTest {
-    private FaturasController controller;
+public class FaturaControllerTest {
+    private FaturaController controller;
 
     @BeforeEach
     public void setup() {
-        controller = new FaturasController();
+        controller = new FaturaController();
     }
 
     @Test

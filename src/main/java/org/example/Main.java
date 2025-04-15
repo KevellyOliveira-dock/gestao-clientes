@@ -1,15 +1,15 @@
 package org.example;
 
 import java.util.Scanner;
-import org.example.controller.CartoesController;
-import org.example.controller.ClientesController;
-import org.example.controller.ContasController;
-import org.example.controller.FaturasController;
+import org.example.controller.CartaoController;
+import org.example.controller.ClienteController;
+import org.example.controller.ContaController;
+import org.example.controller.FaturaController;
 import org.example.controller.FrontController;
-import org.example.service.ClientesService;
-import org.example.service.ClientesServiceImpl;
-import org.example.service.ContasService;
-import org.example.service.ContasServiceImpl;
+import org.example.service.ClienteService;
+import org.example.service.ClienteServiceImpl;
+import org.example.service.ContaService;
+import org.example.service.ContaServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,14 +18,14 @@ public class Main {
         System.out.println("----------- Seja bem-vindo! -----------");
 
         //inicializa a ClienteService | dependencia criada fora da controller
-        ClientesService clientesService = new ClientesServiceImpl();
-        ContasService contaService = new ContasServiceImpl(clientesService);
+        ClienteService clienteService = new ClienteServiceImpl();
+        ContaService contaService = new ContaServiceImpl(clienteService);
 
-        var cartoesController = new CartoesController();
+        var cartoesController = new CartaoController();
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
-        var clientesController = new ClientesController(clientesService, scanner); //injeção de dependencia
-        var contasController = new ContasController(contaService, scanner);
-        var faturasController = new FaturasController();
+        var clientesController = new ClienteController(clienteService, scanner); //injeção de dependencia
+        var contasController = new ContaController(contaService, scanner);
+        var faturasController = new FaturaController();
 
         var frontController = new FrontController(
                 cartoesController,

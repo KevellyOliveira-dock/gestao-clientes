@@ -11,12 +11,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientesServiceImplTest {
-    private ClientesServiceImpl clientesServiceImpl;
+public class ClienteServiceImplTest {
+    private ClienteServiceImpl clientesServiceImpl;
 
     @BeforeEach
     public void setup() {
-        clientesServiceImpl = new ClientesServiceImpl();
+        clientesServiceImpl = new ClienteServiceImpl();
     }
 
     @Test

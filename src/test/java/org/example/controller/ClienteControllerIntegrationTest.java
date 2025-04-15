@@ -2,30 +2,30 @@ package org.example.controller;
 
 import java.util.Scanner;
 
-import org.example.service.ClientesService;
-import org.example.service.ClientesServiceImpl;
+import org.example.service.ClienteService;
+import org.example.service.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ClientesControllerIntegrationTest {
-    private ClientesController controller;
+public class ClienteControllerIntegrationTest {
+    private ClienteController controller;
     private Scanner scanner;
     private TesteInputStream inputStream;
-    private ClientesService clientesService;
+    private ClienteService clienteService;
 
     @BeforeEach
     public void setup() {
-        clientesService = new ClientesServiceImpl();
+        clienteService = new ClienteServiceImpl();
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ClientesController(clientesService, scanner);
+        controller = new ClienteController(clienteService, scanner);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ClientesControllerIntegrationTest {
         var resultadoReal = controller.executar("clientes cadastrar");
         assertEquals(resultadoEsperado, resultadoReal);
 
-        var cliente = clientesService.buscarClientePorCPF("0123456789");
+        var cliente = clienteService.buscarClientePorCPF("0123456789");
         assertEquals("Kevelly", cliente.getNomeCompleto());
         assertEquals("0123456789", cliente.getCpf());
         assertEquals("Rua Ficticia 123", cliente.getEndereco());
@@ -68,7 +68,7 @@ public class ClientesControllerIntegrationTest {
         var resultadoReal = controller.executar("clientes atualizar 0123456789");
 
         assertEquals(resultadoEsperado, resultadoReal);
-        var cliente = clientesService.buscarClientePorCPF("0123456789");
+        var cliente = clienteService.buscarClientePorCPF("0123456789");
         assertEquals("Kevelly", cliente.getNomeCompleto());
         assertEquals("0123456789", cliente.getCpf());
         assertEquals("Rua Teste 234", cliente.getEndereco());
@@ -124,7 +124,7 @@ public class ClientesControllerIntegrationTest {
         this.inputStream.setInputs("Kevelly\n1234567890\nRua Ficticia 123\n");
         controller.executar("clientes cadastrar");
 
-        clientesService.pesquisarClientePorNome("Kevelly");
+        clienteService.pesquisarClientePorNome("Kevelly");
 
         var resultadoEsperado = "Clientes encontrados: \n" +
                 "Cliente Kevelly, de CPF 1234567890 e endereço Rua Ficticia 123.\n" +
@@ -136,7 +136,7 @@ public class ClientesControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
-        clientesService.pesquisarClientePorNome("Kevelly");
+        clienteService.pesquisarClientePorNome("Kevelly");
 
         var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
 
@@ -148,7 +148,7 @@ public class ClientesControllerIntegrationTest {
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() throws Exception {
         quandoComandoEhClientesCadastrarEntaoCadastreOsClientes();
 
-        clientesService.buscarClientePorCPF("0123456789");
+        clienteService.buscarClientePorCPF("0123456789");
 
         var resultadoEsperado = "Cliente Kevelly, de CPF 0123456789 e endereço Rua Ficticia 123.";
 
@@ -158,7 +158,7 @@ public class ClientesControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() throws Exception {
-        clientesService.buscarClientePorCPF("0123456789");
+        clienteService.buscarClientePorCPF("0123456789");
 
         var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
 

@@ -1,15 +1,14 @@
 package org.example.controller;
 
-import org.example.model.Conta;
-import org.example.service.ContasService;
+import org.example.service.ContaService;
 
 import java.util.Scanner;
 
-public class ContasController implements Controller {
+public class ContaController implements Controller {
     private Scanner scanner;
-    private ContasService contaService;
+    private ContaService contaService;
 
-    public ContasController(ContasService contaService, Scanner scanner) {
+    public ContaController(ContaService contaService, Scanner scanner) {
         this.scanner = scanner;
         this.contaService = contaService;
     }

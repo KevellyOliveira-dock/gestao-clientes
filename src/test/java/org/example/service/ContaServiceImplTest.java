@@ -15,17 +15,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ContasServiceImplTest {
+public class ContaServiceImplTest {
 
-    private ContasServiceImpl contaServiceImpl;
+    private ContaServiceImpl contaServiceImpl;
 
     // cria uma instância de uma classe, porém Mockada
     @Mock
-    private ClientesService clientesService;
+    private ClienteService clienteService;
 
     @BeforeEach
     public void setup() {
-        contaServiceImpl = new ContasServiceImpl(clientesService); // Passa o mock para a implementação
+        contaServiceImpl = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
     }
 
     @Test
@@ -33,7 +33,7 @@ public class ContasServiceImplTest {
         Cliente cliente = new Cliente("Kevelly", "5689778", "Rua teste");
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
-        when(clientesService.buscarClientePorCPF("5689778")).thenReturn(cliente);
+        when(clienteService.buscarClientePorCPF("5689778")).thenReturn(cliente);
 
         Conta resultadoReal = contaServiceImpl.cadastrarConta("5689778", String.valueOf(123.34));
 
