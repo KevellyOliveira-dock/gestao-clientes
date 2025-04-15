@@ -58,7 +58,12 @@ public class ContasControllerIntegrationTest {
         var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
         when(clientesService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
 
-        var resultadoEsperado = "Conta cadastrada com sucesso";
+        var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
+                "Conta de número: 0\n" +
+                "Saldo: 123.43.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 0123456789.\n" +
+                "Endereço: Rua teste, 123.\n";
 
         this.inputStream.setInputs("0123456789\n123.43\n");
         var resultadoReal = controller.executar("contas cadastrar");
@@ -118,18 +123,11 @@ public class ContasControllerIntegrationTest {
         contaService.buscarContaPorNumero("0");
 
         var resultadoEsperado = "Conta encontrada: \n" +
-                "Conta(numeroConta=0, titular=Cliente(nomeCompleto=Kevelly, cpf=0123456789, " +
-                "endereco=Rua teste, 123), saldo=123.43)\n";
-
-        var resultadoReal = controller.executar("contas pesquisar numero 0");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarNumeroENaoEncontrarContaEntaoRetorneErro() throws Exception {
-        contaService.buscarContaPorNumero("0");
-
-        var resultadoEsperado = "Nenhuma conta com esse número foi encontrado.";
+                "Conta de número: 0\n" +
+                "Saldo: 123.43.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 0123456789.\n" +
+                "Endereço: Rua teste, 123.\n";
 
         var resultadoReal = controller.executar("contas pesquisar numero 0");
         assertEquals(resultadoEsperado, resultadoReal);

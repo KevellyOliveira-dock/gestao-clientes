@@ -16,16 +16,31 @@ public class ContasServiceImpl implements ContasService {
     }
 
     @Override
-    public Conta cadastrarConta(String cpf, double saldo) throws Exception {
+    public Conta cadastrarConta(String cpf, String saldoStr) throws Exception {
         if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("O CPF não pode ser nulo ou vazio");
+            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
+        }
+
+        if (saldoStr == null || saldoStr.isEmpty()) {
+            throw new Exception("O saldo não pode ser nulo ou vazio.\n");
+        }
+
+        Double saldo;
+        try {
+            saldo = Double.valueOf(saldoStr);
+        } catch (NumberFormatException e) {
+            throw new Exception("O saldo deve ser um número válido.\n");
+        }
+
+        if (saldo < 0 || saldo.isNaN()) {
+            throw new Exception("O saldo deve ser um número maior que zero.\n");
         }
 
         var numeroConta = String.valueOf(contas.size());
 
         Cliente cliente = clientesService.buscarClientePorCPF(cpf);
         if (cliente == null) {
-            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente");
+            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         var conta = new Conta(numeroConta, cliente, saldo);
@@ -36,8 +51,8 @@ public class ContasServiceImpl implements ContasService {
 
     @Override
     public Conta buscarContaPorNumero(String numeroConta) throws Exception {
-        if (numeroConta == null || numeroConta.trim().isEmpty()) {
-            throw new Exception("A conta informada não foi encontrada. Tente novamente");
+        if (numeroConta == null || numeroConta.trim().isEmpty() || !contas.containsKey(numeroConta)) {
+            throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
         }
 
         return contas.get(numeroConta);
