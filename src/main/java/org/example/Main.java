@@ -1,8 +1,11 @@
 package org.example;
 
 import java.util.Scanner;
-
-import org.example.controller.*;
+import org.example.controller.CartoesController;
+import org.example.controller.ClientesController;
+import org.example.controller.ContasController;
+import org.example.controller.FaturasController;
+import org.example.controller.FrontController;
 import org.example.service.ClientesService;
 import org.example.service.ClientesServiceImpl;
 import org.example.service.ContasService;
