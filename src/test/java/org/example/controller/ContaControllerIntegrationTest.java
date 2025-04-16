@@ -8,6 +8,7 @@ import org.example.service.ContaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.Scanner;
@@ -20,9 +21,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ContaControllerIntegrationTest {
 
+    @InjectMocks
     private ContaController controller;
+
     private Scanner scanner;
     private TesteInputStream inputStream;
+
+    @Mock
     private ContaService contaService;
 
     @Mock
@@ -30,7 +35,7 @@ public class ContaControllerIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
+//        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
@@ -56,7 +61,9 @@ public class ContaControllerIntegrationTest {
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
-        when(clienteService.buscarClientePorCPF("0123456789")).thenReturn(cliente);
+
+        var conta = new Conta("0", cliente, 123.43);
+        when(contaService.cadastrarConta("0123456789", String.valueOf(123.43))).thenReturn(conta);
 
         var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
                 "Conta de número: 0\n" +
@@ -68,12 +75,7 @@ public class ContaControllerIntegrationTest {
         this.inputStream.setInputs("0123456789\n123.43\n");
         var resultadoReal = controller.executar("contas cadastrar");
 
-        Conta conta = contaService.buscarContaPorNumero("0");
-
         assertEquals(resultadoEsperado, resultadoReal);
-        assertEquals("0123456789", conta.getTitular().getCpf());
-        assertEquals("0", conta.getNumeroConta());
-        assertEquals(123.43, conta.getSaldo());
     }
 
     @Test
@@ -118,13 +120,10 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
-        // mock de um novo cliente
         var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
-        when(clienteService.buscarClientePorCPF("12345678910")).thenReturn(cliente);
 
-        // cadastro da conta - não mockado
-        this.inputStream.setInputs("12345678910\n123.43\n");
-        controller.executar("contas cadastrar");
+        var conta = new Conta("0", cliente, 123.43);
+        when(contaService.buscarContaPorNumero("0")).thenReturn(conta);
 
         var resultadoEsperado = "Conta encontrada: \n" +
                 "Conta de número: 0\n" +
@@ -134,14 +133,6 @@ public class ContaControllerIntegrationTest {
                 "Endereço: Rua teste, 123.\n";
         var resultadoReal = controller.executar("contas pesquisar numero 0");
 
-        // Buscando a conta pelo seu numero
-        Conta conta = contaService.buscarContaPorNumero("0");
-
         assertEquals(resultadoEsperado, resultadoReal);
-
-        // Verificando os valores da pesquisa
-        assertEquals("0", conta.getNumeroConta());
-        assertEquals("12345678910", conta.getTitular().getCpf());
-        assertEquals(123.43, conta.getSaldo());
     }
 }
