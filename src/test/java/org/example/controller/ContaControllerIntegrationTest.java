@@ -118,18 +118,30 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
-        quandoComandoEhContasCadastrarEntaoCadastreAsContas();
+        // mock de um novo cliente
+        var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
+        when(clienteService.buscarClientePorCPF("12345678910")).thenReturn(cliente);
 
-        contaService.buscarContaPorNumero("0");
+        // cadastro da conta - não mockado
+        this.inputStream.setInputs("12345678910\n123.43\n");
+        controller.executar("contas cadastrar");
 
         var resultadoEsperado = "Conta encontrada: \n" +
                 "Conta de número: 0\n" +
                 "Saldo: 123.43.\n" +
                 "Pertence ao titular: Kevelly.\n" +
-                "CPF: 0123456789.\n" +
+                "CPF: 12345678910.\n" +
                 "Endereço: Rua teste, 123.\n";
-
         var resultadoReal = controller.executar("contas pesquisar numero 0");
+
+        // Buscando a conta pelo seu numero
+        Conta conta = contaService.buscarContaPorNumero("0");
+
         assertEquals(resultadoEsperado, resultadoReal);
+
+        // Verificando os valores da pesquisa
+        assertEquals("0", conta.getNumeroConta());
+        assertEquals("12345678910", conta.getTitular().getCpf());
+        assertEquals(123.43, conta.getSaldo());
     }
 }
