@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CartoesControllerTest {
+public class CartaoControllerTest {
 
-    private CartoesController controller;
+    private CartaoController controller;
 
     @BeforeEach
     public void setup() {
-        controller = new CartoesController();
+        controller = new CartaoController();
     }
 
     @Test

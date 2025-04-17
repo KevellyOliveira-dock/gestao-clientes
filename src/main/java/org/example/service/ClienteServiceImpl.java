@@ -11,37 +11,32 @@ import java.util.Map;
 public class ClienteServiceImpl implements ClienteService {
     Map<String, Cliente> listaClientes = new HashMap<>();
 
+
     @Override
-    public String cadastrarCliente(String nomeCompleto, String cpf, String endereco) {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            return "CPF não pode ser nulo ou vazio";
+    public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
+        if ((nomeCompleto == null || nomeCompleto.trim().isEmpty()) ||
+                (cpf == null || cpf.trim().isEmpty()) ||
+                (endereco == null || endereco.trim().isEmpty())
+        ) {
+            throw new Exception("Preencha todos os campos");
         }
 
         if (listaClientes.containsKey(cpf)) {
-            return "CPF já cadastrado";
+            throw new Exception("CPF já cadastrado");
         }
 
-        //Cria um novo cliente do tipo cliente com os dados fornecidos
-        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco);
+        listaClientes.put(cpf, clienteCadastrar);
 
-        return "Cliente cadastrado com sucesso";
+        return clienteCadastrar;
     }
 
     @Override
-    public Cliente buscarClientePorCPF(String cpf) {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            return null;
-        }
-
-        return listaClientes.get(cpf);
-    }
-
-    @Override
-    public String atualizarCliente(String nomeCompleto, String cpf, String endereco) {
+    public Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         Cliente clienteExistente = buscarClientePorCPF(cpf);
 
         if (clienteExistente == null) {
-            return "CPF não cadastrado";
+            throw new Exception("CPF não cadastrado");
         }
 
         if (nomeCompleto.isEmpty()) {
@@ -52,10 +47,19 @@ public class ClienteServiceImpl implements ClienteService {
             endereco = clienteExistente.getEndereco();
         }
 
-        //Cria um novo cliente do tipo cliente com os dados fornecidos
-        listaClientes.put(cpf, new Cliente(nomeCompleto, cpf, endereco));
+        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco);
+        listaClientes.put(cpf, clienteAtualizar);
 
-        return "Cliente atualizado com sucesso";
+        return clienteAtualizar;
+    }
+
+    @Override
+    public Cliente buscarClientePorCPF(String cpf) throws Exception {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new Exception("O CPF informado não foi encontrado. Tente novamente");
+        }
+
+        return listaClientes.get(cpf);
     }
 
     @Override
@@ -71,16 +75,4 @@ public class ClienteServiceImpl implements ClienteService {
 
         return clientesEncontrados;
     }
-
-    @Override
-    public Cliente pesquisarClientePorCPF(String cpf) {
-        Cliente cliente = buscarClientePorCPF(cpf);
-
-        if (listaClientes.containsKey(cpf)) {
-            return cliente;
-        }
-
-        return null;
-    }
 }
-

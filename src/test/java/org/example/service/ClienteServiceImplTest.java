@@ -12,88 +12,97 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClienteServiceImplTest {
-    private ClienteServiceImpl clienteServiceImpl;
+    private ClienteServiceImpl clientesServiceImpl;
 
     @BeforeEach
     public void setup() {
-        clienteServiceImpl = new ClienteServiceImpl();
+        clientesServiceImpl = new ClienteServiceImpl();
     }
 
     @Test
-    public void quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso() {
-        //cria um usuario para teste
-        var resultado = clienteServiceImpl.cadastrarCliente(
+    public void quandoClientesCadastrarVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso() throws Exception {
+        var resultado = clientesServiceImpl.cadastrarCliente(
                 "Kevelly",
                 "5689778",
                 "Rua teste");
 
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
+        Cliente cliente = clientesServiceImpl.buscarClientePorCPF("5689778");
 
-        var resultadoEsperado = "Cliente cadastrado com sucesso";
-
-        assertEquals(resultadoEsperado, resultado);
-        assertNotNull(cliente);
+        assertEquals(cliente, resultado);
         assertEquals("Kevelly", cliente.getNomeCompleto());
         assertEquals("5689778", cliente.getCpf());
         assertEquals("Rua teste", cliente.getEndereco());
     }
 
     @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoBuscarClientePorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) {
-        var resultado = clienteServiceImpl.cadastrarCliente("Kevelly", cpf, "Rua teste");
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF(cpf);
+    @CsvSource({
+            //nulo
+            " , 12345678900, Rua testes 12",
+            "Kevelly, , Rua testes 12",
+            "Kevelly, 12345678900, ",
+            ", , ",
 
-        assertEquals("CPF não pode ser nulo ou vazio", resultado);
-        assertNull(cliente);
+            //vazio
+            "'', 12345678900, Rua testes 12",
+            "Kevelly, '', Rua testes 12",
+            "Kevelly, 12345678900, ''",
+            "'', '', ''",
+    })
+    void quandoClientesCadastrarENomeForNuloOuVazioEntaoRetorneMensagemDeErro(
+            String nomeCompleto, String cpf, String endereco) throws Exception {
+        Exception exception = assertThrows(Exception.class, () ->
+                clientesServiceImpl.cadastrarCliente(nomeCompleto, cpf, endereco));
+
+        assertEquals("Preencha todos os campos", exception.getMessage());
     }
 
     @Test
-    public void quandoBuscarClientePorCpfForVaziaEntaoNaoCadastra() {
-        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
-
-        var resultado = clienteServiceImpl.cadastrarCliente(
+    public void quandoClientesCadastrarEntaoVerifiqueSeCadastrouChaveAntes() throws Exception {
+        clientesServiceImpl.cadastrarCliente(
                 "Joao",
-                "5689778",
-                "Rua dos testes 123");
-
-        var resultadoEsperado = "CPF já cadastrado";
-        assertEquals(resultadoEsperado, resultado);
-    }
-
-    @Test
-    public void quandoBuscarClientePorCpfEntaoVerifiqueSeCadastrouChaveAntes() {
-        clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "Rua teste");
-
-        var resultado = clienteServiceImpl.cadastrarCliente(
-                "Kevelly",
                 "5689778",
                 "Rua teste");
 
-        assertEquals("CPF já cadastrado", resultado);
+        // () -> : lambda expression
+        Exception exception = assertThrows(Exception.class, () ->
+                clientesServiceImpl.cadastrarCliente(
+                        "Kevelly",
+                        "5689778",
+                        "Rua teste"));
+
+        assertEquals("CPF já cadastrado", exception.getMessage());
     }
 
-    @Test
-    public void quandoBuscarClientePorCpfECpfNaoExistirEntaoRetorneNulo() {
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("");
-        assertNull(cliente);
+    // Verificação do pesquisar CPF
+    @ParameterizedTest
+    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    public void quandoBuscarClientePorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) throws Exception {
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            clientesServiceImpl.buscarClientePorCPF(cpf);
+
+            clientesServiceImpl.cadastrarCliente(
+                    "Kevelly",
+                    cpf,
+                    "Rua teste");
+        });
+        assertEquals("O CPF informado não foi encontrado. Tente novamente", exception.getMessage());
     }
+
 
     //TESTE ATUALIZAR
     @Test
-    public void quandoAtualizarClienteVerifiqueSeOCpfJaFoiAtualizadoEntaoAtualizeComSucesso() {
-        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
+    public void quandoClienteAtualizarVerifiqueSeOCpfJaFoiCadastradoEntaoAtualizeComSucesso() throws Exception {
+        quandoClientesCadastrarVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
 
-        var resultado = clienteServiceImpl.atualizarCliente(
+        var resultado = clientesServiceImpl.atualizarCliente(
                 "Joana",
                 "5689778",
                 "Rua teste da silva");
 
-        var resultadoEsperado = "Cliente atualizado com sucesso";
-        assertEquals(resultadoEsperado, resultado);
+        Cliente cliente = clientesServiceImpl.buscarClientePorCPF("5689778");
 
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
-        assertNotNull(cliente);
+        assertEquals(cliente, resultado);
         assertEquals("Joana", cliente.getNomeCompleto());
         assertEquals("5689778", cliente.getCpf());
         assertEquals("Rua teste da silva", cliente.getEndereco());
@@ -103,55 +112,51 @@ public class ClienteServiceImplTest {
     //permite executar o mesmo teste várias vezes com valores diferentes
     //Simula a entrada vazia, esperando que o nome continue "Kevelly"
     @CsvSource({" , Kevelly"})
-    public void quandoAtualizarClienteVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior(
-            String novoNome,
-            String nomeEsperado
-    ) {
-        clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "Rua teste");
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
+    public void quandoClienteAtualizarVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior
+            (String novoNome, String nomeEsperado) throws Exception {
+        clientesServiceImpl.cadastrarCliente("Kevelly", "5689778", "Rua teste");
+        Cliente cliente = clientesServiceImpl.buscarClientePorCPF("5689778");
 
         //Simula o input vazio
         if (novoNome == null) {
             novoNome = cliente.getNomeCompleto();
         }
 
-        clienteServiceImpl.atualizarCliente(novoNome, "5689778", "Rua teste");
+        clientesServiceImpl.atualizarCliente(novoNome, "5689778", "Rua teste");
 
         //Valida se o nome continua o mesmo
-        Cliente clienteAtualizado = clienteServiceImpl.buscarClientePorCPF("5689778");
+        Cliente clienteAtualizado = clientesServiceImpl.buscarClientePorCPF("5689778");
         assertEquals(nomeEsperado, clienteAtualizado.getNomeCompleto());
     }
 
     @ParameterizedTest
     //permite executar o mesmo teste várias vezes com valores diferentes
     @CsvSource({" , rua Unitarios 123"})
-    public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior(
-            String novoEndereco,
-            String enderecoEsperado
-    ) {
-        clienteServiceImpl.cadastrarCliente("Kevelly", "5689778", "rua Unitarios 123");
-        Cliente cliente = clienteServiceImpl.buscarClientePorCPF("5689778");
+    public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior
+            (String novoEndereco, String enderecoEsperado) throws Exception {
+        clientesServiceImpl.cadastrarCliente("Kevelly", "5689778", "rua Unitarios 123");
+        Cliente cliente = clientesServiceImpl.buscarClientePorCPF("5689778");
 
         if (novoEndereco == null) {
             novoEndereco = cliente.getEndereco();
         }
 
-        clienteServiceImpl.atualizarCliente("Ana", "5689778", novoEndereco);
+        clientesServiceImpl.atualizarCliente("Ana", "5689778", novoEndereco);
 
-        Cliente clienteAtualizado = clienteServiceImpl.buscarClientePorCPF("5689778");
+        Cliente clienteAtualizado = clientesServiceImpl.buscarClientePorCPF("5689778");
         assertEquals(enderecoEsperado, clienteAtualizado.getEndereco());
     }
 
     //PESQUISAR CLIENTE
     @Test
-    public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() {
-        clienteServiceImpl.cadastrarCliente("Kevelly", "1111111", "rua Unitarios 123");
-        clienteServiceImpl.cadastrarCliente("Joana Silva", "0000000", "rua Unitarios 123");
-        clienteServiceImpl.cadastrarCliente("Carol silveira", "9999999", "rua Unitarios 123");
+    public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() throws Exception {
+        clientesServiceImpl.cadastrarCliente("Kevelly", "1111111", "rua Unitarios 123");
+        clientesServiceImpl.cadastrarCliente("Joana Silva", "0000000", "rua Unitarios 123");
+        clientesServiceImpl.cadastrarCliente("Carol silveira", "9999999", "rua Unitarios 123");
 
         var busca = "sil";
 
-        List<Cliente> resultado = clienteServiceImpl.pesquisarClientePorNome(busca);
+        List<Cliente> resultado = clientesServiceImpl.pesquisarClientePorNome(busca);
 
         // Testando usando a função get da lista (modo imperativo)
         assertEquals(2, resultado.size());
@@ -159,21 +164,18 @@ public class ClienteServiceImplTest {
         assertTrue(resultado.get(1).getNomeCompleto().toLowerCase().contains(busca));
 
         // Testando usando streams (modo funcional)
-        assertTrue(resultado
-                .stream()  // Stream transforma a lista em um fluxo de dados
+        assertTrue(resultado.stream()  // Stream transforma a lista em um fluxo de dados
                 .allMatch( // Verifica se todos os elementos da lista atendem à condição.
                         // Para cada cliente na lista, compara o nome do cliente
                         // e ignora as diferenças entre maiusculas e minusculas
-                        c -> c.getNomeCompleto().toLowerCase().contains(busca)
-                )
-        );
+                        c -> c.getNomeCompleto().toLowerCase().contains(busca)));
     }
 
     @Test
-    public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() {
-        quandoCadastrarClienteVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
+    public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() throws Exception {
+        quandoClientesCadastrarVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso();
 
-        Cliente resultado = clienteServiceImpl.pesquisarClientePorCPF("5689778");
+        Cliente resultado = clientesServiceImpl.buscarClientePorCPF("5689778");
 
         assertEquals("Kevelly", resultado.getNomeCompleto());
         assertEquals("5689778", resultado.getCpf());
