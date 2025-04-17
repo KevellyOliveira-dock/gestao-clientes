@@ -106,13 +106,13 @@ public class ContaController implements Controller {
         }
     }
 
-    public String pesquisarContaPorTitular(String nomeCompleto) {
-        List<Conta> contas = contaService.buscarContasPorTitular(nomeCompleto);
-
-        if (contas.isEmpty()) {
-            return "Conta não encontrada. Cadastre-se e tente novamente.\n";
+    public String pesquisarContaPorTitular(String nomeCompleto) throws Exception {
+        List<Conta> contas;
+        try {
+            contas = contaService.buscarContasPorTitular(nomeCompleto);
+        } catch (Exception e) {
+            return e.getMessage();
         }
-
         StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
         for (Conta conta : contas) {
             resultado.append(conta.toString()).append("\n");

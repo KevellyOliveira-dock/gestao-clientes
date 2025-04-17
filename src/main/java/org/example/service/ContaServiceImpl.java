@@ -61,13 +61,16 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public List<Conta> buscarContasPorTitular(String nomeCompleto) {
+    public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 //        String numeroPesquisa = numeroConta.toLowerCase();
 
         for (Conta conta : contas.values()) {
             if (conta.getTitular().getNomeCompleto().toLowerCase().equals(nomeCompleto)) {
                 contasEncontradas.add(conta);
+            }
+            if (contasEncontradas.isEmpty()) {
+                throw new Exception("Conta não encontrada. Cadastre-se e tente novamente.\n");
             }
         }
 

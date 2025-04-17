@@ -11,5 +11,5 @@ public interface ContaService {
 
     Conta buscarContaPorNumero(String numeroConta) throws Exception;
 
-    List<Conta> buscarContasPorTitular(String nomeCompleto);
+    List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception;
 }
