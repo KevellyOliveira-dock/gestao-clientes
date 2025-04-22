@@ -112,16 +112,18 @@ public class ContaServiceImplTest {
         var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
         var conta = new Conta("0", cliente, 123.43);
 
+        String busca = "Kevelly";
+
         List<Conta> contas = new ArrayList<>();
         contas.add(conta);
 
         // Mocka o comportamento
-        when(contaService.buscarContasPorTitular("Kevelly")).thenReturn(contas);
+        when(contaService.buscarContasPorTitular(busca)).thenReturn(contas);
 
         // Chama o metodo mockado
-        List<Conta> resultado = contaService.buscarContasPorTitular("Kevelly");
+        List<Conta> resultado = contaService.buscarContasPorTitular(busca);
 
         assertEquals(1, resultado.size());
-        assertEquals("Kevelly", resultado.get(0).getTitular().getNomeCompleto());
+        assertEquals(busca, resultado.get(0).getTitular().getNomeCompleto());
     }
 }
