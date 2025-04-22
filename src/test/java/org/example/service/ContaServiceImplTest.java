@@ -11,6 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +21,9 @@ import static org.mockito.Mockito.when;
 public class ContaServiceImplTest {
 
     private ContaServiceImpl contaServiceImpl;
+
+    @Mock
+    private ContaService contaService;
 
     // cria uma instância de uma classe, porém Mockada
     @Mock
@@ -87,11 +93,35 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
     public void quandoContasPesquisarNumeroContaForVazioOuNuloEntaoExibaMensagem(String numeroConta) throws Exception {
-
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContaPorNumero(numeroConta)
         );
         assertEquals("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n",
                 exception.getMessage());
+    }
+
+    @Test
+    public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() throws Exception {
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.buscarContasPorTitular("Kevelly"));
+        assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
+        var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
+        var conta = new Conta("0", cliente, 123.43);
+
+        List<Conta> contas = new ArrayList<>();
+        contas.add(conta);
+
+        // Mocka o comportamento
+        when(contaService.buscarContasPorTitular("Kevelly")).thenReturn(contas);
+
+        // Chama o metodo mockado
+        List<Conta> resultado = contaService.buscarContasPorTitular("Kevelly");
+
+        assertEquals(1, resultado.size());
+        assertEquals("Kevelly", resultado.get(0).getTitular().getNomeCompleto());
     }
 }
