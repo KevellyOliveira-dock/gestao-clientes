@@ -29,6 +29,8 @@ public class ContaServiceImplTest {
     @Mock
     private ClienteService clienteService;
 
+    private static final String NOME_CLIENTE = "Kevelly";
+
     @BeforeEach
     public void setup() {
         contaServiceImpl = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
@@ -36,7 +38,7 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
-        Cliente cliente = new Cliente("Kevelly", "5689778", "Rua teste");
+        Cliente cliente = new Cliente(NOME_CLIENTE, "5689778", "Rua teste");
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
         when(clienteService.buscarClientePorCPF("5689778")).thenReturn(cliente);
@@ -103,16 +105,14 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() throws Exception {
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContasPorTitular("Kevelly"));
+                contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE));
         assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
 
     @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
-        var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
+        var cliente = new Cliente(NOME_CLIENTE, "12345678910", "Rua teste, 123");
         var conta = new Conta("0", cliente, 123.43);
-
-        String NOME_CLIENTE = "Kevelly";
 
         List<Conta> contas = new ArrayList<>();
         contas.add(conta);
