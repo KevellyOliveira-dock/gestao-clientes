@@ -65,7 +65,7 @@ public class ContaServiceImpl implements ContaService {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contas.values()) {
-            if (conta.getTitular().getNomeCompleto().toLowerCase().equals(nomeCompleto)) {
+            if (conta.getTitular().getNomeCompleto().equals(nomeCompleto)) {
                 contasEncontradas.add(conta);
             }
         }
