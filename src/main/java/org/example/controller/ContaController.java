@@ -1,7 +1,9 @@
 package org.example.controller;
 
+import org.example.model.Conta;
 import org.example.service.ContaService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ContaController implements Controller {
@@ -62,7 +64,12 @@ public class ContaController implements Controller {
                 return "não implementado";
 
             case "nome-titular":
-                return "não implementado";
+                if (partes.length > 3) {
+                    return pesquisarContaPorTitular(partes[3]);
+                } else {
+                    return "Informe o nome do titular da conta que deseja pesquisar. " +
+                            "Ex: contas pesquisar nome-titular Kevelly.\n";
+                }
 
             case "numero":
                 if (partes.length > 3) {
@@ -97,5 +104,20 @@ public class ContaController implements Controller {
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    public String pesquisarContaPorTitular(String nomeCompleto) throws Exception {
+        List<Conta> contas;
+        try {
+            contas = contaService.buscarContasPorTitular(nomeCompleto);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
+        for (Conta conta : contas) {
+            resultado.append(conta.toString()).append("\n");
+        }
+
+        return resultado.toString();
     }
 }

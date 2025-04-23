@@ -11,6 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -19,9 +22,18 @@ public class ContaServiceImplTest {
 
     private ContaServiceImpl contaServiceImpl;
 
+    @Mock
+    private ContaService contaService;
+
     // cria uma instância de uma classe, porém Mockada
     @Mock
     private ClienteService clienteService;
+
+    private static final String NOME_CLIENTE = "Kevelly";
+    private static final String CPF_CLIENTE = "12345678900";
+    private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final Double SALDO_CONTA = 123.43;
+    private static final String NUMERO_CONTA = "0";
 
     @BeforeEach
     public void setup() {
@@ -30,15 +42,15 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
-        Cliente cliente = new Cliente("Kevelly", "5689778", "Rua teste");
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
-        when(clienteService.buscarClientePorCPF("5689778")).thenReturn(cliente);
+        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
-        Conta resultadoReal = contaServiceImpl.cadastrarConta("5689778", String.valueOf(123.34));
+        Conta resultadoReal = contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA));
 
-        assertEquals("5689778", resultadoReal.getTitular().getCpf());
-        assertEquals(123.34, resultadoReal.getSaldo());
+        assertEquals(CPF_CLIENTE, resultadoReal.getTitular().getCpf());
+        assertEquals(SALDO_CONTA, resultadoReal.getSaldo());
     }
 
     @ParameterizedTest
@@ -46,7 +58,7 @@ public class ContaServiceImplTest {
     public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) throws Exception {
 
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(234.243))
+                contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
         );
         assertEquals("O CPF não pode ser nulo ou vazio.\n", exception.getMessage());
     }
@@ -57,7 +69,7 @@ public class ContaServiceImplTest {
             (String saldoStr) throws Exception {
 
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.cadastrarConta("12345678900", saldoStr)
+                contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
         );
         assertEquals("O saldo não pode ser nulo ou vazio.\n", exception.getMessage());
     }
@@ -67,7 +79,7 @@ public class ContaServiceImplTest {
     public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) throws Exception {
 
         Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta("12345678900", saldoStr);
+            contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr);
 
         });
         assertEquals("O saldo deve ser um número válido.\n", exception.getMessage());
@@ -78,7 +90,7 @@ public class ContaServiceImplTest {
     public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) throws Exception {
 
         Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta("12345678900", String.valueOf(saldo));
+            contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo));
 
         });
         assertEquals("O saldo deve ser um número maior que zero.\n", exception.getMessage());
@@ -87,11 +99,35 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
     public void quandoContasPesquisarNumeroContaForVazioOuNuloEntaoExibaMensagem(String numeroConta) throws Exception {
-
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContaPorNumero(numeroConta)
         );
         assertEquals("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n",
                 exception.getMessage());
+    }
+
+    @Test
+    public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() throws Exception {
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE));
+        assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+
+        List<Conta> contas = new ArrayList<>();
+        contas.add(conta);
+
+        // Mocka o comportamento
+        when(contaService.buscarContasPorTitular(NOME_CLIENTE)).thenReturn(contas);
+
+        // Chama o metodo mockado
+        List<Conta> resultado = contaService.buscarContasPorTitular(NOME_CLIENTE);
+
+        assertEquals(1, resultado.size());
+        assertEquals(NOME_CLIENTE, resultado.get(0).getTitular().getNomeCompleto());
     }
 }

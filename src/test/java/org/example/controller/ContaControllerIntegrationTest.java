@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -113,8 +115,31 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar nome-titular");
+        var cliente1 = new Cliente("Kevelly", "12345678900", "Rua testes, 123");
+
+        var clienteConta1 = new Conta("0", cliente1, 123.43);
+        var clienteConta2 = new Conta("1", cliente1, 5000.0);
+
+        List<Conta> listaContas = new ArrayList<>();
+        listaContas.add(clienteConta1);
+        listaContas.add(clienteConta2);
+
+        when(contaService.buscarContasPorTitular("Kevelly")).thenReturn(listaContas);
+
+        var resultadoEsperado = "Contas encontradas: \n" +
+                "Conta de número: 0\n" +
+                "Saldo: 123.43.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua testes, 123.\n" +
+                "\n" +
+                "Conta de número: 1\n" +
+                "Saldo: 5000.0.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua testes, 123.\n" +
+                "\n";
+        var resultadoReal = controller.executar("contas pesquisar nome-titular Kevelly");
         assertEquals(resultadoEsperado, resultadoReal);
     }
 

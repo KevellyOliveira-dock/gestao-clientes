@@ -3,7 +3,9 @@ package org.example.service;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ContaServiceImpl implements ContaService {
@@ -56,5 +58,22 @@ public class ContaServiceImpl implements ContaService {
         }
 
         return contas.get(numeroConta);
+    }
+
+    @Override
+    public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
+        List<Conta> contasEncontradas = new ArrayList<>();
+
+        for (Conta conta : contas.values()) {
+            if (conta.getTitular().getNomeCompleto().equals(nomeCompleto)) {
+                contasEncontradas.add(conta);
+            }
+        }
+
+        if (contasEncontradas.isEmpty()) {
+            throw new Exception("Conta não encontrada. Cadastre-se e tente novamente.\n");
+        }
+
+        return contasEncontradas;
     }
 }
