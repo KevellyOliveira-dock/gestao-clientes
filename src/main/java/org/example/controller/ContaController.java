@@ -103,7 +103,7 @@ public class ContaController implements Controller {
         }
     }
 
-    public String pesquisarContaPorNumero(String numeroConta) throws Exception {
+    public String pesquisarContaPorNumero(String numeroConta) {
         try {
             return "Conta encontrada: \n" + contaService.buscarContaPorNumero(numeroConta).toString();
         } catch (Exception e) {
@@ -111,7 +111,7 @@ public class ContaController implements Controller {
         }
     }
 
-    public String pesquisarContaPorTitular(String nomeCompleto) throws Exception {
+    public String pesquisarContaPorTitular(String nomeCompleto) {
         List<Conta> contas;
         try {
             contas = contaService.buscarContasPorTitular(nomeCompleto);
@@ -127,7 +127,7 @@ public class ContaController implements Controller {
     }
 
 
-    public String pesquisarContaPorCPF(String cpf) throws Exception {
+    public String pesquisarContaPorCPF(String cpf) {
         List<Conta> contas;
         try {
             contas = contaService.buscarContasPorCPF(cpf);
