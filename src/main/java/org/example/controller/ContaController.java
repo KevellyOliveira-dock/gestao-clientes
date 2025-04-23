@@ -61,7 +61,12 @@ public class ContaController implements Controller {
 
         switch (partes[2]) {
             case "cpf-titular":
-                return "não implementado";
+                if (partes.length > 3) {
+                    return pesquisarContaPorCPF(partes[3]);
+                } else {
+                    return "Informe o CPF do titular da conta que deseja pesquisar. " +
+                            "Ex: contas pesquisar cpf-titular 12345678900.\n";
+                }
 
             case "nome-titular":
                 if (partes.length > 3) {
@@ -110,6 +115,22 @@ public class ContaController implements Controller {
         List<Conta> contas;
         try {
             contas = contaService.buscarContasPorTitular(nomeCompleto);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
+        for (Conta conta : contas) {
+            resultado.append(conta.toString()).append("\n");
+        }
+
+        return resultado.toString();
+    }
+
+
+    public String pesquisarContaPorCPF(String cpf) throws Exception {
+        List<Conta> contas;
+        try {
+            contas = contaService.buscarContasPorCPF(cpf);
         } catch (Exception e) {
             return e.getMessage();
         }
