@@ -76,4 +76,21 @@ public class ContaServiceImpl implements ContaService {
 
         return contasEncontradas;
     }
+
+    @Override
+    public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
+        List<Conta> contasEncontradas = new ArrayList<>();
+
+        for (Conta conta : contas.values()) {
+            if (conta.getTitular().getCpf().equals(cpf)) {
+                contasEncontradas.add(conta);
+            }
+        }
+
+        if (contasEncontradas.isEmpty()) {
+            throw new Exception("Conta não encontrada. Cadastre-se e tente novamente.\n");
+        }
+
+        return contasEncontradas;
+    }
 }

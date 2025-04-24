@@ -35,6 +35,12 @@ public class ContaControllerIntegrationTest {
     @Mock
     private ClienteService clienteService; // Mock do ClienteService
 
+    private static final String NOME_CLIENTE = "Kevelly";
+    private static final String CPF_CLIENTE = "12345678900";
+    private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final Double SALDO_CONTA = 123.43;
+    private static final String NUMERO_CONTA = "0";
+
     @BeforeEach
     public void setup() {
 //        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
@@ -62,19 +68,19 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
-        var cliente = new Cliente("Kevelly", "0123456789", "Rua teste, 123");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var conta = new Conta("0", cliente, 123.43);
-        when(contaService.cadastrarConta("0123456789", String.valueOf(123.43))).thenReturn(conta);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        when(contaService.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA))).thenReturn(conta);
 
         var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
                 "Conta de número: 0\n" +
                 "Saldo: 123.43.\n" +
                 "Pertence ao titular: Kevelly.\n" +
-                "CPF: 0123456789.\n" +
-                "Endereço: Rua teste, 123.\n";
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua dos testes, 56.\n";
 
-        this.inputStream.setInputs("0123456789\n123.43\n");
+        this.inputStream.setInputs("12345678900\n123.43\n");
         var resultadoReal = controller.executar("contas cadastrar");
 
         assertEquals(resultadoEsperado, resultadoReal);
@@ -108,36 +114,59 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas pesquisar cpf-titular");
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
+        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-    @Test
-    public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
-        var cliente1 = new Cliente("Kevelly", "12345678900", "Rua testes, 123");
-
-        var clienteConta1 = new Conta("0", cliente1, 123.43);
+        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA);
         var clienteConta2 = new Conta("1", cliente1, 5000.0);
 
         List<Conta> listaContas = new ArrayList<>();
         listaContas.add(clienteConta1);
         listaContas.add(clienteConta2);
 
-        when(contaService.buscarContasPorTitular("Kevelly")).thenReturn(listaContas);
+        when(contaService.buscarContasPorCPF(CPF_CLIENTE)).thenReturn(listaContas);
 
         var resultadoEsperado = "Contas encontradas: \n" +
                 "Conta de número: 0\n" +
                 "Saldo: 123.43.\n" +
                 "Pertence ao titular: Kevelly.\n" +
                 "CPF: 12345678900.\n" +
-                "Endereço: Rua testes, 123.\n" +
+                "Endereço: Rua dos testes, 56.\n" +
                 "\n" +
                 "Conta de número: 1\n" +
                 "Saldo: 5000.0.\n" +
                 "Pertence ao titular: Kevelly.\n" +
                 "CPF: 12345678900.\n" +
-                "Endereço: Rua testes, 123.\n" +
+                "Endereço: Rua dos testes, 56.\n" +
+                "\n";
+        var resultadoReal = controller.executar("contas pesquisar cpf-titular 12345678900");
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
+        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+
+        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA);
+        var clienteConta2 = new Conta("1", cliente1, 5000.0);
+
+        List<Conta> listaContas = new ArrayList<>();
+        listaContas.add(clienteConta1);
+        listaContas.add(clienteConta2);
+
+        when(contaService.buscarContasPorTitular(NOME_CLIENTE)).thenReturn(listaContas);
+
+        var resultadoEsperado = "Contas encontradas: \n" +
+                "Conta de número: 0\n" +
+                "Saldo: 123.43.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua dos testes, 56.\n" +
+                "\n" +
+                "Conta de número: 1\n" +
+                "Saldo: 5000.0.\n" +
+                "Pertence ao titular: Kevelly.\n" +
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua dos testes, 56.\n" +
                 "\n";
         var resultadoReal = controller.executar("contas pesquisar nome-titular Kevelly");
         assertEquals(resultadoEsperado, resultadoReal);
@@ -145,17 +174,17 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
-        var cliente = new Cliente("Kevelly", "12345678910", "Rua teste, 123");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var conta = new Conta("0", cliente, 123.43);
-        when(contaService.buscarContaPorNumero("0")).thenReturn(conta);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         var resultadoEsperado = "Conta encontrada: \n" +
                 "Conta de número: 0\n" +
                 "Saldo: 123.43.\n" +
                 "Pertence ao titular: Kevelly.\n" +
-                "CPF: 12345678910.\n" +
-                "Endereço: Rua teste, 123.\n";
+                "CPF: 12345678900.\n" +
+                "Endereço: Rua dos testes, 56.\n";
         var resultadoReal = controller.executar("contas pesquisar numero 0");
 
         assertEquals(resultadoEsperado, resultadoReal);

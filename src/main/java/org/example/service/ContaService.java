@@ -12,4 +12,6 @@ public interface ContaService {
     Conta buscarContaPorNumero(String numeroConta) throws Exception;
 
     List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception;
+
+    List<Conta> buscarContasPorCPF(String cpf) throws Exception;
 }
