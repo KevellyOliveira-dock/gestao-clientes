@@ -34,6 +34,7 @@ public class ContaServiceImplTest {
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
+    private static final boolean IS_ATIVO_CONTA = true;
 
     @BeforeEach
     public void setup() {
@@ -55,7 +56,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) throws Exception {
+    public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
 
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
@@ -65,8 +66,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoContasCadastrarESaldoForMenorQueZeroOuNaoNumeroEntaoExibaMensagem
-            (String saldoStr) throws Exception {
+    public void quandoContasCadastrarESaldoForMenorQueZeroOuNaoNumeroEntaoExibaMensagem(String saldoStr) {
 
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
@@ -76,7 +76,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"aaa", "abc", "123abc", "@"})
-    public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) throws Exception {
+    public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) {
 
         Exception exception = assertThrows(Exception.class, () -> {
             contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr);
@@ -87,7 +87,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(doubles = {-1.0, Double.NaN})
-    public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) throws Exception {
+    public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) {
 
         Exception exception = assertThrows(Exception.class, () -> {
             contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo));
@@ -98,7 +98,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoContasPesquisarNumeroContaForVazioOuNuloEntaoExibaMensagem(String numeroConta) throws Exception {
+    public void quandoContasPesquisarNumeroContaForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContaPorNumero(numeroConta)
         );
@@ -107,7 +107,7 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() throws Exception {
+    public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE));
         assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
@@ -116,7 +116,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
         List<Conta> contas = new ArrayList<>();
         contas.add(conta);
@@ -141,7 +141,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
         List<Conta> contas = new ArrayList<>();
         contas.add(conta);
