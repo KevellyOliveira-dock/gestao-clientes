@@ -9,6 +9,7 @@ public class Conta {
     private String numeroConta;
     private Cliente titular;
     private Double saldo;
+    private boolean isAtivo;
 
     public String toString() {
     return "Conta de número: " + numeroConta +
