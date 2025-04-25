@@ -45,7 +45,7 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        var conta = new Conta(numeroConta, cliente, saldo);
+        var conta = new Conta(numeroConta, cliente, saldo, true);
         contas.put(numeroConta, conta);
 
         return conta;
@@ -57,7 +57,12 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
         }
 
-        return contas.get(numeroConta);
+        Conta conta = contas.get(numeroConta);
+        if (!conta.isAtivo()) {
+            throw new Exception("Essa conta está desativada.\n");
+        }
+
+        return conta;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class ContaServiceImpl implements ContaService {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contas.values()) {
-            if (conta.getTitular().getNomeCompleto().equals(nomeCompleto)) {
+            if (conta.getTitular().getNomeCompleto().equals(nomeCompleto) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
         }
@@ -82,7 +87,7 @@ public class ContaServiceImpl implements ContaService {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contas.values()) {
-            if (conta.getTitular().getCpf().equals(cpf)) {
+            if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
         }
