@@ -98,4 +98,10 @@ public class ContaServiceImpl implements ContaService {
 
         return contasEncontradas;
     }
+
+    @Override
+    public void desativarConta(String numeroConta) throws Exception {
+        Conta conta = buscarContaPorNumero(numeroConta);
+        conta.setAtivo(false);
+    }
 }
