@@ -157,9 +157,8 @@ public class ContaController implements Controller {
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
-                    contaService.desativarConta(numeroConta);
+                    contaExistente.setAtivo(false);
                     return "Sua conta foi desativada com sucesso!\n";
-
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";
                 }
