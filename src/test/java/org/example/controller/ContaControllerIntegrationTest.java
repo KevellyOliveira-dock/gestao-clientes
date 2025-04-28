@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,9 +89,32 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasDesativarEntaoDesativeAsContas() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas desativar");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+
+        var resultadoEsperado = "Sua conta foi desativada com sucesso!\n";
+        this.inputStream.setInputs("S\n");
+        var resultadoReal = controller.executar("contas desativar 0");
+
         assertEquals(resultadoEsperado, resultadoReal);
+        assertFalse(conta.isAtivo());
+    }
+
+    @Test
+    public void quandoComandoEhContasDesativarEDesistirEntaoExibaMensagem() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+
+        var resultadoEsperado = "Operação cancelada\n";
+        this.inputStream.setInputs("N\n");
+        var resultadoReal = controller.executar("contas desativar 0");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+        assertTrue(conta.isAtivo());
     }
 
     @Test
