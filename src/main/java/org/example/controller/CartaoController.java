@@ -13,19 +13,24 @@ public class CartaoController implements Controller {
         this.cartaoService = cartaoService;
     }
 
-    public String executar(String comando) {
-        switch (comando) {
-            case "cartoes":
-                return """
-                        -------------------------------
-                        | Bloquear {número do cartao} |
-                        | Cadastrar                   |
-                        -------------------------------""";
+    public String executar(String comando) throws Exception {
 
-            case "cartoes bloquear":
+        if (comando.equals("contas")) {
+            return """
+                    -------------------------------
+                    | Bloquear {número do cartao} |
+                    | Cadastrar                   |
+                    -------------------------------""";
+        }
+
+        String[] partes = comando.split(" ");
+        var acao = partes[1];
+
+        switch (acao) {
+            case "bloquear":
                 return "não implementado";
 
-            case "cartoes cadastrar":
+            case "cadastrar":
                 return "não implementado";
 
             default:
