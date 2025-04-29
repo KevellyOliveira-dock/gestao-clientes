@@ -14,8 +14,7 @@ public class CartaoController implements Controller {
     }
 
     public String executar(String comando) throws Exception {
-
-        if (comando.equals("contas")) {
+        if (comando.equals("cartoes")) {
             return """
                     -------------------------------
                     | Bloquear {número do cartao} |
