@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.model.Cliente;
 import org.example.model.Conta;
 
 import java.util.List;

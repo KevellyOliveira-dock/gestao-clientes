@@ -35,7 +35,11 @@ public class ContaController implements Controller {
                 return cadastrarConta();
 
             case "desativar":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return desativarConta(partes[2]);
+                } else {
+                    return "Para desativar a conta é necessário informar o número. Ex: contas desativar 0.\n";
+                }
 
             case "extrato":
                 return "não implementado";
@@ -48,8 +52,7 @@ public class ContaController implements Controller {
         }
     }
 
-    private String pesquisarConta(String[] partes) throws Exception {
-
+    private String pesquisarConta(String[] partes) {
         if (partes.length == 2) {
             return """
                     ----------------------------------
@@ -126,7 +129,6 @@ public class ContaController implements Controller {
         return resultado.toString();
     }
 
-
     public String pesquisarContaPorCPF(String cpf) {
         List<Conta> contas;
         try {
@@ -140,5 +142,31 @@ public class ContaController implements Controller {
         }
 
         return resultado.toString();
+    }
+
+    public String desativarConta(String numeroConta) {
+        try {
+            Conta contaExistente = contaService.buscarContaPorNumero(numeroConta);
+            String resposta;
+
+            while (true) {
+                System.out.println("Confirma a desativação da conta " + contaExistente.getNumeroConta() +
+                        ", de titularidade de " + contaExistente.getTitular().getNomeCompleto() +
+                        ", CPF " + contaExistente.getTitular().getCpf() +
+                        "? Digite \"S\" para sim ou \"N\" para não: ");
+                resposta = scanner.nextLine().toUpperCase();
+
+                if (resposta.equals("S")) {
+                    contaExistente.setAtivo(false);
+                    return "Sua conta foi desativada com sucesso!\n";
+                } else if (resposta.equals("N")) {
+                    return "Operação cancelada\n";
+                }
+
+                System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

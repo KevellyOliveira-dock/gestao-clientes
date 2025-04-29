@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +40,7 @@ public class ContaControllerIntegrationTest {
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
+    private static final boolean IS_ATIVO_CONTA = true;
 
     @BeforeEach
     public void setup() {
@@ -70,7 +71,7 @@ public class ContaControllerIntegrationTest {
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         when(contaService.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA))).thenReturn(conta);
 
         var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
@@ -88,9 +89,32 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasDesativarEntaoDesativeAsContas() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas desativar");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+
+        var resultadoEsperado = "Sua conta foi desativada com sucesso!\n";
+        this.inputStream.setInputs("S\n");
+        var resultadoReal = controller.executar("contas desativar 0");
+
         assertEquals(resultadoEsperado, resultadoReal);
+        assertFalse(conta.isAtivo());
+    }
+
+    @Test
+    public void quandoComandoEhContasDesativarEDesistirEntaoExibaMensagem() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+
+        var resultadoEsperado = "Operação cancelada\n";
+        this.inputStream.setInputs("N\n");
+        var resultadoReal = controller.executar("contas desativar 0");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+        assertTrue(conta.isAtivo());
     }
 
     @Test
@@ -116,8 +140,8 @@ public class ContaControllerIntegrationTest {
     public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() throws Exception {
         var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA);
-        var clienteConta2 = new Conta("1", cliente1, 5000.0);
+        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, IS_ATIVO_CONTA);
+        var clienteConta2 = new Conta("1", cliente1, 5000.0, true);
 
         List<Conta> listaContas = new ArrayList<>();
         listaContas.add(clienteConta1);
@@ -146,8 +170,8 @@ public class ContaControllerIntegrationTest {
     public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
         var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA);
-        var clienteConta2 = new Conta("1", cliente1, 5000.0);
+        var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, IS_ATIVO_CONTA);
+        var clienteConta2 = new Conta("1", cliente1, 5000.0, true);
 
         List<Conta> listaContas = new ArrayList<>();
         listaContas.add(clienteConta1);
@@ -176,7 +200,7 @@ public class ContaControllerIntegrationTest {
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         var resultadoEsperado = "Conta encontrada: \n" +
