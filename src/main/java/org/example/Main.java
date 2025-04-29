@@ -33,10 +33,10 @@ public class Main {
         var faturaController = new FaturaController();
 
         var frontController = new FrontController(
-                cartoesController,
-                clientesController,
-                contasController,
-                faturasController
+                clienteController,
+                contaController,
+                cartaoController,
+                faturaController
         );
 
         while (true) {
