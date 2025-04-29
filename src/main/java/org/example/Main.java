@@ -6,10 +6,13 @@ import org.example.controller.ClienteController;
 import org.example.controller.ContaController;
 import org.example.controller.FaturaController;
 import org.example.controller.FrontController;
-import org.example.service.ClienteService;
-import org.example.service.ClienteServiceImpl;
-import org.example.service.ContaService;
 import org.example.service.ContaServiceImpl;
+import org.example.service.ContaService;
+import org.example.service.CartaoServiceImpl;
+import org.example.service.CartaoService;
+import org.example.service.ClienteServiceImpl;
+import org.example.service.ClienteService;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -20,12 +23,14 @@ public class Main {
         //inicializa a ClienteService | dependencia criada fora da controller
         ClienteService clienteService = new ClienteServiceImpl();
         ContaService contaService = new ContaServiceImpl(clienteService);
+        CartaoService cartaoService = new CartaoServiceImpl(clienteService, contaService);
 
-        var cartoesController = new CartaoController();
+
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
-        var clientesController = new ClienteController(clienteService, scanner); //injeção de dependencia
-        var contasController = new ContaController(contaService, scanner);
-        var faturasController = new FaturaController();
+        var clienteController = new ClienteController(clienteService, scanner); //injeção de dependencia
+        var contaController = new ContaController(contaService, scanner);
+        var cartaoController = new CartaoController(cartaoService, scanner);
+        var faturaController = new FaturaController();
 
         var frontController = new FrontController(
                 cartoesController,
