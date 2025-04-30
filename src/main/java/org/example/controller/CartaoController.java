@@ -30,10 +30,24 @@ public class CartaoController implements Controller {
                 return "não implementado";
 
             case "cadastrar":
-                return "não implementado";
+                return cadastrarCartao();
 
             default:
                 return "operação inválida";
+        }
+    }
+
+    public String cadastrarCartao() {
+        System.out.println("Informe seu CPF: ");
+        String cpf = scanner.nextLine();
+
+        System.out.println("Informe sua conta: ");
+        String conta = scanner.nextLine();
+
+        try {
+            return cartaoService.cadastrarCartao(cpf, conta) + "Cartão criado com sucesso";
+        } catch (Exception e) {
+            return e.getMessage();
         }
     }
 }
