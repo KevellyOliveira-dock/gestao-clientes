@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.model.Conta;
+import org.example.model.Cartao;
 
 public interface CartaoService {
-    Conta cadastrarConta(String cpf, String numeroConta) throws Exception;
+    Cartao cadastrarCartao(String cpf, String numeroConta) throws Exception;
 }

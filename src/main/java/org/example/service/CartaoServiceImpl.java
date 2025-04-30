@@ -1,10 +1,17 @@
 package org.example.service;
 
 import org.example.model.Cartao;
+import org.example.model.Cliente;
 import org.example.model.Conta;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 public class CartaoServiceImpl implements CartaoService {
     Map<String, Cartao> cartoes = new HashMap<>();
@@ -18,8 +25,45 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public Conta cadastrarConta(String cpf, String numeroConta) throws Exception {
+    public Cartao cadastrarCartao(String cpf, String numeroConta) throws Exception {
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+        if (cliente == null) {
+            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
+        }
 
-        return null;
+        Conta conta = contaService.buscarContaPorNumero(numeroConta);
+        if (conta == null) {
+            throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
+        }
+
+        if (!conta.isAtivo()) {
+            throw new Exception("A conta informada não está ativa.\n");
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+
+        LocalDateTime dtVencimento = agora.plusYears(3);
+        dtVencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        // LocalDateTime não tem milisegundos diretamente, ele guarda nanos então formato para 9 dígitos
+//        agora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        int nano = agora.getNano();
+        // format transforma o número inteiro em uma string de 9 digitos | substring pega os caracteres a partir de tal posição
+        String CVV = format("%09d", nano).substring(6);
+
+        String numeroCartao;
+        int n = 1;
+        Random random = new Random();
+        int MIN = 1000;
+        int MAX = 9999;
+
+        do {
+            numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
+        } while (cartoes.containsKey(numeroCartao));
+
+        Cartao cartao = new Cartao(numeroCartao, CVV, dtVencimento, cliente, conta);
+        cartoes.put(numeroCartao, cartao);
+
+        return cartao;
     }
 }
