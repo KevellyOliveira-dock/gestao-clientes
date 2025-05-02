@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class Cartao {
     private String numeroCartao;
-    private  String CVV;
-    private LocalDateTime dtVencimento;
+    private String CVV;
+    private String dtVencimento;
     private Cliente cliente;
     private Conta conta;
 }
