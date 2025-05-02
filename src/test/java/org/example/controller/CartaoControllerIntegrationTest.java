@@ -1,5 +1,8 @@
 package org.example.controller;
 
+import org.example.model.Cartao;
+import org.example.model.Cliente;
+import org.example.model.Conta;
 import org.example.service.CartaoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoControllerIntegrationTest {
@@ -22,6 +26,13 @@ public class CartaoControllerIntegrationTest {
 
     @Mock
     private CartaoService cartaoService;
+
+    private static final String NOME_CLIENTE = "Kevelly";
+    private static final String CPF_CLIENTE = "12345678900";
+    private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final Double SALDO_CONTA = 123.43;
+    private static final String NUMERO_CONTA = "0";
+    private static final boolean IS_ATIVO_CONTA = true;
 
     @BeforeEach
     public void setup() {
@@ -54,8 +65,20 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesCadastrarEntaoCadastreOsCartoes() throws Exception {
-        var resultadoEsperado = "não implementado";
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        Cartao cartao = new Cartao("1234", "123", "12/12/2028", cliente, conta);
+
+        when(cartaoService.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)).thenReturn(cartao);
+
+        this.inputStream.setInputs("12345678900\n0\n");
+        var resultadoEsperado = "Cartão criado com sucesso!\n" +
+                "O cliente Kevelly, de conta número 0, acionou um novo cartão: " +
+                "\nData de vencimento: 12/12/2028.\n" +
+                "Número do cartão: 1234.\n" +
+                "CVV: 123.\n";
         var resultadoReal = controller.executar("cartoes cadastrar");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 }
