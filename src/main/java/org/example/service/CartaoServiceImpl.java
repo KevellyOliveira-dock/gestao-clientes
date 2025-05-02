@@ -26,14 +26,22 @@ public class CartaoServiceImpl implements CartaoService {
 
     @Override
     public Cartao cadastrarCartao(String cpf, String numeroConta) throws Exception {
+        if (cpf == null || cpf.isEmpty()) {
+            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
+        }
+
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
         if (cliente == null) {
-            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
+            throw new Exception("O CPF informado não foi encontrado. Cadastre-se e tente novamente.\n");
+        }
+
+        if (numeroConta == null || numeroConta.isEmpty()) {
+            throw new Exception("O número da conta não pode ser nulo ou vazio.\n");
         }
 
         Conta conta = contaService.buscarContaPorNumero(numeroConta);
         if (conta == null) {
-            throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
+            throw new Exception("A conta informada não foi encontrada. Cadastre e tente novamente.\n");
         }
 
         if (!conta.isAtivo()) {
@@ -52,7 +60,6 @@ public class CartaoServiceImpl implements CartaoService {
         String CVV = format("%09d", nano).substring(6);
 
         String numeroCartao;
-        int n = 1;
         Random random = new Random();
         int MIN = 1000;
         int MAX = 9999;
