@@ -33,6 +33,9 @@ public class CartaoControllerIntegrationTest {
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
+    private static final String NUMERO_CARTAO = "1234";
+    private static final String CVV_CARTAO = "123";
+    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
 
     @BeforeEach
     public void setup() {
@@ -67,7 +70,7 @@ public class CartaoControllerIntegrationTest {
     public void quandoComandoEhCartoesCadastrarEntaoCadastreOsCartoes() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
-        Cartao cartao = new Cartao("1234", "123", "12/12/2028", cliente, conta);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta);
 
         when(cartaoService.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)).thenReturn(cartao);
 
