@@ -45,7 +45,7 @@ public class CartaoController implements Controller {
         String conta = scanner.nextLine();
 
         try {
-            return cartaoService.cadastrarCartao(cpf, conta) + "Cartão criado com sucesso";
+            return "Cartão criado com sucesso!\n" + cartaoService.cadastrarCartao(cpf, conta).toString();
         } catch (Exception e) {
             return e.getMessage();
         }
