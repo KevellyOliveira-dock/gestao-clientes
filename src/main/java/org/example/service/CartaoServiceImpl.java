@@ -49,9 +49,8 @@ public class CartaoServiceImpl implements CartaoService {
         }
 
         LocalDateTime agora = LocalDateTime.now();
-
-        LocalDateTime dtVencimento = agora.plusYears(3);
-        dtVencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalDateTime data = agora.plusYears(3);
+        String dtVencimento = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         // LocalDateTime não tem milisegundos diretamente, ele guarda nanos então formato para 9 dígitos
 //        agora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
