@@ -53,10 +53,8 @@ public class CartaoServiceImpl implements CartaoService {
         String dtVencimento = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         // LocalDateTime não tem milisegundos diretamente, ele guarda nanos então formato para 9 dígitos
-//        agora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-        int nano = agora.getNano();
         // format transforma o número inteiro em uma string de 9 digitos | substring pega os caracteres a partir de tal posição
-        String CVV = format("%09d", nano).substring(6);
+        String cvv = format("%09d", agora.getNano()).substring(6);
 
         String numeroCartao;
         Random random = new Random();
