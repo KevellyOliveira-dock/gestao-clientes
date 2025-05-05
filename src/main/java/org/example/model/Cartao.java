@@ -3,13 +3,11 @@ package org.example.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @Data
 public class Cartao {
     private String numeroCartao;
-    private String CVV;
+    private String cvv;
     private String dtVencimento;
     private Cliente cliente;
     private Conta conta;
@@ -19,6 +17,6 @@ public class Cartao {
                 + ", acionou um novo cartão: "
                 + "\nData de vencimento: " + dtVencimento + "."
                 + "\nNúmero do cartão: " + numeroCartao + "."
-                + "\nCVV: " + CVV + ".\n";
+                + "\nCVV: " + cvv + ".\n";
     }
 }

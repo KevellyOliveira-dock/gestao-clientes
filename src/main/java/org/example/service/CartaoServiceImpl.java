@@ -67,7 +67,7 @@ public class CartaoServiceImpl implements CartaoService {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
         } while (cartoes.containsKey(numeroCartao));
 
-        Cartao cartao = new Cartao(numeroCartao, CVV, dtVencimento, cliente, conta);
+        Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta);
         cartoes.put(numeroCartao, cartao);
 
         return cartao;
