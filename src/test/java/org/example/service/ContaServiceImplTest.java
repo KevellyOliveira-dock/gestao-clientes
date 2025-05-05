@@ -57,7 +57,6 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource //quando a função for executada passa null e depois vazia
     public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
-
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
         );

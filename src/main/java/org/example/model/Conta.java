@@ -12,10 +12,10 @@ public class Conta {
     private boolean isAtivo;
 
     public String toString() {
-    return "Conta de número: " + numeroConta +
-            "\nSaldo: "+ saldo + "." +
-            "\nPertence ao titular: " + titular.getNomeCompleto() + "." +
-            "\nCPF: " + getTitular().getCpf() + "." +
-            "\nEndereço: " + titular.getEndereco() + ".\n";
+        return "Conta de número: " + numeroConta +
+                "\nSaldo: " + saldo + "." +
+                "\nPertence ao titular: " + titular.getNomeCompleto() + "." +
+                "\nCPF: " + getTitular().getCpf() + "." +
+                "\nEndereço: " + titular.getEndereco() + ".\n";
     }
 }

@@ -1,19 +1,19 @@
 package org.example.controller;
 
 public class FrontController implements Controller {
-    private final Controller cartoesController;
+    private final Controller cartaoController;
     private final Controller clienteController;
-    private final Controller contasController;
-    private final Controller faturasController;
+    private final Controller contaController;
+    private final Controller faturaController;
 
-    public FrontController(Controller cartoesController,
-                           Controller clientesController,
-                           Controller contasController,
-                           Controller faturasController) {
-        this.cartoesController = cartoesController;
-        this.clienteController = clientesController;
-        this.contasController = contasController;
-        this.faturasController = faturasController;
+    public FrontController(Controller cartaoController,
+                           Controller clienteController,
+                           Controller contaController,
+                           Controller faturaController) {
+        this.cartaoController = cartaoController;
+        this.clienteController = clienteController;
+        this.contaController = contaController;
+        this.faturaController = faturaController;
     }
 
     public String executar(String comando) throws Exception {
@@ -32,7 +32,7 @@ public class FrontController implements Controller {
         var inicioComando = comando.split(" ")[0];
 
         if ("cartoes".equals(inicioComando)) {
-            return this.cartoesController.executar(comando);
+            return this.cartaoController.executar(comando);
         }
 
         if ("clientes".equals(inicioComando)) {
@@ -40,11 +40,11 @@ public class FrontController implements Controller {
         }
 
         if ("contas".equals(inicioComando)) {
-            return this.contasController.executar(comando);
+            return this.contaController.executar(comando);
         }
 
         if ("faturas".equals(inicioComando)) {
-            return this.faturasController.executar(comando);
+            return this.faturaController.executar(comando);
         }
 
         return "operação inválida";

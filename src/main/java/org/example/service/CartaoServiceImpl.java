@@ -1,0 +1,73 @@
+package org.example.service;
+
+import org.example.model.Cartao;
+import org.example.model.Cliente;
+import org.example.model.Conta;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+
+public class CartaoServiceImpl implements CartaoService {
+    Map<String, Cartao> cartoes = new HashMap<>();
+
+    ClienteService clienteService;
+    ContaService contaService;
+
+    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService) {
+        this.clienteService = clienteService;
+        this.contaService = contaService;
+    }
+
+    @Override
+    public Cartao cadastrarCartao(String cpf, String numeroConta) throws Exception {
+        if (cpf == null || cpf.isEmpty()) {
+            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
+        }
+
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+        if (cliente == null) {
+            throw new Exception("O CPF informado não foi encontrado. Cadastre-se e tente novamente.\n");
+        }
+
+        if (numeroConta == null || numeroConta.isEmpty()) {
+            throw new Exception("O número da conta não pode ser nulo ou vazio.\n");
+        }
+
+        Conta conta = contaService.buscarContaPorNumero(numeroConta);
+        if (conta == null) {
+            throw new Exception("A conta informada não foi encontrada. Cadastre e tente novamente.\n");
+        }
+
+        if (!conta.isAtivo()) {
+            throw new Exception("A conta informada não está ativa.\n");
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime data = agora.plusYears(3);
+        String dtVencimento = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        // LocalDateTime não tem milisegundos diretamente, ele guarda nanos então formato para 9 dígitos
+        // format transforma o número inteiro em uma string de 9 digitos | substring pega os caracteres a partir de tal posição
+        String cvv = format("%09d", agora.getNano()).substring(6);
+
+        String numeroCartao;
+        Random random = new Random();
+        int MIN = 1000;
+        int MAX = 9999;
+
+        do {
+            numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
+        } while (cartoes.containsKey(numeroCartao));
+
+        Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta);
+        cartoes.put(numeroCartao, cartao);
+
+        return cartao;
+    }
+}
