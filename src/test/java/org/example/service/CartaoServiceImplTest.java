@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,5 +94,15 @@ public class CartaoServiceImplTest {
                 cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)
         );
         assertEquals("A conta informada não está ativa.\n", exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    public void quandoCartaoPesquisarNumeroCartaoForVazioOuNuloEntaoExibaMensagem(String numeroCartao) {
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorNumero(numeroCartao)
+        );
+        assertEquals("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n",
+                exception.getMessage());
     }
 }
