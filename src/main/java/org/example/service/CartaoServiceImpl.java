@@ -65,8 +65,22 @@ public class CartaoServiceImpl implements CartaoService {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
         } while (cartoes.containsKey(numeroCartao));
 
-        Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta);
+        Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta, false);
         cartoes.put(numeroCartao, cartao);
+
+        return cartao;
+    }
+
+    @Override
+    public Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception {
+        Cartao cartao = cartoes.get(numeroCartao);
+        if (numeroCartao == null || numeroCartao.trim().isEmpty() || !cartoes.containsKey(numeroCartao)) {
+            throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
+        }
+
+        if (cartao.isBloqueado()) {
+            throw new Exception("Esse cartão está bloqueado.\n");
+        }
 
         return cartao;
     }
