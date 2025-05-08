@@ -164,6 +164,8 @@ public class ContaController implements Controller {
                 if (resposta.equals("S")) {
                     contaExistente.setAtivo(false);
                     List<Cartao> lista = cartaoService.buscarCartoesPorCPF(contaExistente.getTitular().getCpf());
+
+                    // Para cada elemento da lista execute tal ação
                     lista.forEach(cartao -> cartao.setBloqueado(true));
                     return "Sua conta foi desativada com sucesso!\n";
                 } else if (resposta.equals("N")) {

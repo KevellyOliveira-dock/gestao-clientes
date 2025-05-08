@@ -26,7 +26,7 @@ public class CartaoServiceImpl implements CartaoService {
         this.contaService = contaService;
     }
 
-    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService,  Map<String, Cartao> cartoes) {
+    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, Map<String, Cartao> cartoes) {
         this.clienteService = clienteService;
         this.contaService = contaService;
         this.cartoes = cartoes;
@@ -97,7 +97,7 @@ public class CartaoServiceImpl implements CartaoService {
     public List<Cartao> buscarCartoesPorCPF(String cpf) {
         List<Cartao> cartoesEncontrados = new ArrayList<>();
 
-        for(Cartao cartao : cartoes.values()) {
+        for (Cartao cartao : cartoes.values()) {
             if (cartao.getCliente().getCpf().contains(cpf)) {
                 cartoesEncontrados.add(cartao);
             }
