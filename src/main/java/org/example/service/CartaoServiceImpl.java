@@ -74,7 +74,7 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception {
         Cartao cartao = cartoes.get(numeroCartao);
-        if (numeroCartao == null || numeroCartao.trim().isEmpty() || !cartoes.containsKey(numeroCartao)) {
+        if (numeroCartao == null || numeroCartao.trim().isEmpty() || cartao == null) {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
 
