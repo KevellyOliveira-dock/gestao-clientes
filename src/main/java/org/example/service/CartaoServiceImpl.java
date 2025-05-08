@@ -14,10 +14,10 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
 public class CartaoServiceImpl implements CartaoService {
-    Map<String, Cartao> cartoes = new HashMap<>();
+    private Map<String, Cartao> cartoes = new HashMap<>();
 
-    ClienteService clienteService;
-    ContaService contaService;
+    private final ClienteService clienteService;
+    private final ContaService contaService;
 
     public CartaoServiceImpl(ClienteService clienteService, ContaService contaService) {
         this.clienteService = clienteService;
