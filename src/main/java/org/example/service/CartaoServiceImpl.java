@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -22,6 +24,12 @@ public class CartaoServiceImpl implements CartaoService {
     public CartaoServiceImpl(ClienteService clienteService, ContaService contaService) {
         this.clienteService = clienteService;
         this.contaService = contaService;
+    }
+
+    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService,  Map<String, Cartao> cartoes) {
+        this.clienteService = clienteService;
+        this.contaService = contaService;
+        this.cartoes = cartoes;
     }
 
     @Override
