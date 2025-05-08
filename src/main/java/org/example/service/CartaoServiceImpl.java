@@ -84,4 +84,18 @@ public class CartaoServiceImpl implements CartaoService {
 
         return cartao;
     }
+
+    @Override
+    public List<Cartao> buscarCartoesPorCPF(String cpf) {
+        List<Cartao> cartoesEncontrados = new ArrayList<>();
+
+        for(Cartao cartao : cartoes.values()) {
+            if (cartao.getCliente().getCpf().contains(cpf)) {
+                cartoesEncontrados.add(cartao);
+            }
+        }
+
+        return cartoesEncontrados;
+    }
+
 }
