@@ -105,6 +105,8 @@ public class ContaServiceImplTest {
                 exception.getMessage());
     }
 
+    // Teste para caso a pesquisar por numero da conta dê certo
+
     @Test
     public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->

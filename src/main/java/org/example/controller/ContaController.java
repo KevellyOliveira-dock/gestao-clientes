@@ -1,6 +1,8 @@
 package org.example.controller;
 
+import org.example.model.Cartao;
 import org.example.model.Conta;
+import org.example.service.CartaoService;
 import org.example.service.ContaService;
 
 import java.util.List;
@@ -9,10 +11,12 @@ import java.util.Scanner;
 public class ContaController implements Controller {
     private Scanner scanner;
     private ContaService contaService;
+    private CartaoService cartaoService;
 
-    public ContaController(ContaService contaService, Scanner scanner) {
+    public ContaController(ContaService contaService, Scanner scanner, CartaoService cartaoService) {
         this.scanner = scanner;
         this.contaService = contaService;
+        this.cartaoService = cartaoService;
     }
 
     public String executar(String comando) throws Exception {
@@ -153,11 +157,14 @@ public class ContaController implements Controller {
                 System.out.println("Confirma a desativação da conta " + contaExistente.getNumeroConta() +
                         ", de titularidade de " + contaExistente.getTitular().getNomeCompleto() +
                         ", CPF " + contaExistente.getTitular().getCpf() +
-                        "? Digite \"S\" para sim ou \"N\" para não: ");
+                        "? Ao confirmar todos os cartões vinculados a essa conta serão bloqueados. \n" +
+                        " Digite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
                     contaExistente.setAtivo(false);
+                    List<Cartao> lista = cartaoService.buscarCartoesPorCPF(contaExistente.getTitular().getCpf());
+                    lista.forEach(cartao -> cartao.setBloqueado(true));
                     return "Sua conta foi desativada com sucesso!\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";

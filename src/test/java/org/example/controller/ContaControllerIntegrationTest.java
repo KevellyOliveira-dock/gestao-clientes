@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.service.CartaoService;
 import org.example.service.ClienteService;
 import org.example.service.ContaService;
 import org.example.service.ContaServiceImpl;
@@ -35,6 +36,9 @@ public class ContaControllerIntegrationTest {
     @Mock
     private ClienteService clienteService; // Mock do ClienteService
 
+    @Mock
+    private CartaoService cartaoService;
+
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
@@ -51,7 +55,7 @@ public class ContaControllerIntegrationTest {
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ContaController(contaService, scanner);
+        controller = new ContaController(contaService, scanner, cartaoService);
     }
 
     @Test

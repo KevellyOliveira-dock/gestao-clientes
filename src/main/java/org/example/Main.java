@@ -27,7 +27,7 @@ public class Main {
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
         var clientesController = new ClienteController(clienteService, scanner); //injeção de dependencia
-        var contasController = new ContaController(contaService, scanner);
+        var contasController = new ContaController(contaService, scanner, cartaoService);
         var faturasController = new FaturaController();
 
         var frontController = new FrontController(
