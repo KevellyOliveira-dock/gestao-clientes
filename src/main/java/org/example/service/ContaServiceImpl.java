@@ -18,7 +18,7 @@ public class ContaServiceImpl implements ContaService {
         this.clienteService = clienteService;
         this.contaRepository = contaRepository;
     }
-    
+
     @Override
     public Conta cadastrarConta(String cpf, String saldoStr) throws Exception {
         if (cpf == null || cpf.trim().isEmpty()) {
@@ -106,10 +106,6 @@ public class ContaServiceImpl implements ContaService {
         Conta conta = buscarContaPorNumero(numeroConta);
 
         conta.setAtivo(false);
-        List<Cartao> lista = cartaoService.buscarCartoesPorCPF(conta.getTitular().getCpf());
-
-        // Para cada elemento da lista execute tal ação
-        lista.forEach(cartao -> cartao.setBloqueado(true));
 
         return conta;
     }
