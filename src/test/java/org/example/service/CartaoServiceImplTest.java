@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,16 +8,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoServiceImplTest {
 
+    @InjectMocks
     private CartaoServiceImpl cartaoServiceImpl;
 
     @Mock
@@ -25,16 +29,19 @@ public class CartaoServiceImplTest {
     @Mock
     private ContaService contaService;
 
+    @Mock
+    private HashMap<String, Cartao> mockHashMapCartao;
+
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
-
-    @BeforeEach
-    public void setup() {
-        cartaoServiceImpl = new CartaoServiceImpl(clienteService, contaService);
-    }
+    private static final boolean IS_ATIVO_CONTA = true;
+    private static final String NUMERO_CARTAO = "1234";
+    private static final String CVV_CARTAO = "123";
+    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
+    private static final boolean IS_BLOQUEADO_CARTAO = false;
 
     @Test
     public void quandoCadastrarCartaoVerifiqueSeCPFEstaCadastradoSeNaoEntaoRetorneMensagem() throws Exception {
@@ -93,5 +100,20 @@ public class CartaoServiceImplTest {
                 cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)
         );
         assertEquals("A conta informada não está ativa.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoCartoesDesbloquearNumeroCartaoEEncontrarEntaoDesbloqueieCartao()
+            throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Cartao resultado = cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO);
+
+        assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
+        assertFalse(resultado.isBloqueado());
     }
 }
