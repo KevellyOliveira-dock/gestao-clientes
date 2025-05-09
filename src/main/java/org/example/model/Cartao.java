@@ -11,6 +11,7 @@ public class Cartao {
     private String dtVencimento;
     private Cliente cliente;
     private Conta conta;
+    private boolean isBloqueado;
 
     public String toString() {
         return "O cliente " + cliente.getNomeCompleto() + ", de conta número " + conta.getNumeroConta()
