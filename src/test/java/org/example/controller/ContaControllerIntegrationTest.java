@@ -2,10 +2,7 @@ package org.example.controller;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
-import org.example.service.CartaoService;
-import org.example.service.ClienteService;
 import org.example.service.ContaService;
-import org.example.service.ContaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContaControllerIntegrationTest {
-
     @InjectMocks
     private ContaController controller;
 
@@ -32,12 +28,6 @@ public class ContaControllerIntegrationTest {
 
     @Mock
     private ContaService contaService;
-
-    @Mock
-    private ClienteService clienteService; // Mock do ClienteService
-
-    @Mock
-    private CartaoService cartaoService;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -48,14 +38,13 @@ public class ContaControllerIntegrationTest {
 
     @BeforeEach
     public void setup() {
-//        contaService = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
         inputStream = new TesteInputStream();
         scanner = new Scanner(inputStream);
 
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ContaController(contaService, scanner, cartaoService);
+        controller = new ContaController(contaService, scanner);
     }
 
     @Test
@@ -97,13 +86,13 @@ public class ContaControllerIntegrationTest {
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+        when(contaService.desativarConta(NUMERO_CONTA)).thenReturn(conta);
 
         var resultadoEsperado = "Sua conta foi desativada com sucesso!\n";
         this.inputStream.setInputs("S\n");
         var resultadoReal = controller.executar("contas desativar 0");
 
         assertEquals(resultadoEsperado, resultadoReal);
-        assertFalse(conta.isAtivo());
     }
 
     @Test
