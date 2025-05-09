@@ -19,15 +19,24 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
+        ClienteService clienteService;
+        ContaServiceImpl contaServiceImpl;
+        CartaoService cartaoService;
+
         //inicializa a ClienteService | dependencia criada fora da controller
-        ClienteService clienteService = new ClienteServiceImpl();
-        ContaService contaService = new ContaServiceImpl(clienteService);
-        CartaoService cartaoService = new CartaoServiceImpl(clienteService, contaService);
+        clienteService = new ClienteServiceImpl();
+        contaServiceImpl = new ContaServiceImpl(clienteService);
+        cartaoService = new CartaoServiceImpl(clienteService, contaServiceImpl);
+
+        // Injetando dependência manualmente
+        contaServiceImpl.setCartaoService(cartaoService);
+
+        ContaService contaService = contaServiceImpl;
 
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
         var clientesController = new ClienteController(clienteService, scanner); //injeção de dependencia
-        var contasController = new ContaController(contaService, scanner, cartaoService);
+        var contasController = new ContaController(contaService, scanner);
         var faturasController = new FaturaController();
 
         var frontController = new FrontController(

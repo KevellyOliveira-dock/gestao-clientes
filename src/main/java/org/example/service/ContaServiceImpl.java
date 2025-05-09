@@ -28,7 +28,7 @@ public class ContaServiceImpl implements ContaService {
         this.contas = contas;
     }
 
-    // "injetando" manualmente CartaoService, pois a injeção via construtor causa dependencias circulares
+    // Recebe a dependencia via setter
     public void setCartaoService(CartaoService cartaoService) {
         this.cartaoService = cartaoService;
     }
