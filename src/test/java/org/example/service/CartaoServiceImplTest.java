@@ -159,7 +159,7 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void quandoContasBloquearNumeroCartaoEEncontrarEntaoBloqueieCartao()
+    public void quandoCartoesBloquearNumeroCartaoEEncontrarEntaoBloqueieCartao()
             throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
