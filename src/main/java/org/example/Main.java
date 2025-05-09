@@ -1,11 +1,14 @@
 package org.example;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import org.example.controller.CartaoController;
 import org.example.controller.ClienteController;
 import org.example.controller.ContaController;
 import org.example.controller.FaturaController;
 import org.example.controller.FrontController;
+import org.example.model.Cartao;
+import org.example.model.Conta;
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
 import org.example.service.ContaService;
@@ -20,18 +23,16 @@ public class Main {
         System.out.println("----------- Seja bem-vindo! -----------");
 
         ClienteService clienteService;
-        ContaServiceImpl contaServiceImpl;
+        ContaService contaService;
         CartaoService cartaoService;
+
+        HashMap<String, Cartao> cartaoRepository = new HashMap<>();
+        HashMap<String, Conta> contaRepository = new HashMap<>();
 
         //inicializa a ClienteService | dependencia criada fora da controller
         clienteService = new ClienteServiceImpl();
-        contaServiceImpl = new ContaServiceImpl(clienteService);
-        cartaoService = new CartaoServiceImpl(clienteService, contaServiceImpl);
-
-        // Injetando dependência manualmente
-        contaServiceImpl.setCartaoService(cartaoService);
-
-        ContaService contaService = contaServiceImpl;
+        contaService = new ContaServiceImpl(clienteService, contaRepository);
+        cartaoService = new CartaoServiceImpl(clienteService, contaService, cartaoRepository);
 
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
