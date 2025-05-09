@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ContaController implements Controller {
-    private Scanner scanner;
-    private ContaService contaService;
-    private CartaoService cartaoService;
+    private final Scanner scanner;
+    private final ContaService contaService;
 
-    public ContaController(ContaService contaService, Scanner scanner, CartaoService cartaoService) {
+    public ContaController(ContaService contaService, Scanner scanner) {
         this.scanner = scanner;
         this.contaService = contaService;
-        this.cartaoService = cartaoService;
     }
 
     public String executar(String comando) throws Exception {
@@ -162,11 +160,7 @@ public class ContaController implements Controller {
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
-                    contaExistente.setAtivo(false);
-                    List<Cartao> lista = cartaoService.buscarCartoesPorCPF(contaExistente.getTitular().getCpf());
-
-                    // Para cada elemento da lista execute tal ação
-                    lista.forEach(cartao -> cartao.setBloqueado(true));
+                    contaService.desativarConta(numeroConta);
                     return "Sua conta foi desativada com sucesso!\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";

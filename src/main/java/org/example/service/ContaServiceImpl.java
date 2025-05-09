@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 
@@ -9,12 +10,27 @@ import java.util.List;
 import java.util.Map;
 
 public class ContaServiceImpl implements ContaService {
-    Map<String, Conta> contas = new HashMap<>();
+    // Para ser final precisa ser inicializado em todos os construtores da classe
+    private Map<String, Conta> contas = new HashMap<>();
 
-    ClienteService clienteService;
+    private final ClienteService clienteService;
+
+    // Não pode ser "final" pois recebe reatribuição
+    private CartaoService cartaoService;
 
     public ContaServiceImpl(ClienteService clienteService) {
         this.clienteService = clienteService;
+    }
+
+    public ContaServiceImpl(ClienteService clienteService, CartaoService cartaoService, Map<String, Conta> contas) {
+        this.clienteService = clienteService;
+        this.cartaoService = cartaoService;
+        this.contas = contas;
+    }
+
+    // "injetando" manualmente CartaoService, pois a injeção via construtor causa dependencias circulares
+    public void setCartaoService(CartaoService cartaoService) {
+        this.cartaoService = cartaoService;
     }
 
     @Override
@@ -53,11 +69,11 @@ public class ContaServiceImpl implements ContaService {
 
     @Override
     public Conta buscarContaPorNumero(String numeroConta) throws Exception {
-        if (numeroConta == null || numeroConta.trim().isEmpty() || !contas.containsKey(numeroConta)) {
+        Conta conta = contas.get(numeroConta);
+        if (numeroConta == null || numeroConta.trim().isEmpty() || conta == null) {
             throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
         }
 
-        Conta conta = contas.get(numeroConta);
         if (!conta.isAtivo()) {
             throw new Exception("Essa conta está desativada.\n");
         }
@@ -97,5 +113,18 @@ public class ContaServiceImpl implements ContaService {
         }
 
         return contasEncontradas;
+    }
+
+    @Override
+    public Conta desativarConta(String numeroConta) throws Exception {
+        Conta conta = buscarContaPorNumero(numeroConta);
+
+        conta.setAtivo(false);
+        List<Cartao> lista = cartaoService.buscarCartoesPorCPF(conta.getTitular().getCpf());
+
+        // Para cada elemento da lista execute tal ação
+        lista.forEach(cartao -> cartao.setBloqueado(true));
+
+        return conta;
     }
 }
