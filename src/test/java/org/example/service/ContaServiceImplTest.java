@@ -41,10 +41,6 @@ public class ContaServiceImplTest {
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
-    private static final String NUMERO_CARTAO = "1234";
-    private static final String CVV_CARTAO = "123";
-    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
-    private static final boolean IS_BLOQUEADO_CARTAO = false;
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
@@ -176,29 +172,5 @@ public class ContaServiceImplTest {
 
         assertEquals(CPF_CLIENTE, resultado.getTitular().getCpf());
         assertFalse(resultado.isAtivo());
-    }
-
-    @Test
-    public void quandoContasDesativarNumeroContaEEncontrarEntaoDesativeTodosOsCartoesVinculados()
-            throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
-        var cartao2 = new Cartao("9876", "000", DT_VENCIMENTO_CARTAO, cliente, conta, true);
-
-        List<Cartao> cartoes = new ArrayList<>();
-        cartoes.add(cartao);
-        cartoes.add(cartao2);
-
-        when(cartaoService.buscarCartoesPorCPF(CPF_CLIENTE)).thenReturn(cartoes);
-        when(mockHashMapConta.get(NUMERO_CONTA)).thenReturn(conta);
-
-        Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
-
-        assertEquals(CPF_CLIENTE, resultado.getTitular().getCpf());
-        assertEquals(2, cartoes.size());
-        assertFalse(resultado.isAtivo());
-        assertTrue(cartao.isBloqueado());
-        assertTrue(cartao2.isBloqueado());
     }
 }

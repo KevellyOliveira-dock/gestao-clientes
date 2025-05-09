@@ -10,29 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ContaServiceImpl implements ContaService {
-    // Para ser final precisa ser inicializado em todos os construtores da classe
-    private Map<String, Conta> contas = new HashMap<>();
+    private final Map<String, Conta> contaRepository;
 
     private final ClienteService clienteService;
 
-    // Não pode ser "final" pois recebe reatribuição
-    private CartaoService cartaoService;
-
-    public ContaServiceImpl(ClienteService clienteService) {
+    public ContaServiceImpl(ClienteService clienteService, Map<String, Conta> contaRepository) {
         this.clienteService = clienteService;
+        this.contaRepository = contaRepository;
     }
-
-    public ContaServiceImpl(ClienteService clienteService, CartaoService cartaoService, Map<String, Conta> contas) {
-        this.clienteService = clienteService;
-        this.cartaoService = cartaoService;
-        this.contas = contas;
-    }
-
-    // Recebe a dependencia via setter
-    public void setCartaoService(CartaoService cartaoService) {
-        this.cartaoService = cartaoService;
-    }
-
+    
     @Override
     public Conta cadastrarConta(String cpf, String saldoStr) throws Exception {
         if (cpf == null || cpf.trim().isEmpty()) {
@@ -54,7 +40,7 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("O saldo deve ser um número maior que zero.\n");
         }
 
-        var numeroConta = String.valueOf(contas.size());
+        var numeroConta = String.valueOf(contaRepository.size());
 
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
         if (cliente == null) {
@@ -62,14 +48,14 @@ public class ContaServiceImpl implements ContaService {
         }
 
         var conta = new Conta(numeroConta, cliente, saldo, true);
-        contas.put(numeroConta, conta);
+        contaRepository.put(numeroConta, conta);
 
         return conta;
     }
 
     @Override
     public Conta buscarContaPorNumero(String numeroConta) throws Exception {
-        Conta conta = contas.get(numeroConta);
+        Conta conta = contaRepository.get(numeroConta);
         if (numeroConta == null || numeroConta.trim().isEmpty() || conta == null) {
             throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
         }
@@ -85,7 +71,7 @@ public class ContaServiceImpl implements ContaService {
     public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 
-        for (Conta conta : contas.values()) {
+        for (Conta conta : contaRepository.values()) {
             if (conta.getTitular().getNomeCompleto().equals(nomeCompleto) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
@@ -102,7 +88,7 @@ public class ContaServiceImpl implements ContaService {
     public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 
-        for (Conta conta : contas.values()) {
+        for (Conta conta : contaRepository.values()) {
             if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
