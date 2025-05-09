@@ -6,8 +6,8 @@ import org.example.service.CartaoService;
 import java.util.Scanner;
 
 public class CartaoController implements Controller {
-    private Scanner scanner;
-    private CartaoService cartaoService;
+    private final Scanner scanner;
+    private final CartaoService cartaoService;
 
     public CartaoController(CartaoService cartaoService, Scanner scanner) {
         this.scanner = scanner;
@@ -70,7 +70,7 @@ public class CartaoController implements Controller {
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
-                    cartaoExistente.setBloqueado(true);
+                    cartaoService.bloquearCartao(numeroCartao);
                     return "Seu cartão foi bloqueado com sucesso!\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";

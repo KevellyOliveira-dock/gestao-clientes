@@ -16,6 +16,7 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
 public class CartaoServiceImpl implements CartaoService {
+    // Não pode ser "final" pois isso exigiria que fosse inicializado em todos os contrutores
     private Map<String, Cartao> cartoes = new HashMap<>();
 
     private final ClienteService clienteService;
@@ -106,4 +107,12 @@ public class CartaoServiceImpl implements CartaoService {
         return cartoesEncontrados;
     }
 
+    @Override
+    public Cartao bloquearCartao(String numeroCartao) throws Exception {
+        Cartao cartao = buscarCartaoPorNumero(numeroCartao);
+
+        cartao.setBloqueado(true);
+
+        return cartao;
+    }
 }
