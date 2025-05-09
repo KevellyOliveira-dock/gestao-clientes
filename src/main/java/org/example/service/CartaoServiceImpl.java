@@ -6,7 +6,6 @@ import org.example.model.Conta;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.ArrayList;
@@ -16,21 +15,16 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
 public class CartaoServiceImpl implements CartaoService {
-    // Não pode ser "final" pois isso exigiria que fosse inicializado em todos os contrutores
-    private Map<String, Cartao> cartoes = new HashMap<>();
+    private final Map<String, Cartao> cartaoRepository;
 
     private final ClienteService clienteService;
+
     private final ContaService contaService;
 
-    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService) {
+    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, Map<String, Cartao> cartaoRepository) {
         this.clienteService = clienteService;
         this.contaService = contaService;
-    }
-
-    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, Map<String, Cartao> cartoes) {
-        this.clienteService = clienteService;
-        this.contaService = contaService;
-        this.cartoes = cartoes;
+        this.cartaoRepository = cartaoRepository;
     }
 
     @Override
@@ -72,17 +66,17 @@ public class CartaoServiceImpl implements CartaoService {
 
         do {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
-        } while (cartoes.containsKey(numeroCartao));
+        } while (cartaoRepository.containsKey(numeroCartao));
 
         Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta, false);
-        cartoes.put(numeroCartao, cartao);
+        cartaoRepository.put(numeroCartao, cartao);
 
         return cartao;
     }
 
     @Override
     public Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception {
-        Cartao cartao = cartoes.get(numeroCartao);
+        Cartao cartao = cartaoRepository.get(numeroCartao);
         if (numeroCartao == null || numeroCartao.trim().isEmpty() || cartao == null) {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
@@ -98,7 +92,7 @@ public class CartaoServiceImpl implements CartaoService {
     public List<Cartao> buscarCartoesPorCPF(String cpf) {
         List<Cartao> cartoesEncontrados = new ArrayList<>();
 
-        for (Cartao cartao : cartoes.values()) {
+        for (Cartao cartao : cartaoRepository.values()) {
             if (cartao.getCliente().getCpf().contains(cpf)) {
                 cartoesEncontrados.add(cartao);
             }
