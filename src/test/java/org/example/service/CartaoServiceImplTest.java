@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +96,7 @@ public class CartaoServiceImplTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    @NullAndEmptySource
     public void quandoCadastrarCartaoECpfVazioOuNuloEntaoRetorneMensagem(String cpf) {
         Exception exception = assertThrows(Exception.class, () ->
                 cartaoServiceImpl.cadastrarCartao(cpf, NUMERO_CONTA)
@@ -133,7 +134,7 @@ public class CartaoServiceImplTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    @NullAndEmptySource
     public void quandoCartaoPesquisarNumeroCartaoForVazioOuNuloEntaoExibaMensagem(String numeroCartao) {
         Exception exception = assertThrows(Exception.class, () ->
                 cartaoServiceImpl.buscarCartaoPorNumero(numeroCartao)
@@ -155,5 +156,20 @@ public class CartaoServiceImplTest {
         );
         assertEquals("Esse cartão está bloqueado.\n",
                 exception.getMessage());
+    }
+
+    @Test
+    public void quandoContasBloquearNumeroCartaoEEncontrarEntaoBloqueieCartao()
+            throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Cartao resultado = cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO);
+
+        assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
+        assertTrue(resultado.isBloqueado());
     }
 }
