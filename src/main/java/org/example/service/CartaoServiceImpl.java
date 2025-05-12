@@ -6,7 +6,6 @@ import org.example.model.Conta;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -92,6 +91,7 @@ public class CartaoServiceImpl implements CartaoService {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
         cartao.setBloqueado(true);
+
         return cartao;
     }
 
