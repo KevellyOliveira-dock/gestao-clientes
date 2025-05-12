@@ -79,10 +79,6 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
 
-        if (cartao.isBloqueado()) {
-            throw new Exception("Esse cartão está bloqueado.\n");
-        }
-
         return cartao;
     }
 
@@ -90,8 +86,11 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao bloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
-        cartao.setBloqueado(true);
+        if (cartao.isBloqueado()) {
+            throw new Exception("Esse cartão está bloqueado.\n");
+        }
 
+        cartao.setBloqueado(true);
         return cartao;
     }
 
@@ -99,8 +98,11 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao desbloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
-        cartao.setBloqueado(false);
+        if (!cartao.isBloqueado()) {
+            throw new Exception("Esse cartão está desbloqueado.\n");
+        }
 
+        cartao.setBloqueado(false);
         return cartao;
     }
 }
