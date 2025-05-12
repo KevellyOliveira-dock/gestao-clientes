@@ -145,7 +145,7 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void quandoCartaoPesquisarNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
+    public void quandoCartaoBloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
@@ -153,7 +153,7 @@ public class CartaoServiceImplTest {
         when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
 
         Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO)
+                cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO)
         );
         assertEquals("Esse cartão está bloqueado.\n",
                 exception.getMessage());
@@ -175,11 +175,26 @@ public class CartaoServiceImplTest {
     }
 
     @Test
+    public void quandoCartaoDesbloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO)
+        );
+        assertEquals("Esse cartão está desbloqueado.\n",
+                exception.getMessage());
+    }
+
+    @Test
     public void quandoCartoesDesbloquearNumeroCartaoEEncontrarEntaoDesbloqueieCartao()
             throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
 
         when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
 
