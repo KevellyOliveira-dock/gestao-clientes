@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 
@@ -9,12 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ContaServiceImpl implements ContaService {
-    Map<String, Conta> contas = new HashMap<>();
+    private final Map<String, Conta> contaRepository;
 
-    ClienteService clienteService;
+    private final ClienteService clienteService;
 
-    public ContaServiceImpl(ClienteService clienteService) {
+    public ContaServiceImpl(ClienteService clienteService, Map<String, Conta> contaRepository) {
         this.clienteService = clienteService;
+        this.contaRepository = contaRepository;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("O saldo deve ser um número maior que zero.\n");
         }
 
-        var numeroConta = String.valueOf(contas.size());
+        var numeroConta = String.valueOf(contaRepository.size());
 
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
         if (cliente == null) {
@@ -46,18 +48,18 @@ public class ContaServiceImpl implements ContaService {
         }
 
         var conta = new Conta(numeroConta, cliente, saldo, true);
-        contas.put(numeroConta, conta);
+        contaRepository.put(numeroConta, conta);
 
         return conta;
     }
 
     @Override
     public Conta buscarContaPorNumero(String numeroConta) throws Exception {
-        if (numeroConta == null || numeroConta.trim().isEmpty() || !contas.containsKey(numeroConta)) {
+        Conta conta = contaRepository.get(numeroConta);
+        if (numeroConta == null || numeroConta.trim().isEmpty() || conta == null) {
             throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
         }
 
-        Conta conta = contas.get(numeroConta);
         if (!conta.isAtivo()) {
             throw new Exception("Essa conta está desativada.\n");
         }
@@ -69,7 +71,7 @@ public class ContaServiceImpl implements ContaService {
     public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 
-        for (Conta conta : contas.values()) {
+        for (Conta conta : contaRepository.values()) {
             if (conta.getTitular().getNomeCompleto().equals(nomeCompleto) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
@@ -86,7 +88,7 @@ public class ContaServiceImpl implements ContaService {
     public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 
-        for (Conta conta : contas.values()) {
+        for (Conta conta : contaRepository.values()) {
             if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
@@ -97,5 +99,14 @@ public class ContaServiceImpl implements ContaService {
         }
 
         return contasEncontradas;
+    }
+
+    @Override
+    public Conta desativarConta(String numeroConta) throws Exception {
+        Conta conta = buscarContaPorNumero(numeroConta);
+
+        conta.setAtivo(false);
+
+        return conta;
     }
 }

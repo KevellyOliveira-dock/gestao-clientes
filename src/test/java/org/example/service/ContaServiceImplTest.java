@@ -1,17 +1,19 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,14 +22,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ContaServiceImplTest {
 
+    @InjectMocks
     private ContaServiceImpl contaServiceImpl;
-
-    @Mock
-    private ContaService contaService;
 
     // cria uma instância de uma classe, porém Mockada
     @Mock
+    private CartaoService cartaoService;
+
+    @Mock
     private ClienteService clienteService;
+
+    @Mock
+    private HashMap<String, Conta> mockHashMapConta;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -35,11 +41,6 @@ public class ContaServiceImplTest {
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
-
-    @BeforeEach
-    public void setup() {
-        contaServiceImpl = new ContaServiceImpl(clienteService); // Passa o mock para a implementação
-    }
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
@@ -66,7 +67,6 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource
     public void quandoContasCadastrarESaldoForMenorQueZeroOuNaoNumeroEntaoExibaMensagem(String saldoStr) {
-
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
         );
@@ -76,7 +76,6 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @ValueSource(strings = {"aaa", "abc", "123abc", "@"})
     public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) {
-
         Exception exception = assertThrows(Exception.class, () -> {
             contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr);
 
@@ -106,6 +105,20 @@ public class ContaServiceImplTest {
     }
 
     @Test
+    public void quandoContaPesquisarNumeroContaoVerifiqueSeContaEstaBloqueadoEntaoExibaMensagem() {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, false);
+
+        when(mockHashMapConta.get(NUMERO_CONTA)).thenReturn(conta);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.buscarContaPorNumero(NUMERO_CONTA)
+        );
+        assertEquals("Essa conta está desativada.\n",
+                exception.getMessage());
+    }
+
+    @Test
     public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE));
@@ -117,14 +130,11 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
-        List<Conta> contas = new ArrayList<>();
-        contas.add(conta);
-
         // Mocka o comportamento
-        when(contaService.buscarContasPorTitular(NOME_CLIENTE)).thenReturn(contas);
+        when(mockHashMapConta.values()).thenReturn(List.of(conta));
 
         // Chama o metodo mockado
-        List<Conta> resultado = contaService.buscarContasPorTitular(NOME_CLIENTE);
+        List<Conta> resultado = contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE);
 
         assertEquals(1, resultado.size());
         assertEquals(NOME_CLIENTE, resultado.get(0).getTitular().getNomeCompleto());
@@ -142,14 +152,25 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
-        List<Conta> contas = new ArrayList<>();
-        contas.add(conta);
+        when(mockHashMapConta.values()).thenReturn(List.of(conta));
 
-        when(contaService.buscarContasPorCPF(CPF_CLIENTE)).thenReturn(contas);
-
-        List<Conta> resultado = contaService.buscarContasPorCPF(CPF_CLIENTE);
+        List<Conta> resultado = contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE);
 
         assertEquals(1, resultado.size());
         assertEquals(CPF_CLIENTE, resultado.get(0).getTitular().getCpf());
+    }
+
+    @Test
+    public void quandoContasDesativarNumeroContaEEncontrarEntaoDesativeConta()
+            throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
+        when(mockHashMapConta.get(NUMERO_CONTA)).thenReturn(conta);
+
+        Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
+
+        assertEquals(CPF_CLIENTE, resultado.getTitular().getCpf());
+        assertFalse(resultado.isAtivo());
     }
 }

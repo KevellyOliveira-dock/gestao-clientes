@@ -7,5 +7,7 @@ public interface CartaoService {
 
     Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception;
 
+    Cartao bloquearCartao(String numeroCartao) throws Exception;
+
     Cartao desbloquearCartao(String numeroCartao) throws Exception;
 }

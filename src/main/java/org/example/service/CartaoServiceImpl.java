@@ -6,6 +6,7 @@ import org.example.model.Conta;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -15,8 +16,8 @@ import static java.lang.String.valueOf;
 public class CartaoServiceImpl implements CartaoService {
     private final Map<String, Cartao> cartaoRepository;
 
-
     private final ClienteService clienteService;
+
     private final ContaService contaService;
 
     public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, Map<String, Cartao> cartaoRepository) {
@@ -83,6 +84,14 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("Esse cartão está bloqueado.\n");
         }
 
+        return cartao;
+    }
+
+    @Override
+    public Cartao bloquearCartao(String numeroCartao) throws Exception {
+        Cartao cartao = buscarCartaoPorNumero(numeroCartao);
+
+        cartao.setBloqueado(true);
         return cartao;
     }
 
