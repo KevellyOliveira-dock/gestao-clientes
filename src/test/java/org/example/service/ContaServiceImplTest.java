@@ -23,10 +23,6 @@ public class ContaServiceImplTest {
     @InjectMocks
     private ContaServiceImpl contaServiceImpl;
 
-    // cria uma instância de uma classe, porém Mockada
-    @Mock
-    private CartaoService cartaoService;
-
     @Mock
     private ClienteService clienteService;
 
@@ -54,7 +50,7 @@ public class ContaServiceImplTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    @NullAndEmptySource
     public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
