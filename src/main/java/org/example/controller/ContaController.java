@@ -1,8 +1,6 @@
 package org.example.controller;
 
-import org.example.model.Cartao;
 import org.example.model.Conta;
-import org.example.service.CartaoService;
 import org.example.service.ContaService;
 
 import java.util.List;

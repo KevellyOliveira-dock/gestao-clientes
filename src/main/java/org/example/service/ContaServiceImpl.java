@@ -1,11 +1,9 @@
 package org.example.service;
 
-import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
