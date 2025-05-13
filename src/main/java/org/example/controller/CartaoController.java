@@ -73,8 +73,8 @@ public class CartaoController implements Controller {
                 System.out.println("Confirma o bloqueio do cartão " + cartaoExistente.getNumeroCartao() +
                         ", com vencimento em " + cartaoExistente.getDtVencimento() +
                         ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
-                        ",  portador do CPF " + cartaoExistente.getCliente().getCpf() +
-                        "? Digite \"S\" para sim ou \"N\" para não: ");
+                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
@@ -100,8 +100,8 @@ public class CartaoController implements Controller {
                 System.out.println("Confirma o desbloqueio do cartão " + cartaoExistente.getNumeroCartao() +
                         ", com vencimento em " + cartaoExistente.getDtVencimento() +
                         ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
-                        ",  portador do CPF " + cartaoExistente.getCliente().getCpf() +
-                        "? Digite \"S\" para sim ou \"N\" para não: ");
+                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {

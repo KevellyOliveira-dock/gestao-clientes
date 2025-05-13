@@ -152,9 +152,8 @@ public class ContaController implements Controller {
             while (true) {
                 System.out.println("Confirma a desativação da conta " + contaExistente.getNumeroConta() +
                         ", de titularidade de " + contaExistente.getTitular().getNomeCompleto() +
-                        ", CPF " + contaExistente.getTitular().getCpf() +
-                        "? Ao confirmar todos os cartões vinculados a essa conta serão bloqueados. \n" +
-                        " Digite \"S\" para sim ou \"N\" para não: ");
+                        ", CPF " + contaExistente.getTitular().getCpf() + "?\n" +
+                        "Digite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
