@@ -15,10 +15,12 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoControllerIntegrationTest {
+
     @InjectMocks
     private CartaoController controller;
 
@@ -53,10 +55,11 @@ public class CartaoControllerIntegrationTest {
     @Test
     public void quandoComandoEhCartoesEntaoExibaOpcoesDeCartoes() throws Exception {
         var resultadoEsperado = """
-                -------------------------------
-                | Bloquear {número do cartao} |
-                | Cadastrar                   |
-                -------------------------------""";
+                ----------------------------------
+                | Bloquear {número do cartao}    |
+                | Desbloquear {número do cartao} |
+                | Cadastrar                      |
+                ----------------------------------""";
         var resultadoReal = controller.executar("cartoes");
         assertEquals(resultadoEsperado, resultadoReal);
     }
@@ -107,6 +110,38 @@ public class CartaoControllerIntegrationTest {
         var resultadoEsperado = "Operação cancelada\n";
         this.inputStream.setInputs("N\n");
         var resultadoReal = controller.executar("cartoes bloquear 1234");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+        assertTrue(cartao.isBloqueado());
+    }
+
+    @Test
+    public void quandoComandoEhCartoesDesbloquearEntaoDesbloqueieOsCartoes() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, false);
+
+        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
+        var resultadoEsperado = "Seu cartão foi desbloqueado com sucesso!\n";
+        this.inputStream.setInputs("S\n");
+        var resultadoReal = controller.executar("cartoes desbloquear 1234");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+        assertFalse(cartao.isBloqueado());
+    }
+
+    @Test
+    public void quandoComandoEhCartoesDesbloquearEDesistirEntaoExibaMensagem() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
+        var resultadoEsperado = "Operação cancelada\n";
+        this.inputStream.setInputs("N\n");
+        var resultadoReal = controller.executar("cartoes desbloquear 1234");
 
         assertEquals(resultadoEsperado, resultadoReal);
         assertTrue(cartao.isBloqueado());

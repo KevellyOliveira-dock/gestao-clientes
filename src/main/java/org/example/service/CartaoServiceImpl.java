@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -81,10 +79,6 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
 
-        if (cartao.isBloqueado()) {
-            throw new Exception("Esse cartão está bloqueado.\n");
-        }
-
         return cartao;
     }
 
@@ -92,8 +86,29 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao bloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
-        cartao.setBloqueado(true);
+        if (cartao.isBloqueado()) {
+            throw new Exception("Esse cartão está bloqueado.\n");
+        }
 
+        cartao.setBloqueado(true);
+        return cartao;
+    }
+
+    @Override
+    public Cartao desbloquearCartao(String numeroCartao) throws Exception {
+        Cartao cartao = buscarCartaoPorNumero(numeroCartao);
+
+        // String cpf = cartao.getCliente().getCpf();
+        // clienteService.buscarClientePorCPF(cpf);
+
+        String numeroConta = cartao.getConta().getNumeroConta();
+        contaService.buscarContaPorNumero(numeroConta);
+
+        if (!cartao.isBloqueado()) {
+            throw new Exception("Esse cartão está desbloqueado.\n");
+        }
+
+        cartao.setBloqueado(false);
         return cartao;
     }
 }

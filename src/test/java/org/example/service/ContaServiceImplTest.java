@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,10 +22,6 @@ public class ContaServiceImplTest {
 
     @InjectMocks
     private ContaServiceImpl contaServiceImpl;
-
-    // cria uma instância de uma classe, porém Mockada
-    @Mock
-    private CartaoService cartaoService;
 
     @Mock
     private ClienteService clienteService;
@@ -56,7 +50,7 @@ public class ContaServiceImplTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
+    @NullAndEmptySource
     public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
