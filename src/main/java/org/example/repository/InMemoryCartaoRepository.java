@@ -18,11 +18,4 @@ public class InMemoryCartaoRepository implements CartaoRepository {
     public Cartao buscarPorNumero(String numeroCartao) {
         return cartaoRepository.get(numeroCartao);
     }
-
-    @Override
-    public Cartao editar(Cartao cartao) {
-        cartaoRepository.put(cartao.getNumeroCartao(), cartao);
-
-        return cartao;
-    }
 }

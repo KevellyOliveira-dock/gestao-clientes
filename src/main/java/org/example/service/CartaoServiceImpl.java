@@ -93,7 +93,7 @@ public class CartaoServiceImpl implements CartaoService {
         }
 
         cartao.setBloqueado(true);
-        cartaoRepository.editar(cartao);
+        cartaoRepository.cadastrar(cartao);
         return cartao;
     }
 
@@ -112,7 +112,7 @@ public class CartaoServiceImpl implements CartaoService {
         }
 
         cartao.setBloqueado(false);
-        cartaoRepository.editar(cartao);
+        cartaoRepository.cadastrar(cartao);
         return cartao;
     }
 }

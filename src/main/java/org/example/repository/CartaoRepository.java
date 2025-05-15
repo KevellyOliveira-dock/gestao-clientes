@@ -6,6 +6,4 @@ public interface CartaoRepository {
     Cartao cadastrar(Cartao cartao);
 
     Cartao buscarPorNumero(String numeroCartao);
-
-    Cartao editar(Cartao cartao);
 }
