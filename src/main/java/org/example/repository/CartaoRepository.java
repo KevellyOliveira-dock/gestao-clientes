@@ -7,7 +7,5 @@ public interface CartaoRepository {
 
     Cartao buscarPorNumero(String numeroCartao);
 
-    boolean buscarSeExiste(String numeroCartao);
-
     Cartao editar(Cartao cartao);
 }

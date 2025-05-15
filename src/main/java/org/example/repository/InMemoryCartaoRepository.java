@@ -23,11 +23,6 @@ public class InMemoryCartaoRepository implements CartaoRepository {
     }
 
     @Override
-    public boolean buscarSeExiste(String numeroCartao) {
-        return cartaoRepository.containsKey(numeroCartao);
-    }
-
-    @Override
     public Cartao editar(Cartao cartao) {
         var numero = cartaoRepository.get(cartao.getNumeroCartao());
 
