@@ -8,10 +8,10 @@ import org.example.controller.ClienteController;
 import org.example.controller.ContaController;
 import org.example.controller.FaturaController;
 import org.example.controller.FrontController;
-import org.example.model.Cartao;
-import org.example.model.Conta;
 import org.example.repository.CartaoRepository;
+import org.example.repository.ContaRepository;
 import org.example.repository.InMemoryCartaoRepository;
+import org.example.repository.InMemoryContaRepository;
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
 import org.example.service.ContaService;
@@ -25,13 +25,12 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
-        HashMap<String, Conta> contaRepository = new HashMap<>();
-
         CartaoRepository cartaoRepository = new InMemoryCartaoRepository();
+        ContaRepository contaRepository = new InMemoryContaRepository();
 
         //inicializa a ClienteService | dependencia criada fora da controller
         ClienteService clienteService = new ClienteServiceImpl();
-        ContaService contaService = new ContaServiceImpl(clienteService, contaRepository);
+        ContaService contaService = new ContaServiceImpl(contaRepository, clienteService);
         CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository, clienteService, contaService);
 
         var cartoesController = new CartaoController(cartaoService, scanner);
