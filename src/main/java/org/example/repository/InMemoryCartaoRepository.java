@@ -2,14 +2,11 @@ package org.example.repository;
 
 import org.example.model.Cartao;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryCartaoRepository implements CartaoRepository {
-    private final Map<String, Cartao> cartaoRepository;
-
-    public InMemoryCartaoRepository(Map<String, Cartao> cartaoRepository) {
-        this.cartaoRepository = cartaoRepository;
-    }
+    private final Map<String, Cartao> cartaoRepository = new HashMap<>();
 
     @Override
     public Cartao cadastrar(Cartao cartao) {

@@ -25,15 +25,14 @@ public class Main {
 
         System.out.println("----------- Seja bem-vindo! -----------");
 
-        HashMap<String, Cartao> cartaoHashMap = new HashMap<>();
         HashMap<String, Conta> contaRepository = new HashMap<>();
 
-        CartaoRepository cartaoRepository = new InMemoryCartaoRepository(cartaoHashMap);
+        CartaoRepository cartaoRepository = new InMemoryCartaoRepository();
 
         //inicializa a ClienteService | dependencia criada fora da controller
         ClienteService clienteService = new ClienteServiceImpl();
         ContaService contaService = new ContaServiceImpl(clienteService, contaRepository);
-        CartaoService cartaoService = new CartaoServiceImpl(clienteService, contaService, cartaoRepository);
+        CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository, clienteService, contaService);
 
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
