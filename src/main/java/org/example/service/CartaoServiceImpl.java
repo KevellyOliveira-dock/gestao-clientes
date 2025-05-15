@@ -92,6 +92,7 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("Esse cartão já está bloqueado.\n");
         }
 
+        cartao.setBloqueado(true);
         cartaoRepository.editar(cartao);
         return cartao;
     }
@@ -110,6 +111,7 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("Esse cartão já está desbloqueado.\n");
         }
 
+        cartao.setBloqueado(false);
         cartaoRepository.editar(cartao);
         return cartao;
     }

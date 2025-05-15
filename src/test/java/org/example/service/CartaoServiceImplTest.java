@@ -169,7 +169,7 @@ public class CartaoServiceImplTest {
         Cartao resultado = cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO);
 
         assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
-        assertFalse(resultado.isBloqueado());
+        assertTrue(resultado.isBloqueado());
     }
 
     @Test
@@ -199,6 +199,6 @@ public class CartaoServiceImplTest {
         Cartao resultado = cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO);
 
         assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
-        assertTrue(resultado.isBloqueado());
+        assertFalse(resultado.isBloqueado());
     }
 }

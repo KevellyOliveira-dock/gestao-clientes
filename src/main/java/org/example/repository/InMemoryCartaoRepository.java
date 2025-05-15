@@ -21,11 +21,8 @@ public class InMemoryCartaoRepository implements CartaoRepository {
 
     @Override
     public Cartao editar(Cartao cartao) {
-        var numero = cartaoRepository.get(cartao.getNumeroCartao());
+        cartaoRepository.put(cartao.getNumeroCartao(), cartao);
 
-        // Sugestão para simplificar o if
-        numero.setBloqueado(!numero.isBloqueado());
-
-        return numero;
+        return cartao;
     }
 }
