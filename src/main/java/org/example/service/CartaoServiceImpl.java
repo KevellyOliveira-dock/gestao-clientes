@@ -19,10 +19,12 @@ public class CartaoServiceImpl implements CartaoService {
 
     private final ContaService contaService;
 
-    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, CartaoRepository cartaoRepository) {
+    public CartaoServiceImpl(CartaoRepository cartaoRepository,
+                             ClienteService clienteService,
+                             ContaService contaService) {
+        this.cartaoRepository = cartaoRepository;
         this.clienteService = clienteService;
         this.contaService = contaService;
-        this.cartaoRepository = cartaoRepository;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CartaoServiceImpl implements CartaoService {
 
         do {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
-        } while (cartaoRepository.buscarSeExiste(numeroCartao));
+        } while (cartaoRepository.buscarPorNumero(numeroCartao) != null);
 
         Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta, false);
         cartaoRepository.cadastrar(cartao);
