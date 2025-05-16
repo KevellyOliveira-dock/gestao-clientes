@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoServiceImplTest {
-
     @InjectMocks
     private CartaoServiceImpl cartaoServiceImpl;
 
@@ -54,6 +53,7 @@ public class CartaoServiceImplTest {
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         Cartao resultadoReal = cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA);
+
         assertEquals(cliente, resultadoReal.getCliente());
         assertEquals(conta, resultadoReal.getConta());
     }

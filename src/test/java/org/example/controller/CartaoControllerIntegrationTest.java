@@ -20,11 +20,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoControllerIntegrationTest {
-
     @InjectMocks
     private CartaoController controller;
 
     private Scanner scanner;
+
     private TesteInputStream inputStream;
 
     @Mock
@@ -44,6 +44,7 @@ public class CartaoControllerIntegrationTest {
     @BeforeEach
     public void setup() {
         inputStream = new TesteInputStream();
+
         scanner = new Scanner(inputStream);
 
         //Redireciona o System.in para p nosso inputStream
@@ -61,6 +62,7 @@ public class CartaoControllerIntegrationTest {
                 | Cadastrar                      |
                 ----------------------------------""";
         var resultadoReal = controller.executar("cartoes");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 

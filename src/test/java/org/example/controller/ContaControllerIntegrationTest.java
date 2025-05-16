@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContaControllerIntegrationTest {
-
     @InjectMocks
     private ContaController controller;
 
@@ -40,6 +39,7 @@ public class ContaControllerIntegrationTest {
     @BeforeEach
     public void setup() {
         inputStream = new TesteInputStream();
+
         scanner = new Scanner(inputStream);
 
         //Redireciona o System.in para p nosso inputStream
@@ -58,14 +58,15 @@ public class ContaControllerIntegrationTest {
                 | pesquisar                   |
                 -------------------------------""";
         var resultadoReal = controller.executar("contas");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
         when(contaService.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA))).thenReturn(conta);
 
         var resultadoEsperado = "Conta cadastrada com sucesso!\n" +
@@ -115,6 +116,7 @@ public class ContaControllerIntegrationTest {
     public void quandoComandoEhContasExtratoEntaoExibaOExtradoDasContas() throws Exception {
         var resultadoEsperado = "não implementado";
         var resultadoReal = controller.executar("contas extrato");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
@@ -127,13 +129,13 @@ public class ContaControllerIntegrationTest {
                 | numero {número da conta}       |
                 ----------------------------------""";
         var resultadoReal = controller.executar("contas pesquisar");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
     public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() throws Exception {
         var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
         var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, IS_ATIVO_CONTA);
         var clienteConta2 = new Conta("1", cliente1, 5000.0, true);
 
@@ -157,13 +159,13 @@ public class ContaControllerIntegrationTest {
                 "Endereço: Rua dos testes, 56.\n" +
                 "\n";
         var resultadoReal = controller.executar("contas pesquisar cpf-titular 12345678900");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
     public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
         var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
         var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, IS_ATIVO_CONTA);
         var clienteConta2 = new Conta("1", cliente1, 5000.0, true);
 
@@ -187,14 +189,15 @@ public class ContaControllerIntegrationTest {
                 "Endereço: Rua dos testes, 56.\n" +
                 "\n";
         var resultadoReal = controller.executar("contas pesquisar nome-titular Kevelly");
+
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
     @Test
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         var resultadoEsperado = "Conta encontrada: \n" +

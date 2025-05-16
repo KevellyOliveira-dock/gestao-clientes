@@ -63,15 +63,18 @@ public class ClienteControllerIntegrationTest {
         //o \n é um delimitador para o Scanner(espaço e tabulação também),
         //sempre q ele lê sabe acabou e passa para a próxima linha
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+
         when(clienteService.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE)).thenReturn(cliente);
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         this.inputStream.setInputs("Kevelly\n12345678900\nRua dos testes, 56\n");
         var resultadoEsperado = "Cliente cadastrado com sucesso\n";
         var resultadoReal = controller.executar("clientes cadastrar");
+
         assertEquals(resultadoEsperado, resultadoReal);
 
         var resultado = clienteService.buscarClientePorCPF(CPF_CLIENTE);
+
         assertEquals(NOME_CLIENTE, resultado.getNomeCompleto());
         assertEquals(CPF_CLIENTE, resultado.getCpf());
         assertEquals(ENDERECO_CLIENTE, resultado.getEndereco());
@@ -80,6 +83,7 @@ public class ClienteControllerIntegrationTest {
     @Test
     public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() throws Exception {
         Cliente clienteAtualizado = new Cliente("Joice", CPF_CLIENTE, "Rua Teste 234");
+
         when(clienteService.atualizarCliente("Joice", CPF_CLIENTE, "Rua Teste 234")).
                 thenReturn(clienteAtualizado);
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(clienteAtualizado);
@@ -87,6 +91,7 @@ public class ClienteControllerIntegrationTest {
         this.inputStream.setInputs("Joice\nRua Teste 234\n");
         var resultadoEsperado = "Cliente atualizado com sucesso\n";
         var resultadoReal = controller.executar("clientes atualizar 12345678900");
+
         assertEquals(resultadoEsperado, resultadoReal);
 
         var resultado = clienteService.buscarClientePorCPF(CPF_CLIENTE);
@@ -172,6 +177,7 @@ public class ClienteControllerIntegrationTest {
     @Test
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         var resultadoEsperado = "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";

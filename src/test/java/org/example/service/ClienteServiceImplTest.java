@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ClienteServiceImplTest {
-
     @InjectMocks
     private ClienteServiceImpl clientesServiceImpl;
 
@@ -113,9 +112,8 @@ public class ClienteServiceImplTest {
         }
 
         clientesServiceImpl.atualizarCliente(novoNome, CPF_CLIENTE, ENDERECO_CLIENTE);
-
-        //Valida se o nome continua o mesmo
         Cliente clienteAtualizado = clientesServiceImpl.buscarClientePorCPF(CPF_CLIENTE);
+
         assertEquals(nomeEsperado, clienteAtualizado.getNomeCompleto());
     }
 
@@ -132,8 +130,8 @@ public class ClienteServiceImplTest {
         }
 
         clientesServiceImpl.atualizarCliente("Ana", CPF_CLIENTE, novoEndereco);
-
         Cliente clienteAtualizado = clientesServiceImpl.buscarClientePorCPF(CPF_CLIENTE);
+
         assertEquals(enderecoEsperado, clienteAtualizado.getEndereco());
     }
 
@@ -150,9 +148,7 @@ public class ClienteServiceImplTest {
         clientes.add(cliente3);
 
         var busca = "sil";
-
         when(clienteRepository.buscarValores(busca)).thenReturn(clientes);
-
         List<Cliente> resultado = clientesServiceImpl.pesquisarClientePorNome(busca);
 
         // Testando usando a função get da lista (modo imperativo)
@@ -171,6 +167,7 @@ public class ClienteServiceImplTest {
     @Test
     public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         Cliente resultado = clientesServiceImpl.buscarClientePorCPF(CPF_CLIENTE);

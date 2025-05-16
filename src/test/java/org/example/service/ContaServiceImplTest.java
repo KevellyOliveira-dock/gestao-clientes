@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContaServiceImplTest {
-
     @InjectMocks
     private ContaServiceImpl contaServiceImpl;
 
@@ -70,10 +69,9 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @ValueSource(strings = {"aaa", "abc", "123abc", "@"})
     public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) {
-        Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr);
-
-        });
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
+        );
         assertEquals("O saldo deve ser um número válido.\n", exception.getMessage());
     }
 
@@ -81,10 +79,9 @@ public class ContaServiceImplTest {
     @ValueSource(doubles = {-1.0, Double.NaN})
     public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) {
 
-        Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo));
-
-        });
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo))
+        );
         assertEquals("O saldo deve ser um número maior que zero.\n", exception.getMessage());
     }
 
@@ -137,7 +134,8 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarCPFTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE));
+                contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE)
+        );
         assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
 
