@@ -1,16 +1,18 @@
 package org.example.service;
 
 import org.example.model.Cliente;
+import org.example.repository.ClienteRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class ClienteServiceImpl implements ClienteService {
-    Map<String, Cliente> listaClientes = new HashMap<>();
+    private final ClienteRepository clienteRepository;
 
+    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
 
     @Override
     public Cliente cadastrarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
@@ -21,12 +23,12 @@ public class ClienteServiceImpl implements ClienteService {
             throw new Exception("Preencha todos os campos");
         }
 
-        if (listaClientes.containsKey(cpf)) {
+        if (clienteRepository.buscarPorCPF(cpf) != null) {
             throw new Exception("CPF já cadastrado");
         }
 
         var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco);
-        listaClientes.put(cpf, clienteCadastrar);
+        clienteRepository.cadastrar(clienteCadastrar);
 
         return clienteCadastrar;
     }
@@ -48,7 +50,7 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco);
-        listaClientes.put(cpf, clienteAtualizar);
+        clienteRepository.cadastrar(clienteAtualizar);
 
         return clienteAtualizar;
     }
@@ -59,7 +61,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new Exception("O CPF informado não foi encontrado. Tente novamente");
         }
 
-        return listaClientes.get(cpf);
+        return clienteRepository.buscarPorCPF(cpf);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ClienteServiceImpl implements ClienteService {
         List<Cliente> clientesEncontrados = new ArrayList<>();
         String nomePesquisa = nome.toLowerCase();
 
-        for (Cliente cliente : listaClientes.values()) {
+        for (Cliente cliente : clienteRepository.buscarValores(nome)) {
             if (cliente.getNomeCompleto().toLowerCase().contains(nomePesquisa)) {
                 clientesEncontrados.add(cliente);
             }

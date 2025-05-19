@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.repository.ContaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContaServiceImplTest {
-
     @InjectMocks
     private ContaServiceImpl contaServiceImpl;
 
@@ -27,7 +26,7 @@ public class ContaServiceImplTest {
     private ClienteService clienteService;
 
     @Mock
-    private HashMap<String, Conta> mockHashMapConta;
+    private ContaRepository contaRepository;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -70,10 +69,9 @@ public class ContaServiceImplTest {
     @ParameterizedTest
     @ValueSource(strings = {"aaa", "abc", "123abc", "@"})
     public void quandoContasCadastrarESaldoForValorInvalidoEntaoExibaMensagem(String saldoStr) {
-        Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr);
-
-        });
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
+        );
         assertEquals("O saldo deve ser um número válido.\n", exception.getMessage());
     }
 
@@ -81,10 +79,9 @@ public class ContaServiceImplTest {
     @ValueSource(doubles = {-1.0, Double.NaN})
     public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) {
 
-        Exception exception = assertThrows(Exception.class, () -> {
-            contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo));
-
-        });
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo))
+        );
         assertEquals("O saldo deve ser um número maior que zero.\n", exception.getMessage());
     }
 
@@ -103,7 +100,7 @@ public class ContaServiceImplTest {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, false);
 
-        when(mockHashMapConta.get(NUMERO_CONTA)).thenReturn(conta);
+        when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContaPorNumero(NUMERO_CONTA)
@@ -125,7 +122,7 @@ public class ContaServiceImplTest {
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
         // Mocka o comportamento
-        when(mockHashMapConta.values()).thenReturn(List.of(conta));
+        when(contaRepository.buscarValores(NOME_CLIENTE)).thenReturn(List.of(conta));
 
         // Chama o metodo mockado
         List<Conta> resultado = contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE);
@@ -137,7 +134,8 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarCPFTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE));
+                contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE)
+        );
         assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
 
@@ -146,7 +144,7 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
-        when(mockHashMapConta.values()).thenReturn(List.of(conta));
+        when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(List.of(conta));
 
         List<Conta> resultado = contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE);
 
@@ -160,7 +158,7 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
 
-        when(mockHashMapConta.get(NUMERO_CONTA)).thenReturn(conta);
+        when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
         Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
 

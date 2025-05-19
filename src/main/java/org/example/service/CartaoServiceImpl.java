@@ -3,26 +3,28 @@ package org.example.service;
 import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.repository.CartaoRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import java.util.Random;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
 public class CartaoServiceImpl implements CartaoService {
-    private final Map<String, Cartao> cartaoRepository;
+    private final CartaoRepository cartaoRepository;
 
     private final ClienteService clienteService;
 
     private final ContaService contaService;
 
-    public CartaoServiceImpl(ClienteService clienteService, ContaService contaService, Map<String, Cartao> cartaoRepository) {
+    public CartaoServiceImpl(CartaoRepository cartaoRepository,
+                             ClienteService clienteService,
+                             ContaService contaService) {
+        this.cartaoRepository = cartaoRepository;
         this.clienteService = clienteService;
         this.contaService = contaService;
-        this.cartaoRepository = cartaoRepository;
     }
 
     @Override
@@ -64,17 +66,17 @@ public class CartaoServiceImpl implements CartaoService {
 
         do {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
-        } while (cartaoRepository.containsKey(numeroCartao));
+        } while (cartaoRepository.buscarPorNumero(numeroCartao) != null);
 
         Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta, false);
-        cartaoRepository.put(numeroCartao, cartao);
+        cartaoRepository.cadastrar(cartao);
 
         return cartao;
     }
 
     @Override
     public Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception {
-        Cartao cartao = cartaoRepository.get(numeroCartao);
+        Cartao cartao = cartaoRepository.buscarPorNumero(numeroCartao);
         if (numeroCartao == null || numeroCartao.trim().isEmpty() || cartao == null) {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
@@ -87,10 +89,11 @@ public class CartaoServiceImpl implements CartaoService {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
         if (cartao.isBloqueado()) {
-            throw new Exception("Esse cartão está bloqueado.\n");
+            throw new Exception("Esse cartão já está bloqueado.\n");
         }
 
         cartao.setBloqueado(true);
+        cartaoRepository.cadastrar(cartao);
         return cartao;
     }
 
@@ -105,10 +108,11 @@ public class CartaoServiceImpl implements CartaoService {
         contaService.buscarContaPorNumero(numeroConta);
 
         if (!cartao.isBloqueado()) {
-            throw new Exception("Esse cartão está desbloqueado.\n");
+            throw new Exception("Esse cartão já está desbloqueado.\n");
         }
 
         cartao.setBloqueado(false);
+        cartaoRepository.cadastrar(cartao);
         return cartao;
     }
 }
