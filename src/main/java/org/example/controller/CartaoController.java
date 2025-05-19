@@ -17,10 +17,11 @@ public class CartaoController implements Controller {
     public String executar(String comando) throws Exception {
         if (comando.equals("cartoes")) {
             return """
-                    -------------------------------
-                    | Bloquear {número do cartao} |
-                    | Cadastrar                   |
-                    -------------------------------""";
+                    ----------------------------------
+                    | Bloquear {número do cartao}    |
+                    | Desbloquear {número do cartao} |
+                    | Cadastrar                      |
+                    ----------------------------------""";
         }
 
         String[] partes = comando.split(" ");
@@ -32,6 +33,13 @@ public class CartaoController implements Controller {
                     return bloquearCartao(partes[2]);
                 } else {
                     return "Para bloquear o cartão é necessário informar o número. Ex: cartoes bloquear 0123.\n";
+                }
+
+            case "desbloquear":
+                if (partes.length == 3) {
+                    return desbloquearCartao(partes[2]);
+                } else {
+                    return "Para desbloquear o cartão é necessário informar o número. Ex: cartoes desbloquear 0123.\n";
                 }
 
             case "cadastrar":
@@ -65,13 +73,40 @@ public class CartaoController implements Controller {
                 System.out.println("Confirma o bloqueio do cartão " + cartaoExistente.getNumeroCartao() +
                         ", com vencimento em " + cartaoExistente.getDtVencimento() +
                         ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
-                        ",  portador do CPF " + cartaoExistente.getCliente().getCpf() +
-                        "? Digite \"S\" para sim ou \"N\" para não: ");
+                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
                     cartaoService.bloquearCartao(numeroCartao);
                     return "Seu cartão foi bloqueado com sucesso!\n";
+                } else if (resposta.equals("N")) {
+                    return "Operação cancelada\n";
+                }
+
+                System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public String desbloquearCartao(String numeroCartao) {
+        try {
+            Cartao cartaoExistente = cartaoService.buscarCartaoPorNumero(numeroCartao);
+            String resposta;
+
+            while (true) {
+                System.out.println("Confirma o desbloqueio do cartão " + cartaoExistente.getNumeroCartao() +
+                        ", com vencimento em " + cartaoExistente.getDtVencimento() +
+                        ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
+                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
+                resposta = scanner.nextLine().toUpperCase();
+
+                if (resposta.equals("S")) {
+                    cartaoService.desbloquearCartao(numeroCartao);
+                    return "Seu cartão foi desbloqueado com sucesso!\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";
                 }

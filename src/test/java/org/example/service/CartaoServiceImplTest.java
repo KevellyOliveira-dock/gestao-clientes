@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.repository.CartaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,16 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoServiceImplTest {
-
     @InjectMocks
     private CartaoServiceImpl cartaoServiceImpl;
 
@@ -31,7 +30,7 @@ public class CartaoServiceImplTest {
     private ContaService contaService;
 
     @Mock
-    private HashMap<String, Cartao> mockHashMapCartao;
+    private CartaoRepository cartaoRepository;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -124,7 +123,7 @@ public class CartaoServiceImplTest {
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
-        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Cartao resultadoReal = cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO);
 
@@ -144,17 +143,17 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void quandoCartaoPesquisarNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
+    public void quandoCartaoBloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
 
-        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO)
+                cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO)
         );
-        assertEquals("Esse cartão está bloqueado.\n",
+        assertEquals("Esse cartão já está bloqueado.\n",
                 exception.getMessage());
     }
 
@@ -165,11 +164,41 @@ public class CartaoServiceImplTest {
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
-        when(mockHashMapCartao.get(NUMERO_CARTAO)).thenReturn(cartao);
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Cartao resultado = cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO);
 
         assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
         assertTrue(resultado.isBloqueado());
+    }
+
+    @Test
+    public void quandoCartaoDesbloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO)
+        );
+        assertEquals("Esse cartão já está desbloqueado.\n",
+                exception.getMessage());
+    }
+
+    @Test
+    public void quandoCartoesDesbloquearNumeroCartaoEEncontrarEntaoDesbloqueieCartao()
+            throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
+
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Cartao resultado = cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO);
+
+        assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
+        assertFalse(resultado.isBloqueado());
     }
 }
