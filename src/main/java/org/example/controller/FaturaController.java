@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.model.Fatura;
 import org.example.service.FaturaService;
 
 import java.util.Scanner;
@@ -12,7 +13,6 @@ public class FaturaController implements Controller {
         this.faturaService = faturaService;
         this.scanner = scanner;
     }
-
 
     public String executar(String comando) {
         if (comando.equals("faturas")) {
@@ -28,13 +28,42 @@ public class FaturaController implements Controller {
 
         switch (acao) {
             case "fechar":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return fecharFatura(partes[2]);
+                } else {
+                    return "Para fechar a fatura é necessário informar o número. Ex: faturas fechar 0123.\n";
+                }
 
             case "pagar":
-                return "não implementado";
+                return "Para fechar a fatura é necessário informar o número. Ex: faturas fechar 0123.\n";
 
             default:
                 return "operação inválida";
+        }
+    }
+
+    public String fecharFatura(String numeroCartao) {
+        try {
+            while (true) {
+                System.out.println("Confirma o fechamento da fatura do cartão " + numeroCartao +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
+                String resposta = scanner.nextLine().toUpperCase();
+
+                if (resposta.equals("S")) {
+                    Fatura fatura = faturaService.fecharFatura(numeroCartao);
+                    return "Sua fatura foi fechada com sucesso! Pague até dia " + fatura.getDtVencimento() + ".\n" +
+                            "Cartão de número " + fatura.getCartao().getNumeroCartao() +
+                            ", valido até " + fatura.getCartao().getDtVencimento() +
+                            ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
+                            ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
+                } else if (resposta.equals("N")) {
+                    return "Operação cancelada\n";
+                }
+
+                System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
         }
     }
 }
