@@ -4,7 +4,6 @@ import org.example.model.Fatura;
 
 import java.util.Collection;
 
-
 public interface FaturaRepository {
     Fatura cadastrar(Fatura fatura);
 
