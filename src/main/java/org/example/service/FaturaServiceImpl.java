@@ -45,6 +45,14 @@ public class FaturaServiceImpl implements FaturaService {
         }
         String dtVencimento = vencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
+        for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
+            if (fatura.getCartao().getNumeroCartao().equals(numeroCartao) &&
+                    fatura.getDtVencimento().equals(dtVencimento)
+            ) {
+                throw new Exception("A fatura já está fechada.\n");
+            }
+        }
+
         // "Deve ser uma nova entidade?" - transação e transferencia da no msm
         List<String> transacao = new ArrayList<>();
 
