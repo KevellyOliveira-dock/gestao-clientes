@@ -49,7 +49,7 @@ public class FaturaServiceImpl implements FaturaService {
 
         for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
             if (fatura.getCartao().getNumeroCartao().equals(numeroCartao) &&
-                    fatura.getChave().equals(chave)) {
+                    fatura.getDtVencimento().equals(dtVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
         }
