@@ -59,7 +59,10 @@ public class FaturaServiceImpl implements FaturaService {
         // "É a soma de todas as transações?"
         double valor = 200.0;
 
-        Fatura fatura = new Fatura(transacao, dtVencimento, cartao, valor);
+        String chave = String.valueOf(faturaRepository.buscarTamanho());
+
+
+        Fatura fatura = new Fatura(chave, transacao, dtVencimento, cartao, valor);
         faturaRepository.cadastrar(fatura);
 
         return fatura;

@@ -10,12 +10,17 @@ public class InMemoryFaturaRepository implements FaturaRepository {
 
     @Override
     public Fatura cadastrar(Fatura fatura) {
-        faturaRepository.put(fatura.getDtVencimento(), fatura);
+        faturaRepository.put(fatura.getChave(), fatura);
         return fatura;
     }
 
     @Override
     public Collection<Fatura> buscarPorNumeroCartao(String numeroCartao) {
         return faturaRepository.values();
+    }
+
+    @Override
+    public int buscarTamanho() {
+        return faturaRepository.size();
     }
 }
