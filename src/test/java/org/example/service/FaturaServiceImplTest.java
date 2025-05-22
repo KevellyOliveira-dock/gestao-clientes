@@ -43,7 +43,7 @@ public class FaturaServiceImplTest {
     private static final String CVV_CARTAO = "123";
     private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
     private static final boolean IS_BLOQUEADO_CARTAO = false;
-    private static final String CHAVE_FATURA = "10/06/2025";
+    private static final String CHAVE_FATURA = "0";
     private static final List<String> LISTA_DE_FATURA = new ArrayList<>();
     private static final String DT_VENCIMENTO_FATURA = "10/06/2025";
     private static final double VALOR_FATURA = 200.0;
@@ -53,10 +53,8 @@ public class FaturaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
-        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA);
 
         when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.cadastrar(fatura)).thenReturn(fatura);
 
         Fatura resultadoReal = faturaServiceImpl.fecharFatura(NUMERO_CARTAO);
 
