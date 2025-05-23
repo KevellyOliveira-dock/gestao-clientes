@@ -2,8 +2,9 @@ package org.example.repository;
 
 import org.example.model.Fatura;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryFaturaRepository implements FaturaRepository {
     private final HashMap<String, Fatura> faturaRepository = new HashMap<>();
@@ -15,8 +16,16 @@ public class InMemoryFaturaRepository implements FaturaRepository {
     }
 
     @Override
-    public Collection<Fatura> buscarPorNumeroCartao(String numeroCartao) {
-        return faturaRepository.values();
+    public List<Fatura> buscarPorNumeroCartao(String numeroCartao) {
+        List<Fatura> faturas = new ArrayList<>();
+
+        for (Fatura fatura : faturaRepository.values()) {
+            if (fatura.getCartao().getNumeroCartao().equals(numeroCartao)) {
+                faturas.add(fatura);
+            }
+        }
+
+        return faturas;
     }
 
     @Override
