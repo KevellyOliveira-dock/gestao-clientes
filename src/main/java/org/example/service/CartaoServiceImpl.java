@@ -5,8 +5,8 @@ import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.repository.CartaoRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import static java.lang.String.format;
@@ -51,13 +51,9 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("A conta informada não está ativa.\n");
         }
 
-        LocalDateTime agora = LocalDateTime.now();
-        LocalDateTime data = agora.plusYears(3);
-        String dtVencimento = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
         // LocalDateTime não tem milisegundos diretamente, ele guarda nanos então formato para 9 dígitos
         // format transforma o número inteiro em uma string de 9 digitos | substring pega os caracteres a partir de tal posição
-        String cvv = format("%09d", agora.getNano()).substring(6);
+        String cvv = format("%09d", LocalDateTime.now().getNano()).substring(6);
 
         String numeroCartao;
         Random random = new Random();
@@ -68,7 +64,9 @@ public class CartaoServiceImpl implements CartaoService {
             numeroCartao = valueOf(random.nextInt(MAX - MIN + 1) + MIN);
         } while (cartaoRepository.buscarPorNumero(numeroCartao) != null);
 
-        Cartao cartao = new Cartao(numeroCartao, cvv, dtVencimento, cliente, conta, false);
+        LocalDate dataVencimento = LocalDate.now().plusYears(3);
+
+        Cartao cartao = new Cartao(numeroCartao, cvv, dataVencimento, cliente, conta, false);
         cartaoRepository.cadastrar(cartao);
 
         return cartao;
@@ -100,9 +98,6 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public Cartao desbloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
-
-        // String cpf = cartao.getCliente().getCpf();
-        // clienteService.buscarClientePorCPF(cpf);
 
         String numeroConta = cartao.getConta().getNumeroConta();
         contaService.buscarContaPorNumero(numeroConta);
