@@ -39,11 +39,13 @@ public class FaturaControllerIntegrationTest {
     private static final boolean IS_ATIVO_CONTA = true;
     private static final String NUMERO_CARTAO = "1234";
     private static final String CVV_CARTAO = "123";
-    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
+    private static final LocalDate DT_VENCIMENTO_CARTAO = LocalDate.of(2028, 12, 12);
+    private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
     private static final boolean IS_BLOQUEADO_CARTAO = false;
     private static final String CHAVE_FATURA = "0";
     private static final List<String> LISTA_DE_FATURA = new ArrayList<>();
     private static final String DT_VENCIMENTO_FATURA = "10/06/2025";
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
     private static final double VALOR_FATURA = 200.0;
 
     @BeforeEach

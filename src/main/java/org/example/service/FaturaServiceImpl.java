@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cartao;
 import org.example.model.Fatura;
+import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
 
 import java.time.LocalDate;
@@ -30,26 +31,23 @@ public class FaturaServiceImpl implements FaturaService {
             throw new Exception("O cartão informado não foi encontrado.\n");
         }
 
-        String chave = String.valueOf(faturaRepository.buscarTamanho());
-
         // Pega a data de agora, se for antes do dia 10 desse mês, fechar a fatura ainda nesse mes.
         // A partir do dia 11 deve ser no proximo mês.
-        // LocalDate hoje = LocalDate.of(2025, 5, 1);
         LocalDate hoje = LocalDate.now();
-        LocalDate vencimento;
+        LocalDate dataVencimento;
+        LocalDate mesAtual = hoje.withDayOfMonth(10);
+        LocalDate proximoMes = hoje.plusMonths(1).withDayOfMonth(10);
 
         if (hoje.getDayOfMonth() <= 10) {
             // A fatura vence esse dia
-            vencimento = hoje.withDayOfMonth(10);
+            dataVencimento = mesAtual;
         } else {
             // a fatura vence no proximo mês
-            vencimento = hoje.plusMonths(1).withDayOfMonth(10);
+            dataVencimento = proximoMes;
         }
-        String dtVencimento = vencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
-            if (fatura.getCartao().getNumeroCartao().equals(numeroCartao) &&
-                    fatura.getDtVencimento().equals(dtVencimento)) {
+            if (fatura.getDataVencimento().equals(dataVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
         }
