@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.model.Transacao;
 import org.example.repository.ContaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +35,7 @@ public class ContaServiceImplTest {
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
+    private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
     private static final boolean IS_ATIVO_CONTA = true;
 
     @Test
@@ -98,7 +101,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContaPesquisarNumeroContaoVerifiqueSeContaEstaBloqueadoEntaoExibaMensagem() {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, false);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
@@ -119,7 +122,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         // Mocka o comportamento
         when(contaRepository.buscarValores(NOME_CLIENTE)).thenReturn(List.of(conta));
@@ -142,7 +145,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(List.of(conta));
 
@@ -156,7 +159,7 @@ public class ContaServiceImplTest {
     public void quandoContasDesativarNumeroContaEEncontrarEntaoDesativeConta()
             throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
 
