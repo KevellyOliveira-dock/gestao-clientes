@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Fatura {
+    private String chave;
     private List<String> transacao;
     private String dtVencimento;
     private Cartao cartao;

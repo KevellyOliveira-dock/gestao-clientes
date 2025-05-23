@@ -8,4 +8,6 @@ public interface FaturaRepository {
     Fatura cadastrar(Fatura fatura);
 
     Collection<Fatura> buscarPorNumeroCartao(String numeroCartao);
+
+    int buscarTamanho();
 }

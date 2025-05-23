@@ -18,4 +18,9 @@ public class InMemoryFaturaRepository implements FaturaRepository {
     public Collection<Fatura> buscarPorNumeroCartao(String numeroCartao) {
         return faturaRepository.values();
     }
+
+    @Override
+    public int buscarTamanho() {
+        return faturaRepository.size();
+    }
 }

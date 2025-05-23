@@ -30,6 +30,8 @@ public class FaturaServiceImpl implements FaturaService {
             throw new Exception("O cartão informado não foi encontrado.\n");
         }
 
+        String chave = String.valueOf(faturaRepository.buscarTamanho());
+
         // Pega a data de agora, se for antes do dia 10 desse mês, fechar a fatura ainda nesse mes.
         // A partir do dia 11 deve ser no proximo mês.
         // LocalDate hoje = LocalDate.of(2025, 5, 1);
@@ -47,8 +49,7 @@ public class FaturaServiceImpl implements FaturaService {
 
         for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
             if (fatura.getCartao().getNumeroCartao().equals(numeroCartao) &&
-                    fatura.getDtVencimento().equals(dtVencimento)
-            ) {
+                    fatura.getDtVencimento().equals(dtVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
         }
@@ -59,7 +60,7 @@ public class FaturaServiceImpl implements FaturaService {
         // "É a soma de todas as transações?"
         double valor = 200.0;
 
-        Fatura fatura = new Fatura(transacao, dtVencimento, cartao, valor, false);
+        Fatura fatura = new Fatura(chave, transacao, dtVencimento, cartao, valor, false);
         faturaRepository.cadastrar(fatura);
 
         return fatura;
@@ -79,7 +80,6 @@ public class FaturaServiceImpl implements FaturaService {
         Collection<Fatura> faturas = faturaRepository.buscarPorNumeroCartao(numeroCartao);
 
         for (Fatura fatura : faturas) {
-            Conta conta = fatura.getCartao().getConta();
             double saldo = fatura.getCartao().getConta().getSaldo();
             double valor = fatura.getValor();
             double saldoAtual = saldo - valor;
