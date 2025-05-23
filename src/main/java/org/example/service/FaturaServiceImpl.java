@@ -6,7 +6,6 @@ import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,13 +51,26 @@ public class FaturaServiceImpl implements FaturaService {
             }
         }
 
-        // "Deve ser uma nova entidade?" - transação e transferencia da no msm
-        List<String> transacao = new ArrayList<>();
+        List<Transacao> transacaoMes = new ArrayList<>();
+        List<Transacao> todaTransacao = cartao.getConta().getTransacao();
 
-        // "É a soma de todas as transações?"
-        double valor = 200.0;
+        for (Transacao transacao : todaTransacao) {
+            LocalDate dia = transacao.getDataTransacao();
 
-        Fatura fatura = new Fatura(chave, transacao, dtVencimento, cartao, valor);
+            if (dia.equals(mesAtual) || dia.isAfter(mesAtual) &&
+                    dia.equals(proximoMes) || dia.isBefore(proximoMes)) {
+                transacaoMes.add(transacao);
+            }
+        }
+
+        double valor = 0;
+        for (Transacao transacao : transacaoMes) {
+            valor += transacao.getValor();
+        }
+
+        String chave = String.valueOf(faturaRepository.buscarTamanho());
+
+        Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor);
         faturaRepository.cadastrar(fatura);
 
         return fatura;
