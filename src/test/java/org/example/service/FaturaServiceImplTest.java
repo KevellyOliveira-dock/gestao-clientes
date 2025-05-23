@@ -65,7 +65,7 @@ public class FaturaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoFaturaFecharENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) throws Exception {
+    public void quandoFaturaFecharENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) {
         Exception exception = assertThrows(Exception.class, () ->
                 faturaServiceImpl.fecharFatura(numeroCartao)
         );
