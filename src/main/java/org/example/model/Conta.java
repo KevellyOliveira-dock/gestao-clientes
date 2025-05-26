@@ -3,12 +3,15 @@ package org.example.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class Conta {
     private String numeroConta;
     private Cliente titular;
     private Double saldo;
+    private List<Transacao> transacao;
     private boolean isAtivo;
 
     public String toString() {

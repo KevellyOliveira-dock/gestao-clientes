@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.Fatura;
 import org.example.service.FaturaService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -56,9 +57,12 @@ public class FaturaController implements Controller {
 
                 if (resposta.equals("S")) {
                     Fatura fatura = faturaService.fecharFatura(numeroCartao);
-                    return "Sua fatura foi fechada com sucesso! Pague até dia " + fatura.getDtVencimento() + ".\n" +
+                    String dataVencimentoFatura = fatura.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String dataVencimentoCartao = fatura.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                    return "Sua fatura foi fechada com sucesso! Pague até dia " + dataVencimentoFatura + ".\n" +
                             "Cartão de número " + fatura.getCartao().getNumeroCartao() +
-                            ", valido até " + fatura.getCartao().getDtVencimento() +
+                            ", valido até " + dataVencimentoCartao +
                             ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
                             ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {

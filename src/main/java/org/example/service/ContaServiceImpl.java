@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.model.Transacao;
 import org.example.repository.ContaRepository;
 
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        var conta = new Conta(numeroConta, cliente, saldo, true);
+        List<Transacao> todaTransacao = new ArrayList<>();
+
+        var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
         contaRepository.cadastrar(conta);
 
         return conta;
