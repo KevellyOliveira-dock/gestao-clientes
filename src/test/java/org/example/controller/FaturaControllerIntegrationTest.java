@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Fatura;
+import org.example.model.Transacao;
 import org.example.service.FaturaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,11 +40,12 @@ public class FaturaControllerIntegrationTest {
     private static final boolean IS_ATIVO_CONTA = true;
     private static final String NUMERO_CARTAO = "1234";
     private static final String CVV_CARTAO = "123";
-    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
+    private static final LocalDate DT_VENCIMENTO_CARTAO = LocalDate.of(2028, 12, 12);
+    private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
     private static final boolean IS_BLOQUEADO_CARTAO = false;
     private static final String CHAVE_FATURA = "0";
-    private static final List<String> LISTA_DE_FATURA = new ArrayList<>();
-    private static final String DT_VENCIMENTO_FATURA = "10/06/2025";
+    private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
     private static final double VALOR_FATURA = 200.0;
     private static final boolean IS_PAGO_FATURA = false;
 
@@ -72,9 +74,9 @@ public class FaturaControllerIntegrationTest {
     @Test
     public void quandoComandoEhFaturasFecharEntaoFecheAFatura() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
-        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
+        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURAA, IS_PAGO_FATURA));
 
         when(faturaService.fecharFatura(NUMERO_CARTAO)).thenReturn(fatura);
 

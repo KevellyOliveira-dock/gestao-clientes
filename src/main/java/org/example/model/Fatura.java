@@ -15,5 +15,4 @@ public class Fatura {
     private Cartao cartao;
     private double valor;
     private boolean isPago;
-
 }

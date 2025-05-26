@@ -14,12 +14,4 @@ public class Cartao {
     private Cliente cliente;
     private Conta conta;
     private boolean isBloqueado;
-
-    public String toString() {
-        return "O cliente " + cliente.getNomeCompleto() + ", de conta número " + conta.getNumeroConta()
-                + ", acionou um novo cartão: "
-                + "\nData de vencimento: " + dataVencimento + "."
-                + "\nNúmero do cartão: " + numeroCartao + "."
-                + "\nCVV: " + cvv + ".\n";
-    }
 }

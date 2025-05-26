@@ -6,7 +6,8 @@ import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FaturaServiceImpl implements FaturaService {
     private final FaturaRepository faturaRepository;
@@ -74,43 +75,4 @@ public class FaturaServiceImpl implements FaturaService {
 
         return fatura;
     }
-
-    @Override
-    public Fatura pagarFatura(String numeroCartao) throws Exception {
-        if (numeroCartao == null || numeroCartao.isEmpty()) {
-            throw new Exception("O número do cartão não pode ser nulo ou vazio.\n");
-        }
-
-        Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
-        if (cartao == null) {
-            throw new Exception("O cartão informado não foi encontrado.\n");
-        }
-
-        List<Fatura> faturas = faturaRepository.buscarPorNumeroCartao(numeroCartao);
-
-        Fatura fatura = null;
-        for (Fatura fat : faturas) {
-            if (!fat.isPago() && fat.getDataVencimento().isAfter(LocalDate.now())) {
-               fatura = fat;
-            }
-
-            double saldo = fatura.getCartao().getConta().getSaldo();
-            double valor = fatura.getValor();
-            double saldoAtual = saldo - valor;
-
-            if (fatura.isPago()) {
-                throw new Exception("A fatura já foi paga.\n");
-            }
-
-            fatura.getCartao().getConta().setSaldo(saldoAtual);
-            fatura.setPago(true);
-
-            if (saldo < valor) {
-                throw new Exception("A conta não possui saldo suficiente para efetuar o pagamento dessa fatura.\n");
-            }
-
-            faturaRepository.cadastrar(fatura);
-        }
-        return fatura;
-}
 }

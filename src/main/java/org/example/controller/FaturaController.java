@@ -1,12 +1,5 @@
 package org.example.controller;
 
-import org.example.model.Fatura;
-import org.example.service.FaturaService;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Scanner;
-
 public class FaturaController implements Controller {
     private final Scanner scanner;
     private final FaturaService faturaService;
@@ -33,14 +26,17 @@ public class FaturaController implements Controller {
                 if (partes.length == 3) {
                     return fecharFatura(partes[2]);
                 } else {
-                    return "Para fechar a fatura é necessário informar o número do cartão. Ex: faturas fechar 0123.\n";
+                    return "Para fechar a fatura é necessário informar o número. Ex: faturas fechar 0123.\n";
                 }
 
             case "pagar":
+                return "não implementado";
+        switch (acao) {
+            case "fechar":
                 if (partes.length == 3) {
-                    return pagarFatura(partes[2]);
+                    return fecharFatura(partes[2]);
                 } else {
-                    return "Para pagar a fatura é necessário informar o número do cartão. Ex: faturas pagar 0123.\n";
+                    return "Para fechar a fatura é necessário informar o número do cartão. Ex: faturas fechar 0123.\n";
                 }
 
             default:
@@ -75,6 +71,7 @@ public class FaturaController implements Controller {
             return e.getMessage();
         }
     }
+}
 
     public String pagarFatura(String numeroCartao) {
         try {

@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Fatura;
+import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,18 +41,19 @@ public class FaturaServiceImplTest {
     private static final boolean IS_ATIVO_CONTA = true;
     private static final String NUMERO_CARTAO = "1234";
     private static final String CVV_CARTAO = "123";
-    private static final String DT_VENCIMENTO_CARTAO = "12/12/2028";
+    private static final LocalDate DT_VENCIMENTO_CARTAO = LocalDate.of(2028, 12, 12);
+    private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
     private static final boolean IS_BLOQUEADO_CARTAO = false;
     private static final String CHAVE_FATURA = "0";
-    private static final List<String> LISTA_DE_FATURA = new ArrayList<>();
-    private static final String DT_VENCIMENTO_FATURA = "10/06/2025";
+    private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
     private static final double VALOR_FATURA = 200.0;
     private static final boolean IS_PAGO_FATURA = false;
 
     @Test
     public void quandoFaturaFecharVefiriqueSeCartaoExisteEntaoRetorneFatura() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
         when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
@@ -60,12 +61,12 @@ public class FaturaServiceImplTest {
         Fatura resultadoReal = faturaServiceImpl.fecharFatura(NUMERO_CARTAO);
 
         assertEquals(NUMERO_CARTAO, resultadoReal.getCartao().getNumeroCartao());
-        assertEquals(DT_VENCIMENTO_FATURA, resultadoReal.getDtVencimento());
+        assertEquals(DT_VENCIMENTO_FATURA, resultadoReal.getDataVencimento());
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoFaturaFecharENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) throws Exception {
+    public void quandoFaturaFecharENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) {
         Exception exception = assertThrows(Exception.class, () ->
                 faturaServiceImpl.fecharFatura(numeroCartao)
         );
@@ -85,7 +86,7 @@ public class FaturaServiceImplTest {
     @Test
     public void quandoFaturaFecharEBuscarPorCartaoEEncontrarEntaoRetorneMensagem() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
         Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
 
@@ -101,7 +102,7 @@ public class FaturaServiceImplTest {
     @Test
     public void quandoFaturaFecharAntesDoDiaDezEntaoFecheNoMesAtual() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, IS_ATIVO_CONTA);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
         when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
@@ -115,8 +116,7 @@ public class FaturaServiceImplTest {
         } else {
             vencimento = hoje.plusMonths(1).withDayOfMonth(10);
         }
-        String dtVencimento = vencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        assertEquals(dtVencimento, resultadoReal.getDtVencimento());
+        assertEquals(vencimento, resultadoReal.getDataVencimento());
     }
 }
