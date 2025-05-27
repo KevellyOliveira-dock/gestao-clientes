@@ -7,7 +7,7 @@ import java.util.List;
 public interface FaturaRepository {
     Fatura cadastrar(Fatura fatura);
 
-    List<Fatura> buscarPorNumeroCartao(String numeroCartao);
+    List<Fatura> buscarFaturaPorNumeroCartao(String numeroCartao);
 
     int buscarTamanho();
 }

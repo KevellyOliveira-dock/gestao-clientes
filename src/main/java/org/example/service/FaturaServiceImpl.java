@@ -45,7 +45,7 @@ public class FaturaServiceImpl implements FaturaService {
             dataVencimento = proximoMes;
         }
 
-        for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
+        for (Fatura fatura : faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao)) {
             if (fatura.getDataVencimento().equals(dataVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
@@ -87,7 +87,7 @@ public class FaturaServiceImpl implements FaturaService {
             throw new Exception("O cartão informado não foi encontrado.\n");
         }
 
-        List<Fatura> faturas = faturaRepository.buscarPorNumeroCartao(numeroCartao);
+        List<Fatura> faturas = faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao);
 
         Fatura fatura = null;
         LocalDate hoje = LocalDate.now();
