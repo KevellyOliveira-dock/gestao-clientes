@@ -63,7 +63,7 @@ public class FaturaServiceImpl implements FaturaService {
             }
         }
 
-        double valor = 0;
+        double valor = 200;
         for (Transacao transacao : transacaoMes) {
             valor += transacao.getValor();
         }
@@ -73,6 +73,45 @@ public class FaturaServiceImpl implements FaturaService {
         Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor, false);
         faturaRepository.cadastrar(fatura);
 
+        return fatura;
+    }
+
+    @Override
+    public Fatura pagarFatura(String numeroCartao) throws Exception {
+        if (numeroCartao == null || numeroCartao.isEmpty()) {
+            throw new Exception("O número do cartão não pode ser nulo ou vazio.\n");
+        }
+
+        Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
+        if (cartao == null) {
+            throw new Exception("O cartão informado não foi encontrado.\n");
+        }
+
+        List<Fatura> faturas = faturaRepository.buscarPorNumeroCartao(numeroCartao);
+
+        Fatura fatura = null;
+        LocalDate hoje = LocalDate.now();
+        for (Fatura fat : faturas) {
+            if (!fat.isPago() && !hoje.isAfter(fat.getDataVencimento())) {
+                if (fatura == null || fat.getDataVencimento().isBefore(fatura.getDataVencimento())) {
+                    fatura = fat;
+                }
+            }
+        }
+
+        if (fatura == null) {
+            throw new Exception("Nenhuma fatura disponível para pagamento.\n");
+        }
+
+        double valor = fatura.getValor();
+        double saldo = fatura.getCartao().getConta().getSaldo();
+
+        if (saldo < valor) {
+            throw new Exception("Saldo insuficiente para pagar a fatura.\n");
+        }
+
+        fatura.setPago(true);
+        fatura.getCartao().getConta().setSaldo(saldo - valor);
         return fatura;
     }
 }
