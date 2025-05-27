@@ -112,6 +112,10 @@ public class FaturaServiceImpl implements FaturaService {
 
         fatura.setPago(true);
         fatura.getCartao().getConta().setSaldo(saldo - valor);
+
+        Transacao pagamentoTransacao = new Transacao(LocalDate.now(), "Pagamento de fatura", valor);
+
+        fatura.getCartao().getConta().getTransacao().add(pagamentoTransacao);
         return fatura;
     }
 }
