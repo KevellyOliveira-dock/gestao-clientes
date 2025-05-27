@@ -1,5 +1,11 @@
 package org.example.controller;
 
+import org.example.model.Fatura;
+import org.example.service.FaturaService;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
 public class FaturaController implements Controller {
     private final Scanner scanner;
     private final FaturaService faturaService;
@@ -26,18 +32,16 @@ public class FaturaController implements Controller {
                 if (partes.length == 3) {
                     return fecharFatura(partes[2]);
                 } else {
-                    return "Para fechar a fatura é necessário informar o número. Ex: faturas fechar 0123.\n";
+                    return "Para fechar a fatura é necessário informar o número do cartão. Ex: faturas fechar 0123.\n";
                 }
 
             case "pagar":
-                return "não implementado";
-        switch (acao) {
-            case "fechar":
                 if (partes.length == 3) {
-                    return fecharFatura(partes[2]);
+                    return pagarFatura(partes[2]);
                 } else {
-                    return "Para fechar a fatura é necessário informar o número do cartão. Ex: faturas fechar 0123.\n";
+                    return "Para pagar a fatura é necessário informar o número do cartão. Ex: faturas pagar 0123.\n";
                 }
+
 
             default:
                 return "operação inválida";
@@ -71,7 +75,6 @@ public class FaturaController implements Controller {
             return e.getMessage();
         }
     }
-}
 
     public String pagarFatura(String numeroCartao) {
         try {
@@ -81,17 +84,14 @@ public class FaturaController implements Controller {
                 String resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
-                    Collection<Fatura> faturas = faturaService.pagarFatura(numeroCartao);
+                    Fatura fat = faturaService.pagarFatura(numeroCartao);
 
-                    Fatura fat = null;
-                    for (Fatura fatura : faturas) {
-                        fat = fatura;
-                        break;
-                    }
+                    String vencimentoFat = fat.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String vencimentoCartao = fat.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                    return "Sua fatura foi paga com sucesso! Pague até dia " + fat.getDtVencimento() + ".\n" +
+                    return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFat + ".\n" +
                             "Cartão de número " + fat.getCartao().getNumeroCartao() +
-                            ", valido até " + fat.getCartao().getDtVencimento() +
+                            ", valido até " + vencimentoCartao +
                             ", Titularidade de " + fat.getCartao().getCliente().getNomeCompleto() +
                             ", portador do CPF " + fat.getCartao().getCliente().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {
