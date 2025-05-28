@@ -99,7 +99,7 @@ public class FaturaControllerIntegrationTest {
     }
 
     @Test
-    public void quandoComandoEhFaturasPagarEntaoFecheAFatura() throws Exception {
+    public void quandoComandoEhFaturasPagarSaldoSerSuficienteEAFaturaAbertaEntaoPagueAFatura() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
