@@ -120,6 +120,30 @@ public class FaturaServiceImplTest {
         assertEquals(vencimento, resultadoReal.getDataVencimento());
     }
 
+    @Test
+    public void quandoFaturaPagarEntaoVerifiqueSeOValorDoFechamentoDaFaturaEstaCorreto() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+
+        List<Transacao> listaDeTransacao = new ArrayList<>();
+        listaDeTransacao.add(new Transacao(LocalDate.of(2025, 5, 1), "Compra 1", 40.0));
+        listaDeTransacao.add(new Transacao(LocalDate.of(2025, 5, 10), "Compra 2", 60.0));
+        listaDeTransacao.add(new Transacao(LocalDate.of(2025, 5, 20), "Compra 3", 10.0));
+        double totalTransacoes = listaDeTransacao.get(0).getValor() +
+                listaDeTransacao.get(1).getValor() +
+                listaDeTransacao.get(2).getValor();
+
+        Fatura fatura = new Fatura(CHAVE_FATURA, listaDeTransacao, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, false);
+
+        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+
+        var resultado = faturaServiceImpl.pagarFatura(NUMERO_CARTAO);
+
+        assertEquals(totalTransacoes, resultado.getValor());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     public void quandoFaturaPagarENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) {
