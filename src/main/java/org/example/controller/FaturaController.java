@@ -86,10 +86,10 @@ public class FaturaController implements Controller {
                 if (resposta.equals("S")) {
                     Fatura fatura = faturaService.pagarFatura(numeroCartao);
 
-                    String vencimentoFat = fatura.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String vencimentoFatura = fatura.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                     String vencimentoCartao = fatura.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                    return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFat + ".\n" +
+                    return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFatura + ".\n" +
                             "Cartão de número " + fatura.getCartao().getNumeroCartao() +
                             ", valido até " + vencimentoCartao +
                             ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
