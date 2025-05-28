@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.Cartao;
 import org.example.service.CartaoService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class CartaoController implements Controller {
@@ -58,7 +59,18 @@ public class CartaoController implements Controller {
         String conta = scanner.nextLine();
 
         try {
-            return "Cartão criado com sucesso!\n" + cartaoService.cadastrarCartao(cpf, conta).toString();
+            Cartao cartaoCriado = cartaoService.cadastrarCartao(cpf, conta);
+            String dataVencimentoCartao = cartaoCriado.getDataVencimento().format(
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            );
+
+            return "Cartão criado com sucesso!\n" +
+                    "O cliente " + cartaoCriado.getCliente().getNomeCompleto() +
+                    ", de conta número " + cartaoCriado.getConta().getNumeroConta() +
+                    ", acionou um novo cartão: " +
+                    "\nData de vencimento: " + dataVencimentoCartao + "." +
+                    "\nNúmero do cartão: " + cartaoCriado.getNumeroCartao() + "." +
+                    "\nCVV: " + cartaoCriado.getCvv() + ".\n";
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -67,11 +79,12 @@ public class CartaoController implements Controller {
     public String bloquearCartao(String numeroCartao) {
         try {
             Cartao cartaoExistente = cartaoService.buscarCartaoPorNumero(numeroCartao);
+            String dataVencimento = cartaoExistente.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String resposta;
 
             while (true) {
                 System.out.println("Confirma o bloqueio do cartão " + cartaoExistente.getNumeroCartao() +
-                        ", com vencimento em " + cartaoExistente.getDtVencimento() +
+                        ", com vencimento em " + dataVencimento +
                         ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
                         ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
                         "?\nDigite \"S\" para sim ou \"N\" para não: ");
@@ -94,11 +107,12 @@ public class CartaoController implements Controller {
     public String desbloquearCartao(String numeroCartao) {
         try {
             Cartao cartaoExistente = cartaoService.buscarCartaoPorNumero(numeroCartao);
+            String dataVencimento = cartaoExistente.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String resposta;
 
             while (true) {
                 System.out.println("Confirma o desbloqueio do cartão " + cartaoExistente.getNumeroCartao() +
-                        ", com vencimento em " + cartaoExistente.getDtVencimento() +
+                        ", com vencimento em " + dataVencimento +
                         ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
                         ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
                         "?\nDigite \"S\" para sim ou \"N\" para não: ");
