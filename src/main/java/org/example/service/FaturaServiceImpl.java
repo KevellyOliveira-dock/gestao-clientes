@@ -63,7 +63,7 @@ public class FaturaServiceImpl implements FaturaService {
             }
         }
 
-        double valor = 200;
+        double valor = 0;
         for (Transacao transacao : transacaoMes) {
             valor += transacao.getValor();
         }
