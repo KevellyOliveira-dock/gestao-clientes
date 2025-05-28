@@ -11,6 +11,7 @@ public class Cliente {
     private String nomeCompleto;
     private String cpf;
     private String endereco;
+    private boolean isAtivo;
 
     @Override
     public String toString() {

@@ -28,6 +28,7 @@ public class ClienteServiceImplTest {
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
 
     @Test
     public void quandoClientesCadastrarVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso() throws Exception {
@@ -52,9 +53,11 @@ public class ClienteServiceImplTest {
             "Kevelly, 12345678900, ''",
             "'', '', ''",
     })
-    void quandoClientesCadastrarENomeForNuloOuVazioEntaoRetorneMensagemDeErro(String nomeCompleto,
-                                                                              String cpf,
-                                                                              String endereco) {
+    void quandoClientesCadastrarENomeForNuloOuVazioEntaoRetorneMensagemDeErro(
+            String nomeCompleto,
+            String cpf,
+            String endereco
+    ) {
         Exception exception = assertThrows(Exception.class, () ->
                 clientesServiceImpl.cadastrarCliente(nomeCompleto, cpf, endereco)
         );
@@ -63,7 +66,7 @@ public class ClienteServiceImplTest {
 
     @Test
     public void quandoClientesCadastrarEntaoVerifiqueSeCadastrouChaveAntes() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
         // () -> : lambda expression
@@ -87,10 +90,12 @@ public class ClienteServiceImplTest {
     //TESTE ATUALIZAR
     @Test
     public void quandoClienteAtualizarVerifiqueSeOCpfJaFoiCadastradoEntaoAtualizeComSucesso() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
-        Cliente novoCliente = clientesServiceImpl.atualizarCliente("Joana", CPF_CLIENTE, "Rua teste da silva");
+        Cliente novoCliente = clientesServiceImpl.atualizarCliente(
+                "Joana", CPF_CLIENTE, "Rua teste da silva"
+        );
 
         assertEquals("Joana", novoCliente.getNomeCompleto());
         assertEquals(CPF_CLIENTE, novoCliente.getCpf());
@@ -103,7 +108,7 @@ public class ClienteServiceImplTest {
     @CsvSource({" , Kevelly"})
     public void quandoClienteAtualizarVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior
             (String novoNome, String nomeEsperado) throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         //Simula o input vazio
@@ -122,7 +127,7 @@ public class ClienteServiceImplTest {
     @CsvSource({" , Rua dos testes 56"})
     public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior
             (String novoEndereco, String enderecoEsperado) throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         if (novoEndereco == null) {
@@ -138,9 +143,13 @@ public class ClienteServiceImplTest {
     //PESQUISAR CLIENTE
     @Test
     public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        Cliente cliente2 = new Cliente("Joana Silva", "0000000", "rua Unitarios 123");
-        Cliente cliente3 = new Cliente("Carol silveira", "9999999", "rua Unitarios 123");
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        Cliente cliente2 = new Cliente(
+                "Joana Silva", "0000000", "rua Unitarios 123", true
+        );
+        Cliente cliente3 = new Cliente(
+                "Carol silveira", "9999999", "rua Unitarios 123", IS_ATIVO_CLIENTE
+        );
 
         List<Cliente> clientes = new ArrayList<>();
         clientes.add(cliente);
@@ -166,7 +175,7 @@ public class ClienteServiceImplTest {
 
     @Test
     public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 

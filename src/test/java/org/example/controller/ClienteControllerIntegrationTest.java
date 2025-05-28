@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.example.model.Cliente;
+import org.example.service.ClienteOperacoesService;
 import org.example.service.ClienteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +29,13 @@ public class ClienteControllerIntegrationTest {
     @Mock
     private ClienteService clienteService;
 
+    @Mock
+    private ClienteOperacoesService clienteOperacoesService;
+
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
 
     @BeforeEach
     public void setup() {
@@ -41,7 +46,7 @@ public class ClienteControllerIntegrationTest {
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ClienteController(clienteService, scanner);
+        controller = new ClienteController(clienteService, scanner, clienteOperacoesService);
     }
 
     @Test
@@ -62,7 +67,7 @@ public class ClienteControllerIntegrationTest {
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() throws Exception {
         //o \n é um delimitador para o Scanner(espaço e tabulação também),
         //sempre q ele lê sabe acabou e passa para a próxima linha
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE)).thenReturn(cliente);
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -82,7 +87,9 @@ public class ClienteControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() throws Exception {
-        Cliente clienteAtualizado = new Cliente("Joice", CPF_CLIENTE, "Rua Teste 234");
+        Cliente clienteAtualizado = new Cliente(
+                "Joice", CPF_CLIENTE, "Rua Teste 234", IS_ATIVO_CLIENTE
+        );
 
         when(clienteService.atualizarCliente("Joice", CPF_CLIENTE, "Rua Teste 234")).
                 thenReturn(clienteAtualizado);
@@ -146,8 +153,8 @@ public class ClienteControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarNomeEEncontrarClientesEntaoExibaListaDeClientes() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        Cliente cliente2 = new Cliente(NOME_CLIENTE, "98765432100", ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        Cliente cliente2 = new Cliente(NOME_CLIENTE, "98765432100", ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         List<Cliente> clientes = new ArrayList<>();
         clientes.add(cliente);
@@ -176,7 +183,7 @@ public class ClienteControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
