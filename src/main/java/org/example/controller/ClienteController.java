@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Cliente;
+import org.example.service.ClienteOperacoesService;
 import org.example.service.ClienteService;
 
 import java.util.List;
@@ -12,10 +13,13 @@ public class ClienteController implements Controller {
     //atributo que será injetado no construtor
     private ClienteService clienteService;
 
+    private ClienteOperacoesService clienteOperacoesService;
+
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClienteController(ClienteService clienteService, Scanner scanner) {
+    public ClienteController(ClienteService clienteService, Scanner scanner, ClienteOperacoesService clienteOperacoesService) {
         this.scanner = scanner;
         this.clienteService = clienteService;
+        this.clienteOperacoesService = clienteOperacoesService;
     }
 
     public String executar(String comando) throws Exception {

@@ -7,7 +7,14 @@ import org.example.controller.ClienteController;
 import org.example.controller.ContaController;
 import org.example.controller.FaturaController;
 import org.example.controller.FrontController;
-import org.example.repository.*;
+import org.example.repository.ClienteRepository;
+import org.example.repository.InMemoryClienteRepository;
+import org.example.repository.CartaoRepository;
+import org.example.repository.InMemoryCartaoRepository;
+import org.example.repository.ContaRepository;
+import org.example.repository.InMemoryContaRepository;
+import org.example.repository.FaturaRepository;
+import org.example.repository.InMemoryFaturaRepository;
 import org.example.service.ClienteService;
 import org.example.service.ClienteServiceImpl;
 import org.example.service.ContaService;
@@ -16,6 +23,7 @@ import org.example.service.CartaoService;
 import org.example.service.CartaoServiceImpl;
 import org.example.service.FaturaService;
 import org.example.service.FaturaServiceImpl;
+import org.example.service.ClienteOperacoesService;
 
 public class Main {
     public static void main(String[] args) {
@@ -34,9 +42,13 @@ public class Main {
         CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository, clienteService, contaService);
         FaturaService faturaService = new FaturaServiceImpl(faturaRepository, cartaoService);
 
+        ClienteOperacoesService clienteOperacoesService = new ClienteOperacoesService(
+                clienteService, contaService, cartaoService, faturaService
+        );
+
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
-        var clientesController = new ClienteController(clienteService, scanner); //injeção de dependencia
+        var clientesController = new ClienteController(clienteService, scanner, clienteOperacoesService); //injeção de dependencia
         var contasController = new ContaController(contaService, scanner);
         var faturasController = new FaturaController(faturaService, scanner);
 

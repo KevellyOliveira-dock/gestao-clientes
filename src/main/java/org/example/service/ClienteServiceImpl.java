@@ -27,7 +27,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new Exception("CPF já cadastrado");
         }
 
-        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco);
+        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco, true);
         clienteRepository.cadastrar(clienteCadastrar);
 
         return clienteCadastrar;
@@ -49,7 +49,7 @@ public class ClienteServiceImpl implements ClienteService {
             endereco = clienteExistente.getEndereco();
         }
 
-        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco);
+        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco, true);
         clienteRepository.cadastrar(clienteAtualizar);
 
         return clienteAtualizar;
