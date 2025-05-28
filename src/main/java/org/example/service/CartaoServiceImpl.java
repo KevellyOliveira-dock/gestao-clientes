@@ -7,6 +7,7 @@ import org.example.repository.CartaoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import static java.lang.String.format;
@@ -109,5 +110,11 @@ public class CartaoServiceImpl implements CartaoService {
         cartao.setBloqueado(false);
         cartaoRepository.cadastrar(cartao);
         return cartao;
+    }
+
+    @Override
+    public List<Cartao> buscarCartaoPorCPF(String cpf) {
+
+        return cartaoRepository.buscarPorCPF(cpf);
     }
 }
