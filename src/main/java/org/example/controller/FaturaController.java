@@ -84,16 +84,16 @@ public class FaturaController implements Controller {
                 String resposta = scanner.nextLine().toUpperCase();
 
                 if (resposta.equals("S")) {
-                    Fatura fat = faturaService.pagarFatura(numeroCartao);
+                    Fatura fatura = faturaService.pagarFatura(numeroCartao);
 
-                    String vencimentoFat = fat.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    String vencimentoCartao = fat.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String vencimentoFat = fatura.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String vencimentoCartao = fatura.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
                     return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFat + ".\n" +
-                            "Cartão de número " + fat.getCartao().getNumeroCartao() +
+                            "Cartão de número " + fatura.getCartao().getNumeroCartao() +
                             ", valido até " + vencimentoCartao +
-                            ", Titularidade de " + fat.getCartao().getCliente().getNomeCompleto() +
-                            ", portador do CPF " + fat.getCartao().getCliente().getCpf() + ".\n";
+                            ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
+                            ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";
                 }
