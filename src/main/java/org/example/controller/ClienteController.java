@@ -48,7 +48,12 @@ public class ClienteController implements Controller {
                 return cadastrarCliente();
 
             case "desativar":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return desativarCliente(partes[2]);
+                } else {
+                    return "Para desativar é necessário informar o CPF. Ex: clientes desativar 12345678901.\n";
+                }
+
 
             case "pesquisar":
                 return pesquisarCliente(partes);
@@ -150,5 +155,15 @@ public class ClienteController implements Controller {
         }
 
         return cliente.toString();
+    }
+
+    public String desativarCliente(String cpf) throws Exception {
+       Cliente cliente = clienteOperacoesService.desativarCliente(cpf);
+
+        if (cliente == null) {
+            return "Cliente não encontrado. Cadastre-se e tente novamente.\n";
+        }
+
+        return "Cliente desativado com sucesso.\n";
     }
 }

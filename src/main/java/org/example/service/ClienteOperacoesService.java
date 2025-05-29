@@ -20,7 +20,7 @@ public class ClienteOperacoesService {
     }
 
 
-    public Cliente DesativarCliente(String cpf) throws Exception {
+    public Cliente desativarCliente(String cpf) throws Exception {
         if (cpf == null || cpf.isEmpty()) {
             throw new Exception("O CPF não pode ser nulo ou vazio.\n");
         }
@@ -42,6 +42,16 @@ public class ClienteOperacoesService {
 
         for (int i = 0; i < cartoes.size(); i++) {
            faturaService.fecharFatura(cartoes.get(i).getNumeroCartao());
+        }
+
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
+        }
+
+        if (!cliente.isAtivo()) {
+            throw new Exception("Esse cliente está desativado. Suas permissões foram revogadas.\n");
         }
 
         clienteExistente.setAtivo(false);
