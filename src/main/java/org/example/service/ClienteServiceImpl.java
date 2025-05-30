@@ -61,11 +61,16 @@ public class ClienteServiceImpl implements ClienteService {
             throw new Exception("O CPF informado não foi encontrado. Tente novamente");
         }
 
-        return clienteRepository.buscarPorCPF(cpf);
+        Cliente cliente = clienteRepository.buscarPorCPF(cpf);
+        if (cliente == null) {
+            throw  new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
+        }
+
+        return cliente;
     }
 
     @Override
-    public List<Cliente> pesquisarClientePorNome(String nome) {
+    public List<Cliente> pesquisarClientePorNome(String nome) throws Exception{
         List<Cliente> clientesEncontrados = new ArrayList<>();
         String nomePesquisa = nome.toLowerCase();
 
@@ -73,6 +78,10 @@ public class ClienteServiceImpl implements ClienteService {
             if (cliente.getNomeCompleto().toLowerCase().contains(nomePesquisa)) {
                 clientesEncontrados.add(cliente);
             }
+        }
+
+        if (clientesEncontrados.isEmpty()) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         return clientesEncontrados;
