@@ -65,6 +65,14 @@ public class ClienteServiceImplTest {
     }
 
     @Test
+    public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
+        Exception exception = assertThrows(Exception.class, () ->
+                clientesServiceImpl.pesquisarClientePorNome(NOME_CLIENTE)
+        );
+        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
+    }
+
+    @Test
     public void quandoClientesCadastrarEntaoVerifiqueSeCadastrouChaveAntes() {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
@@ -184,5 +192,16 @@ public class ClienteServiceImplTest {
         assertEquals(NOME_CLIENTE, resultado.getNomeCompleto());
         assertEquals(CPF_CLIENTE, resultado.getCpf());
         assertEquals(ENDERECO_CLIENTE, resultado.getEndereco());
+    }
+
+    @Test
+    public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
+        when(clienteRepository.buscarPorCPF("0123456789")).thenReturn(null);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            clientesServiceImpl.buscarClientePorCPF("0123456789");
+
+        });
+        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
 }

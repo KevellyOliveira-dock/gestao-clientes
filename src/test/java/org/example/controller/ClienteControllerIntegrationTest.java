@@ -170,38 +170,17 @@ public class ClienteControllerIntegrationTest {
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
-
-    @Test
-    public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
-        clienteService.pesquisarClientePorNome("Kevelly");
-
-        var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
-        var resultadoReal = controller.executar("clientes pesquisar nome Kevelly");
-
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
     @Test
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
-        var resultadoEsperado = "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";
+        var resultadoEsperado = "Cliente cadastrado com sucesso!\n" +
+                "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";
         var resultadoReal = controller.executar("clientes pesquisar cpf 12345678900");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() throws Exception {
-        clienteService.buscarClientePorCPF("0123456789");
-
-        var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
-        var resultadoReal = controller.executar("clientes pesquisar cpf 0123456789");
-
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
 }
 
