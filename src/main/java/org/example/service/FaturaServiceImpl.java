@@ -45,7 +45,7 @@ public class FaturaServiceImpl implements FaturaService {
             dataVencimento = proximoMes;
         }
 
-        for (Fatura fatura : faturaRepository.buscarPorNumeroCartao(numeroCartao)) {
+        for (Fatura fatura : faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao)) {
             if (fatura.getDataVencimento().equals(dataVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
@@ -70,9 +70,52 @@ public class FaturaServiceImpl implements FaturaService {
 
         String chave = String.valueOf(faturaRepository.buscarTamanho());
 
-        Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor);
+        Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor, false);
         faturaRepository.cadastrar(fatura);
 
+        return fatura;
+    }
+
+    @Override
+    public Fatura pagarFatura(String numeroCartao) throws Exception {
+        if (numeroCartao == null || numeroCartao.isEmpty()) {
+            throw new Exception("O número do cartão não pode ser nulo ou vazio.\n");
+        }
+
+        Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
+        if (cartao == null) {
+            throw new Exception("O cartão informado não foi encontrado.\n");
+        }
+
+        List<Fatura> faturas = faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao);
+
+        Fatura fatura = null;
+        LocalDate hoje = LocalDate.now();
+        for (Fatura fat : faturas) {
+            if (!fat.isPago() && !hoje.isAfter(fat.getDataVencimento())) {
+                if (fatura == null || fat.getDataVencimento().isBefore(fatura.getDataVencimento())) {
+                    fatura = fat;
+                }
+            }
+        }
+
+        if (fatura == null) {
+            throw new Exception("Nenhuma fatura disponível para pagamento.\n");
+        }
+
+        double valor = fatura.getValor();
+        double saldo = fatura.getCartao().getConta().getSaldo();
+
+        if (saldo < valor) {
+            throw new Exception("Saldo insuficiente para pagar a fatura.\n");
+        }
+
+        fatura.setPago(true);
+        fatura.getCartao().getConta().setSaldo(saldo - valor);
+
+        Transacao pagamentoTransacao = new Transacao(LocalDate.now(), "Pagamento de fatura", valor);
+
+        fatura.getCartao().getConta().getTransacao().add(pagamentoTransacao);
         return fatura;
     }
 }

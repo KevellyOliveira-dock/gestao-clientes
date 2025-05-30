@@ -16,7 +16,7 @@ public class InMemoryFaturaRepository implements FaturaRepository {
     }
 
     @Override
-    public List<Fatura> buscarPorNumeroCartao(String numeroCartao) {
+    public List<Fatura> buscarFaturaPorNumeroCartao(String numeroCartao) {
         List<Fatura> faturas = new ArrayList<>();
 
         for (Fatura fatura : faturaRepository.values()) {
