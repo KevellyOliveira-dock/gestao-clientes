@@ -100,6 +100,7 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao desbloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
+        // possivel remoção
         String numeroConta = cartao.getConta().getNumeroConta();
         contaService.buscarContaPorNumero(numeroConta);
 
