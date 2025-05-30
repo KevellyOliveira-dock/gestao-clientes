@@ -12,6 +12,4 @@ public interface CartaoService {
     Cartao bloquearCartao(String numeroCartao) throws Exception;
 
     Cartao desbloquearCartao(String numeroCartao) throws Exception;
-
-    List<Cartao> buscarCartaoPorCPF(String cpf);
 }

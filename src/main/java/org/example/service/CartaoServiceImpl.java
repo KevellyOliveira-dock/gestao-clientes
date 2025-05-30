@@ -111,10 +111,4 @@ public class CartaoServiceImpl implements CartaoService {
         cartaoRepository.cadastrar(cartao);
         return cartao;
     }
-
-    @Override
-    public List<Cartao> buscarCartaoPorCPF(String cpf) {
-
-        return cartaoRepository.buscarPorCPF(cpf);
-    }
 }
