@@ -88,7 +88,7 @@ public class ClienteDesativacaoService {
 
             String chave = String.valueOf(faturaRepository.buscarTamanho());
 
-            Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor);
+            Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor, false);
             faturaRepository.cadastrar(fatura);
         }
 
