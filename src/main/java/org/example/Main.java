@@ -23,7 +23,7 @@ import org.example.service.CartaoService;
 import org.example.service.CartaoServiceImpl;
 import org.example.service.FaturaService;
 import org.example.service.FaturaServiceImpl;
-import org.example.service.ClienteOperacoesService;
+import org.example.service.ClienteDesativacaoService;
 
 public class Main {
     public static void main(String[] args) {
@@ -42,13 +42,13 @@ public class Main {
         CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository, clienteService, contaService);
         FaturaService faturaService = new FaturaServiceImpl(faturaRepository, cartaoService);
 
-        ClienteOperacoesService clienteOperacoesService = new ClienteOperacoesService(
-                clienteService, contaService, cartaoService, faturaService
+        ClienteDesativacaoService clienteDesativacaoService = new ClienteDesativacaoService(
+               clienteRepository, contaRepository, cartaoRepository, faturaRepository
         );
 
         var cartoesController = new CartaoController(cartaoService, scanner);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
-        var clientesController = new ClienteController(clienteService, scanner, clienteOperacoesService); //injeção de dependencia
+        var clientesController = new ClienteController(clienteService, scanner, clienteDesativacaoService); //injeção de dependencia
         var contasController = new ContaController(contaService, scanner);
         var faturasController = new FaturaController(faturaService, scanner);
 

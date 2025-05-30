@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.example.model.Cliente;
-import org.example.service.ClienteOperacoesService;
+import org.example.service.ClienteDesativacaoService;
 import org.example.service.ClienteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class ClienteControllerIntegrationTest {
     private ClienteService clienteService;
 
     @Mock
-    private ClienteOperacoesService clienteOperacoesService;
+    private ClienteDesativacaoService clienteDesativacaoService;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -46,7 +46,7 @@ public class ClienteControllerIntegrationTest {
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ClienteController(clienteService, scanner, clienteOperacoesService);
+        controller = new ClienteController(clienteService, scanner, clienteDesativacaoService);
     }
 
     @Test
