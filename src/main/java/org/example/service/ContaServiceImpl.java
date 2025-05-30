@@ -48,6 +48,10 @@ public class ContaServiceImpl implements ContaService {
 
         List<Transacao> todaTransacao = new ArrayList<>();
 
+        if (!cliente.isAtivo()) {
+            throw new Exception("Esse cliente está desativado. Suas permissões foram revogadas.\n");
+        }
+
         var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
         contaRepository.cadastrar(conta);
 
