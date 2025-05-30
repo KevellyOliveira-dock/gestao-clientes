@@ -40,6 +40,7 @@ public class CartaoServiceImplTest {
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
@@ -52,7 +53,7 @@ public class CartaoServiceImplTest {
     @Test
     public void quandoComandoForCadastrarCartaoVerifiqueSeOCpfEAContaFoiCadastradoEntaoCadastreComSucesso()
             throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -76,7 +77,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void quandoCadastrarCartaoVerifiqueSeContaEstaCadastradaSeNaoEntaoRetorneMensagem() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(null);
@@ -90,7 +91,7 @@ public class CartaoServiceImplTest {
     @ParameterizedTest
     @NullAndEmptySource
     public void quandoCadastrarCartaoENumeroContaForVazioOuNuloEntaoRetorneMensagem(String numeroConta) throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
@@ -111,7 +112,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void quandoCadastrarCartaoEContaNaaoEstiverAtivaEntaoExibaMensagem() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -125,7 +126,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void quandoCartaoPesquisarNumeroCartaoEntaoRetorneBuscaComSucesso() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -149,7 +150,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void quandoCartaoBloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
 
@@ -164,7 +165,7 @@ public class CartaoServiceImplTest {
     @Test
     public void quandoCartoesBloquearNumeroCartaoEEncontrarEntaoBloqueieCartao()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -178,7 +179,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void quandoCartaoDesbloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -193,7 +194,7 @@ public class CartaoServiceImplTest {
     @Test
     public void quandoCartoesDesbloquearNumeroCartaoEEncontrarEntaoDesbloqueieCartao()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
 

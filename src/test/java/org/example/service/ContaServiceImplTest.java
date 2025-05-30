@@ -33,6 +33,7 @@ public class ContaServiceImplTest {
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
@@ -40,7 +41,7 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -100,7 +101,7 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoContaPesquisarNumeroContaoVerifiqueSeContaEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
@@ -121,7 +122,7 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         // Mocka o comportamento
@@ -144,7 +145,7 @@ public class ContaServiceImplTest {
 
     @Test
     public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(List.of(conta));
@@ -158,7 +159,7 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasDesativarNumeroContaEEncontrarEntaoDesativeConta()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);

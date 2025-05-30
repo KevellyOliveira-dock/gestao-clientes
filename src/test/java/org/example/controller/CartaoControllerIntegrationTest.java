@@ -37,6 +37,7 @@ public class CartaoControllerIntegrationTest {
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
@@ -73,7 +74,7 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesCadastrarEntaoCadastreOsCartoes() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -92,7 +93,7 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesBloquearEntaoBloqueieOsCartoes() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -108,7 +109,7 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesBloquearEDesistirEntaoExibaMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
@@ -124,7 +125,7 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesDesbloquearEntaoDesbloqueieOsCartoes() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, false);
 
@@ -140,7 +141,7 @@ public class CartaoControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhCartoesDesbloquearEDesistirEntaoExibaMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
 
