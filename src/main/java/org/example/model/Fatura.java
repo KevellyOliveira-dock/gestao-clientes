@@ -14,4 +14,5 @@ public class Fatura {
     private LocalDate dataVencimento;
     private Cartao cartao;
     private double valor;
+    private boolean isPago;
 }

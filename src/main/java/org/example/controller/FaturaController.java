@@ -32,11 +32,16 @@ public class FaturaController implements Controller {
                 if (partes.length == 3) {
                     return fecharFatura(partes[2]);
                 } else {
-                    return "Para fechar a fatura é necessário informar o número. Ex: faturas fechar 0123.\n";
+                    return "Para fechar a fatura é necessário informar o número do cartão. Ex: faturas fechar 0123.\n";
                 }
 
             case "pagar":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return pagarFatura(partes[2]);
+                } else {
+                    return "Para pagar a fatura é necessário informar o número do cartão. Ex: faturas pagar 0123.\n";
+                }
+
 
             default:
                 return "operação inválida";
@@ -58,6 +63,35 @@ public class FaturaController implements Controller {
                     return "Sua fatura foi fechada com sucesso! Pague até dia " + dataVencimentoFatura + ".\n" +
                             "Cartão de número " + fatura.getCartao().getNumeroCartao() +
                             ", valido até " + dataVencimentoCartao +
+                            ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
+                            ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
+                } else if (resposta.equals("N")) {
+                    return "Operação cancelada\n";
+                }
+
+                System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public String pagarFatura(String numeroCartao) {
+        try {
+            while (true) {
+                System.out.println("Confirma o pagamento da fatura do cartão " + numeroCartao +
+                        "?\nDigite \"S\" para sim ou \"N\" para não: ");
+                String resposta = scanner.nextLine().toUpperCase();
+
+                if (resposta.equals("S")) {
+                    Fatura fatura = faturaService.pagarFatura(numeroCartao);
+
+                    String vencimentoFatura = fatura.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    String vencimentoCartao = fatura.getCartao().getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                    return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFatura + ".\n" +
+                            "Cartão de número " + fatura.getCartao().getNumeroCartao() +
+                            ", valido até " + vencimentoCartao +
                             ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
                             ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {

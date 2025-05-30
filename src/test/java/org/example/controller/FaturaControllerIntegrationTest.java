@@ -48,6 +48,7 @@ public class FaturaControllerIntegrationTest {
     private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
     private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
     private static final double VALOR_FATURA = 200.0;
+    private static final boolean IS_PAGO_FATURA = false;
 
     @BeforeEach
     public void setup() {
@@ -76,7 +77,7 @@ public class FaturaControllerIntegrationTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
-        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA);
+        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
 
         when(faturaService.fecharFatura(NUMERO_CARTAO)).thenReturn(fatura);
 
@@ -93,6 +94,32 @@ public class FaturaControllerIntegrationTest {
         this.inputStream.setInputs("N\n");
         var resultadoEsperado = "Operação cancelada\n";
         var resultadoReal = controller.executar("faturas fechar 1234");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhFaturasPagarSaldoSerSuficienteEAFaturaAbertaEntaoPagueAFatura() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
+
+        when(faturaService.pagarFatura(NUMERO_CARTAO)).thenReturn(fatura);
+
+        this.inputStream.setInputs("S\n");
+        var resultadoEsperado = "Sua fatura foi paga com sucesso! Pague até dia 10/06/2025.\n" +
+                "Cartão de número 1234, valido até 12/12/2028, Titularidade de Kevelly, portador do CPF 12345678900.\n";
+        var resultadoReal = controller.executar("faturas pagar 1234");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhFaturasPagarEDesistirEntaoExibaMensagem() {
+        this.inputStream.setInputs("N\n");
+        var resultadoEsperado = "Operação cancelada\n";
+        var resultadoReal = controller.executar("faturas pagar 1234");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
