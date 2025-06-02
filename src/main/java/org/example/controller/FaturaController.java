@@ -63,8 +63,8 @@ public class FaturaController implements Controller {
                     return "Sua fatura foi fechada com sucesso! Pague até dia " + dataVencimentoFatura + ".\n" +
                             "Cartão de número " + fatura.getCartao().getNumeroCartao() +
                             ", valido até " + dataVencimentoCartao +
-                            ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
-                            ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
+                            ", Titularidade de " + fatura.getCartao().getConta().getTitular().getNomeCompleto() +
+                            ", portador do CPF " + fatura.getCartao().getConta().getTitular().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";
                 }
@@ -92,8 +92,8 @@ public class FaturaController implements Controller {
                     return "Sua fatura foi paga com sucesso! Pague até dia " + vencimentoFatura + ".\n" +
                             "Cartão de número " + fatura.getCartao().getNumeroCartao() +
                             ", valido até " + vencimentoCartao +
-                            ", Titularidade de " + fatura.getCartao().getCliente().getNomeCompleto() +
-                            ", portador do CPF " + fatura.getCartao().getCliente().getCpf() + ".\n";
+                            ", Titularidade de " + fatura.getCartao().getConta().getTitular().getNomeCompleto() +
+                            ", portador do CPF " + fatura.getCartao().getConta().getTitular().getCpf() + ".\n";
                 } else if (resposta.equals("N")) {
                     return "Operação cancelada\n";
                 }
