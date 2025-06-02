@@ -16,7 +16,9 @@ public class ClienteController implements Controller {
     private final ClienteDesativacaoService clienteDesativacaoService;
 
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClienteController(ClienteService clienteService, Scanner scanner, ClienteDesativacaoService clienteDesativacaoService) {
+    public ClienteController(ClienteService clienteService,
+                             Scanner scanner,
+                             ClienteDesativacaoService clienteDesativacaoService) {
         this.scanner = scanner;
         this.clienteService = clienteService;
         this.clienteDesativacaoService = clienteDesativacaoService;
