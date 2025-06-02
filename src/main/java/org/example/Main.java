@@ -40,7 +40,7 @@ public class Main {
         ClienteService clienteService = new ClienteServiceImpl(clienteRepository);
         CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository);
         ContaService contaService = new ContaServiceImpl(contaRepository, cartaoService, clienteService);
-        FaturaService faturaService = new FaturaServiceImpl(faturaRepository, cartaoService);
+        FaturaService faturaService = new FaturaServiceImpl(faturaRepository);
 
         ClienteDesativacaoService clienteDesativacaoService = new ClienteDesativacaoService(
                clienteService, contaService, cartaoService, faturaService
@@ -50,7 +50,7 @@ public class Main {
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
         var clientesController = new ClienteController(clienteService, scanner, clienteDesativacaoService); //injeção de dependencia
         var contasController = new ContaController(contaService, scanner);
-        var faturasController = new FaturaController(faturaService, scanner);
+        var faturasController = new FaturaController(faturaService, scanner, cartaoService);
 
         var frontController = new FrontController(
                 cartoesController,

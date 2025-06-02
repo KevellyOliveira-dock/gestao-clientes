@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.model.Cartao;
 import org.example.model.Fatura;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ public class InMemoryFaturaRepository implements FaturaRepository {
     }
 
     @Override
-    public List<Fatura> buscarFaturaPorNumeroCartao(String numeroCartao) {
+    public List<Fatura> buscarFaturaPorNumeroCartao(Cartao cartao) {
         List<Fatura> faturas = new ArrayList<>();
 
         for (Fatura fatura : faturaRepository.values()) {
-            if (fatura.getCartao().getNumeroCartao().equals(numeroCartao)) {
+            if (fatura.getCartao().getNumeroCartao().equals(cartao.getNumeroCartao())) {
                 faturas.add(fatura);
             }
         }

@@ -12,24 +12,12 @@ import java.util.List;
 public class FaturaServiceImpl implements FaturaService {
     private final FaturaRepository faturaRepository;
 
-    private final CartaoService cartaoService;
-
-    public FaturaServiceImpl(FaturaRepository faturaRepository, CartaoService cartaoService) {
+    public FaturaServiceImpl(FaturaRepository faturaRepository) {
         this.faturaRepository = faturaRepository;
-        this.cartaoService = cartaoService;
     }
 
     @Override
-    public Fatura fecharFatura(String numeroCartao) throws Exception {
-        if (numeroCartao == null || numeroCartao.isEmpty()) {
-            throw new Exception("O número do cartão não pode ser nulo ou vazio.\n");
-        }
-
-        Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
-        if (cartao == null) {
-            throw new Exception("O cartão informado não foi encontrado.\n");
-        }
-
+    public Fatura fecharFatura(Cartao cartao) throws Exception {
         // Pega a data de agora, se for antes do dia 10 desse mês, fechar a fatura ainda nesse mes.
         // A partir do dia 11 deve ser no proximo mês.
         LocalDate hoje = LocalDate.now();
@@ -45,7 +33,7 @@ public class FaturaServiceImpl implements FaturaService {
             dataVencimento = proximoMes;
         }
 
-        for (Fatura fatura : faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao)) {
+        for (Fatura fatura : faturaRepository.buscarFaturaPorNumeroCartao(cartao)) {
             if (fatura.getDataVencimento().equals(dataVencimento)) {
                 throw new Exception("A fatura já está fechada.\n");
             }
@@ -77,17 +65,8 @@ public class FaturaServiceImpl implements FaturaService {
     }
 
     @Override
-    public Fatura pagarFatura(String numeroCartao) throws Exception {
-        if (numeroCartao == null || numeroCartao.isEmpty()) {
-            throw new Exception("O número do cartão não pode ser nulo ou vazio.\n");
-        }
-
-        Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
-        if (cartao == null) {
-            throw new Exception("O cartão informado não foi encontrado.\n");
-        }
-
-        List<Fatura> faturas = faturaRepository.buscarFaturaPorNumeroCartao(numeroCartao);
+    public Fatura pagarFatura(Cartao cartao) throws Exception {
+        List<Fatura> faturas = faturaRepository.buscarFaturaPorNumeroCartao(cartao);
 
         Fatura fatura = null;
         LocalDate hoje = LocalDate.now();
