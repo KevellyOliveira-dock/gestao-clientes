@@ -101,8 +101,8 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public List<Cartao> buscarCartaoPorCPF(String cpf) throws Exception {
-        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(cpf);
+    public List<Cartao> buscarCartaoPorCPF(Cliente titular) throws Exception {
+        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(titular.getCpf());
 
         if (cartoes.isEmpty()) {
             throw new Exception("Esse cliente não possui cartões cadastrados.\n");

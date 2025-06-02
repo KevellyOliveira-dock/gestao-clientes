@@ -82,9 +82,10 @@ public class CartaoControllerIntegrationTest {
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-//        when(cartaoService.cadastrarCartao(conta)).thenReturn(cartao);
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+        when(cartaoService.cadastrarCartao(conta)).thenReturn(cartao);
 
-        this.inputStream.setInputs("12345678900\n0\n");
+        this.inputStream.setInputs("0\n");
         var resultadoEsperado = "Cartão criado com sucesso!\n" +
                 "O cliente Kevelly, de conta número 0, acionou um novo cartão: " +
                 "\nData de vencimento: 12/12/2028.\n" +

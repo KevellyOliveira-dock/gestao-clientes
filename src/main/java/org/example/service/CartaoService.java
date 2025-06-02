@@ -17,5 +17,5 @@ public interface CartaoService {
 
     List<Cartao> buscarCartoesPorCPF(Cliente titular) throws Exception;
 
-    List<Cartao> buscarCartaoPorCPF(String cpf) throws Exception;
+    List<Cartao> buscarCartaoPorCPF(Cliente titular) throws Exception;
 }

@@ -55,12 +55,12 @@ public class CartaoController implements Controller {
         }
     }
 
-    public String cadastrarCartao() throws Exception {
+    public String cadastrarCartao() {
         System.out.println("Informe sua conta: ");
         String numeroConta = scanner.nextLine();
-        Conta conta = contaService.buscarContaPorNumero(numeroConta);
 
         try {
+            Conta conta = contaService.buscarContaPorNumero(numeroConta);
             Cartao cartaoCriado = cartaoService.cadastrarCartao(conta);
             String dataVencimentoCartao = cartaoCriado.getDataVencimento().format(
                     DateTimeFormatter.ofPattern("dd/MM/yyyy")
