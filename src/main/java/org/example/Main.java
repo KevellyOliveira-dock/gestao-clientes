@@ -38,15 +38,15 @@ public class Main {
 
         //inicializa a ClienteService | dependencia criada fora da controller
         ClienteService clienteService = new ClienteServiceImpl(clienteRepository);
-        ContaService contaService = new ContaServiceImpl(contaRepository, clienteService);
-        CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository, clienteService, contaService);
+        CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository);
+        ContaService contaService = new ContaServiceImpl(contaRepository, cartaoService, clienteService);
         FaturaService faturaService = new FaturaServiceImpl(faturaRepository, cartaoService);
 
         ClienteDesativacaoService clienteDesativacaoService = new ClienteDesativacaoService(
                clienteRepository, contaRepository, cartaoRepository, faturaRepository
         );
 
-        var cartoesController = new CartaoController(cartaoService, scanner);
+        var cartoesController = new CartaoController(cartaoService, scanner, contaService);
         //Injeção de dependência -> passar a dependencia (ClienteService) ao invés de criar dentro do ClientesController
         var clientesController = new ClienteController(clienteService, scanner, clienteDesativacaoService); //injeção de dependencia
         var contasController = new ContaController(contaService, scanner);

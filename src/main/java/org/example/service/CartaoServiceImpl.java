@@ -16,39 +16,13 @@ import static java.lang.String.valueOf;
 public class CartaoServiceImpl implements CartaoService {
     private final CartaoRepository cartaoRepository;
 
-    private final ClienteService clienteService;
-
-    private final ContaService contaService;
-
-    public CartaoServiceImpl(CartaoRepository cartaoRepository,
-                             ClienteService clienteService,
-                             ContaService contaService) {
+    public CartaoServiceImpl(CartaoRepository cartaoRepository) {
         this.cartaoRepository = cartaoRepository;
-        this.clienteService = clienteService;
-        this.contaService = contaService;
     }
 
     @Override
-    public Cartao cadastrarCartao(String cpf, String numeroConta) throws Exception {
-        if (cpf == null || cpf.isEmpty()) {
-            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
-        }
-
-        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
-        if (cliente == null) {
-            throw new Exception("O CPF informado não foi encontrado. Cadastre-se e tente novamente.\n");
-        }
-
-        if (numeroConta == null || numeroConta.isEmpty()) {
-            throw new Exception("O número da conta não pode ser nulo ou vazio.\n");
-        }
-
-        Conta conta = contaService.buscarContaPorNumero(numeroConta);
-        if (conta == null) {
-            throw new Exception("A conta informada não foi encontrada. Cadastre e tente novamente.\n");
-        }
-
-        if (!conta.isAtivo()) {
+    public Cartao cadastrarCartao(Conta conta) throws Exception {
+          if (!conta.isAtivo()) {
             throw new Exception("A conta informada não está ativa.\n");
         }
 
@@ -67,7 +41,7 @@ public class CartaoServiceImpl implements CartaoService {
 
         LocalDate dataVencimento = LocalDate.now().plusYears(3);
 
-        Cartao cartao = new Cartao(numeroCartao, cvv, dataVencimento, cliente, conta, false);
+        Cartao cartao = new Cartao(numeroCartao, cvv, dataVencimento, conta, false);
         cartaoRepository.cadastrar(cartao);
 
         return cartao;
@@ -100,10 +74,6 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao desbloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
-        // possivel remoção
-        String numeroConta = cartao.getConta().getNumeroConta();
-        contaService.buscarContaPorNumero(numeroConta);
-
         if (!cartao.isBloqueado()) {
             throw new Exception("Esse cartão já está desbloqueado.\n");
         }
@@ -111,5 +81,22 @@ public class CartaoServiceImpl implements CartaoService {
         cartao.setBloqueado(false);
         cartaoRepository.cadastrar(cartao);
         return cartao;
+    }
+
+    @Override
+    public List<Cartao> buscarCartoesPorCPF(Cliente titular) throws Exception {
+        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(titular.getCpf());
+
+        for (Cartao cartao : cartoes) {
+            if (!cartao.getConta().isAtivo()) {
+                throw new Exception("A conta associada ao cartão está desativada.\n");
+            }
+        }
+
+        if (cartoes.isEmpty()) {
+            throw new Exception("Esse cliente não possui cartões cadastrados.\n");
+        }
+
+        return cartoes;
     }
 }
