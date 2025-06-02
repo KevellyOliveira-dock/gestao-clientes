@@ -37,13 +37,13 @@ public class ClienteDesativacaoService {
             conta.setAtivo(false);
         }
 
-        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(cpf);
+        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(clienteExistente);
         for (Cartao cartao : cartoes) {
             cartao.setBloqueado(true);
         }
 
         for (int i = 0; i < cartoes.size(); i++) {
-            faturaService.fecharFatura(cartoes.get(i).getNumeroCartao());
+            faturaService.fecharFatura(cartoes.get(i));
         }
 
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
