@@ -26,7 +26,7 @@ public class InMemoryCartaoRepository implements CartaoRepository {
         List<Cartao> cartoes = new ArrayList<>();
 
         for (Cartao cartao : cartaoRepository.values()) {
-            if (cartao.getCliente().getCpf().equals(cpf)) {
+            if (cartao.getConta().getTitular().getCpf().equals(cpf)) {
                 cartoes.add(cartao);
             }
         }
