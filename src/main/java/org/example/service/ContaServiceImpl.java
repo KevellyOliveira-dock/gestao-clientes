@@ -27,11 +27,11 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public Conta cadastrarConta(String cpf, String saldoStr) throws Exception {
         if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
+            throw new Exception("O CPF não pode ser nulo.\n");
         }
 
         if (saldoStr == null || saldoStr.isEmpty()) {
-            throw new Exception("O saldo não pode ser nulo ou vazio.\n");
+            throw new Exception("O saldo não pode ser nulo.\n");
         }
 
         Double saldo;

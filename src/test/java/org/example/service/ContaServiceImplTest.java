@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Transacao;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +27,13 @@ public class ContaServiceImplTest {
     private ContaServiceImpl contaServiceImpl;
 
     @Mock
+    private ContaRepository contaRepository;
+
+    @Mock
     private ClienteService clienteService;
 
     @Mock
-    private ContaRepository contaRepository;
+    private CartaoService cartaoService;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
@@ -38,6 +43,10 @@ public class ContaServiceImplTest {
     private static final String NUMERO_CONTA = "0";
     private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
     private static final boolean IS_ATIVO_CONTA = true;
+    private static final String NUMERO_CARTAO = "1234";
+    private static final String CVV_CARTAO = "123";
+    private static final LocalDate DT_VENCIMENTO_CARTAO = LocalDate.of(2028, 12, 12);
+    private static final boolean IS_BLOQUEADO_CARTAO = false;
 
     @Test
     public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
@@ -58,7 +67,7 @@ public class ContaServiceImplTest {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
         );
-        assertEquals("O CPF não pode ser nulo ou vazio.\n", exception.getMessage());
+        assertEquals("O CPF não pode ser nulo.\n", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -67,7 +76,7 @@ public class ContaServiceImplTest {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
         );
-        assertEquals("O saldo não pode ser nulo ou vazio.\n", exception.getMessage());
+        assertEquals("O saldo não pode ser nulo.\n", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -161,8 +170,10 @@ public class ContaServiceImplTest {
             throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
+        when(cartaoService.buscarCartoesPorCPF(cliente)).thenReturn(List.of(cartao));
 
         Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
 
