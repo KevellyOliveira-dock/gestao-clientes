@@ -1,102 +1,62 @@
 package org.example.service;
 
-import org.example.model.*;
-import org.example.repository.CartaoRepository;
-import org.example.repository.ClienteRepository;
-import org.example.repository.ContaRepository;
-import org.example.repository.FaturaRepository;
+import org.example.model.Cartao;
+import org.example.model.Cliente;
+import org.example.model.Conta;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDesativacaoService {
-    private final ClienteRepository clienteRepository;
-    private final ContaRepository contaRepository;
-    private final CartaoRepository cartaoRepository;
-    private final FaturaRepository faturaRepository;
+    private final ClienteService clienteService;
+    private final ContaService contaService;
+    private final CartaoService cartaoService;
+    private final FaturaService faturaService;
 
-
-    public ClienteDesativacaoService(
-            ClienteRepository clienteRepository,
-            ContaRepository contaRepository,
-            CartaoRepository cartaoRepository,
-            FaturaRepository faturaRepository
-    ) {
-        this.clienteRepository = clienteRepository;
-        this.contaRepository = contaRepository;
-        this.cartaoRepository = cartaoRepository;
-        this.faturaRepository = faturaRepository;
+    public ClienteDesativacaoService(ClienteService clienteService, ContaService contaService,
+                                   CartaoService cartaoService, FaturaService faturaService) {
+        this.clienteService = clienteService;
+        this.contaService = contaService;
+        this.cartaoService = cartaoService;
+        this.faturaService = faturaService;
     }
 
 
     public void desativarCliente(String cpf) throws Exception {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("O CPF informado não foi encontrado. Tente novamente");
+        if (cpf == null || cpf.isEmpty()) {
+            throw new Exception("O CPF não pode ser nulo ou vazio.\n");
         }
 
-        Cliente cliente = clienteRepository.buscarPorCPF(cpf);
-        if (cliente == null) {
-            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
+        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+        if (clienteExistente == null) {
+            throw new Exception("CPF não cadastrado");
         }
 
-        // Validação de contas
-        for (Conta conta : contaRepository.buscarValores(cpf)) {
-            if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
-                conta.setAtivo(false);
-            }
+        // Caso a lista seja vazia ele lança uma exceção, é necessario repensar
+        List<Conta> contas = contaService.buscarContasPorCPF(cpf);
+        for (Conta conta : contas) {
+            conta.setAtivo(false);
         }
 
-        // Validação de cartões
-        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(cpf);
+        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(cpf);
         for (Cartao cartao : cartoes) {
             cartao.setBloqueado(true);
         }
 
-        // Fechar faturas desses cartoes
-        for (Cartao cartaoExistente : cartoes) {
-            Cartao cartao = cartaoRepository.buscarPorNumero(cartaoExistente.getNumeroCartao());
+        for (int i = 0; i < cartoes.size(); i++) {
+            faturaService.fecharFatura(cartoes.get(i).getNumeroCartao());
+        }
 
-            LocalDate hoje = LocalDate.now();
-            LocalDate dataVencimento;
-            LocalDate mesAtual = hoje.withDayOfMonth(10);
-            LocalDate proximoMes = hoje.plusMonths(1).withDayOfMonth(10);
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
-            if (hoje.getDayOfMonth() <= 10) {
-                // A fatura vence esse dia
-                dataVencimento = mesAtual;
-            } else {
-                // a fatura vence no proximo mês
-                dataVencimento = proximoMes;
-            }
-            List<Transacao> transacaoMes = new ArrayList<>();
-            List<Transacao> todaTransacao = cartao.getConta().getTransacao();
-
-            for (Transacao transacao : todaTransacao) {
-                LocalDate dia = transacao.getDataTransacao();
-
-                if (dia.equals(mesAtual) || dia.isAfter(mesAtual) &&
-                        dia.equals(proximoMes) || dia.isBefore(proximoMes)) {
-                    transacaoMes.add(transacao);
-                }
-            }
-
-            double valor = 0;
-            for (Transacao transacao : transacaoMes) {
-                valor += transacao.getValor();
-            }
-
-            String chave = String.valueOf(faturaRepository.buscarTamanho());
-
-            Fatura fatura = new Fatura(chave, transacaoMes, dataVencimento, cartao, valor, false);
-            faturaRepository.cadastrar(fatura);
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         if (!cliente.isAtivo()) {
             throw new Exception("Esse cliente está desativado. Suas permissões foram revogadas.\n");
         }
 
-        cliente.setAtivo(false);
+        clienteExistente.setAtivo(false);
 
     }
 }

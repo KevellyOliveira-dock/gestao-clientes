@@ -43,7 +43,7 @@ public class Main {
         FaturaService faturaService = new FaturaServiceImpl(faturaRepository, cartaoService);
 
         ClienteDesativacaoService clienteDesativacaoService = new ClienteDesativacaoService(
-               clienteRepository, contaRepository, cartaoRepository, faturaRepository
+               clienteService, contaService, cartaoService, faturaService
         );
 
         var cartoesController = new CartaoController(cartaoService, scanner, contaService);
