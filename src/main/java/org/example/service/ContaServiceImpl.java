@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Transacao;
@@ -11,10 +12,15 @@ import java.util.List;
 public class ContaServiceImpl implements ContaService {
     private final ContaRepository contaRepository;
 
+    private final CartaoService cartaoService;
+
     private final ClienteService clienteService;
 
-    public ContaServiceImpl(ContaRepository contaRepository, ClienteService clienteService) {
+    public ContaServiceImpl(ContaRepository contaRepository,
+                            CartaoService cartaoService,
+                            ClienteService clienteService) {
         this.contaRepository = contaRepository;
+        this.cartaoService = cartaoService;
         this.clienteService = clienteService;
     }
 
@@ -110,6 +116,14 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public Conta desativarConta(String numeroConta) throws Exception {
         Conta conta = buscarContaPorNumero(numeroConta);
+
+        List<Cartao> cartoes = cartaoService.buscarCartoesPorCPF(conta.getTitular());
+
+        for (Cartao cartao : cartoes) {
+            if (!cartao.isBloqueado()) {
+                cartaoService.bloquearCartao(cartao.getNumeroCartao());
+            }
+        }
 
         contaRepository.cadastrar(conta);
         conta.setAtivo(false);
