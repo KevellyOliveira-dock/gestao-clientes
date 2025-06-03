@@ -148,4 +148,28 @@ public class CartaoServiceImplTest {
         assertEquals(CPF_CLIENTE, resultado.getConta().getTitular().getCpf());
         assertFalse(resultado.isBloqueado());
     }
+
+    @Test
+    public void quandoBuscarCartaoPorCPFEContaEstiverDesativadaEntaoNaoDesbloquearCartao() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
+
+        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(cartao));
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
+        );
+        assertEquals("A conta associada ao cartão está desativada.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoBuscarCartaoPorCPFENaoEncontrarEntaoRetorneNull() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
+        );
+        assertEquals("Esse cliente não possui cartões cadastrados.\n", exception.getMessage());
+    }
 }
