@@ -97,15 +97,7 @@ public class ContaServiceImpl implements ContaService {
 
     @Override
     public List<Conta> buscarContasPorCPF(String cpf) {
-        List<Conta> contasEncontradas = new ArrayList<>();
-
-        for (Conta conta : contaRepository.buscarValores(cpf)) {
-            if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
-                contasEncontradas.add(conta);
-            }
-        }
-
-        return contasEncontradas;
+        return contaRepository.buscarValores(cpf);
     }
 
     @Override
