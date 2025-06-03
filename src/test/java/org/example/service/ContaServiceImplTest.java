@@ -173,7 +173,7 @@ public class ContaServiceImplTest {
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
-        when(cartaoService.buscarCartoesPorCPF(cliente)).thenReturn(List.of(cartao));
+        when(cartaoService.buscarCartaoPorCPF(cliente)).thenReturn(List.of(cartao));
 
         Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
 

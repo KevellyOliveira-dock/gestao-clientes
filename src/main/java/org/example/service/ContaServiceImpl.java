@@ -117,7 +117,7 @@ public class ContaServiceImpl implements ContaService {
     public Conta desativarConta(String numeroConta) throws Exception {
         Conta conta = buscarContaPorNumero(numeroConta);
 
-        List<Cartao> cartoes = cartaoService.buscarCartoesPorCPF(conta.getTitular());
+        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(conta.getTitular());
 
         for (Cartao cartao : cartoes) {
             if (!cartao.isBloqueado()) {
