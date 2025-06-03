@@ -130,12 +130,12 @@ public class ContaController implements Controller {
     }
 
     public String pesquisarContaPorCPF(String cpf) {
-        List<Conta> contas;
-        try {
-            contas = contaService.buscarContasPorCPF(cpf);
-        } catch (Exception e) {
-            return e.getMessage();
+        List<Conta> contas = contaService.buscarContasPorCPF(cpf);
+
+        if (contas.isEmpty()) {
+            return "Nenhuma conta encontrada para o CPF informado.\n";
         }
+
         StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
         for (Conta conta : contas) {
             resultado.append(conta.toString()).append("\n");

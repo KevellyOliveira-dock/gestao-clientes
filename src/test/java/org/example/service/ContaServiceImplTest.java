@@ -149,11 +149,11 @@ public class ContaServiceImplTest {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE)
         );
-        assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
+        assertEquals("Nenhuma conta encontrada para o CPF informado.\n", exception.getMessage());
     }
 
     @Test
-    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
+    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
@@ -163,6 +163,16 @@ public class ContaServiceImplTest {
 
         assertEquals(1, resultado.size());
         assertEquals(CPF_CLIENTE, resultado.get(0).getTitular().getCpf());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void quandoContasPesquisarCPFTitularENaoEncontrarEntaoRetorneListaVazia(String cpf) {
+        List<Conta> contas = new ArrayList<>();
+
+        List<Conta> resultado = contaServiceImpl.buscarContasPorCPF(cpf);
+
+        assertEquals(contas, resultado);
     }
 
     @Test

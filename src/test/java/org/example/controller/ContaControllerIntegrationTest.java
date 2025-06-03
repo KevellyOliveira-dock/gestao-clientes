@@ -171,6 +171,18 @@ public class ContaControllerIntegrationTest {
     }
 
     @Test
+    public void quandoComandoEhContasPesquisarCpfTitularENaoTiverContaEntaoExibaMensagem() throws Exception {
+        List<Conta> listaContas = new ArrayList<>();
+
+        when(contaService.buscarContasPorCPF(CPF_CLIENTE)).thenReturn(listaContas);
+
+        var resultadoEsperado ="Nenhuma conta encontrada para o CPF informado.\n";
+        var resultadoReal = controller.executar("contas pesquisar cpf-titular 12345678900");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
     public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
         var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);

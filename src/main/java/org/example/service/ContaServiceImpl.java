@@ -5,6 +5,7 @@ import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Transacao;
 import org.example.repository.ContaRepository;
+import org.example.validator.ClienteValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +53,9 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        List<Transacao> todaTransacao = new ArrayList<>();
+        ClienteValidator.validarAtivo(cliente);
 
-        if (!cliente.isAtivo()) {
-            throw new Exception("Esse cliente está desativado. Suas permissões foram revogadas.\n");
-        }
+        List<Transacao> todaTransacao = new ArrayList<>();
 
         var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
         contaRepository.cadastrar(conta);
@@ -97,17 +96,13 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
+    public List<Conta> buscarContasPorCPF(String cpf) {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contaRepository.buscarValores(cpf)) {
             if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
-        }
-
-        if (contasEncontradas.isEmpty()) {
-            throw new Exception("Conta não encontrada. Cadastre-se e tente novamente.\n");
         }
 
         return contasEncontradas;
