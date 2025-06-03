@@ -7,9 +7,9 @@ import java.util.List;
 public interface ContaService {
     Conta cadastrarConta(String cpf, String saldo) throws Exception;
 
-    Conta buscarContaPorNumero(String numeroConta) throws Exception;
+    Conta buscarContaPorNumero(String numeroConta);
 
-    List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception;
+    List<Conta> buscarContasPorTitular(String nomeCompleto);
 
     List<Conta> buscarContasPorCPF(String cpf);
 
