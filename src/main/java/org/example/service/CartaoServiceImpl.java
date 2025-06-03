@@ -22,7 +22,7 @@ public class CartaoServiceImpl implements CartaoService {
 
     @Override
     public Cartao cadastrarCartao(Conta conta) throws Exception {
-          if (!conta.isAtivo()) {
+        if (!conta.isAtivo()) {
             throw new Exception("A conta informada não está ativa.\n");
         }
 
