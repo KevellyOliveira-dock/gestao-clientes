@@ -64,32 +64,18 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public Conta buscarContaPorNumero(String numeroConta) throws Exception {
-        Conta conta = contaRepository.buscarPorNumero(numeroConta);
-
-        if (numeroConta == null || numeroConta.trim().isEmpty() || conta == null) {
-            throw new Exception("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n");
-        }
-
-        if (!conta.isAtivo()) {
-            throw new Exception("Essa conta está desativada.\n");
-        }
-
-        return conta;
+    public Conta buscarContaPorNumero(String numeroConta) {
+        return contaRepository.buscarPorNumero(numeroConta);
     }
 
     @Override
-    public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
+    public List<Conta> buscarContasPorTitular(String nomeCompleto) {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contaRepository.buscarValores(nomeCompleto)) {
             if (conta.getTitular().getNomeCompleto().equals(nomeCompleto) && conta.isAtivo()) {
                 contasEncontradas.add(conta);
             }
-        }
-
-        if (contasEncontradas.isEmpty()) {
-            throw new Exception("Conta não encontrada. Cadastre-se e tente novamente.\n");
         }
 
         return contasEncontradas;

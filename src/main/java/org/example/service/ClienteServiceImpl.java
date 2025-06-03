@@ -57,10 +57,6 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente buscarClientePorCPF(String cpf) throws Exception {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("O CPF informado não foi encontrado. Tente novamente");
-        }
-
         Cliente cliente = clienteRepository.buscarPorCPF(cpf);
         if (cliente == null) {
             throw  new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
