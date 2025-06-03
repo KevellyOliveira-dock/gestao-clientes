@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Fatura;
 import org.example.service.CartaoService;
 import org.example.service.FaturaService;
+import org.example.validator.ClienteValidator;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -57,6 +58,8 @@ public class FaturaController implements Controller {
             Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
             String dataVencimentoCartao = cartao.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
+            ClienteValidator.validarAtivo(cartao.getConta().getTitular());
+
             while (true) {
                 System.out.println("Confirma o fechamento da fatura do cartão " + cartao.getNumeroCartao() +
                         ", valido até " + dataVencimentoCartao +
@@ -85,6 +88,8 @@ public class FaturaController implements Controller {
         try {
             Cartao cartao = cartaoService.buscarCartaoPorNumero(numeroCartao);
             String vencimentoCartao = cartao.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+//            ClienteValidator.validarAtivo(cartao.getConta().getTitular());
 
             while (true) {
                 System.out.println("Confirma o pagamento da fatura do cartão " + cartao.getNumeroCartao() +

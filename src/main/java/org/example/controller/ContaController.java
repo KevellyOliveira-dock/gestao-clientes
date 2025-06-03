@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.model.Conta;
 import org.example.service.ContaService;
+import org.example.validator.ClienteValidator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -99,28 +100,44 @@ public class ContaController implements Controller {
         String saldoStr = scanner.nextLine();
 
         try {
-            return "Conta cadastrada com sucesso!\n" +
-                    contaService.cadastrarConta(cpf, saldoStr).toString(); // valueOf() -> converte para String
+            Conta conta = contaService.cadastrarConta(cpf, saldoStr);
+            ClienteValidator.validarAtivo(conta.getTitular());
+
+            return "Conta cadastrada com sucesso!\n" + conta;
         } catch (Exception e) {
             return e.getMessage();
         }
     }
 
     public String pesquisarContaPorNumero(String numeroConta) {
+        Conta contas = contaService.buscarContaPorNumero(numeroConta);
+
+        if (contas == null) {
+            return "Nenhuma conta encontrada para o nome informado.\n";
+        }
+
         try {
-            return "Conta encontrada: \n" + contaService.buscarContaPorNumero(numeroConta).toString();
+            ClienteValidator.validarAtivo(contas.getTitular());
         } catch (Exception e) {
             return e.getMessage();
         }
+
+        return "Conta encontrada: \n" + contas;
     }
 
     public String pesquisarContaPorTitular(String nomeCompleto) {
-        List<Conta> contas;
+        List<Conta> contas = contaService.buscarContasPorTitular(nomeCompleto);
+
+        if (contas.isEmpty()) {
+            return "Nenhuma conta encontrada para o nome informado.\n";
+        }
+
         try {
-            contas = contaService.buscarContasPorTitular(nomeCompleto);
+            ClienteValidator.validarAtivo(contas.get(0).getTitular());
         } catch (Exception e) {
             return e.getMessage();
         }
+
         StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
         for (Conta conta : contas) {
             resultado.append(conta.toString()).append("\n");
@@ -136,6 +153,12 @@ public class ContaController implements Controller {
             return "Nenhuma conta encontrada para o CPF informado.\n";
         }
 
+        try {
+            ClienteValidator.validarAtivo(contas.get(0).getTitular());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
         StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
         for (Conta conta : contas) {
             resultado.append(conta.toString()).append("\n");
@@ -148,6 +171,8 @@ public class ContaController implements Controller {
         try {
             Conta contaExistente = contaService.buscarContaPorNumero(numeroConta);
             String resposta;
+
+            ClienteValidator.validarAtivo(contaExistente.getTitular());
 
             while (true) {
                 System.out.println("Confirma a desativação da conta " + contaExistente.getNumeroConta() +

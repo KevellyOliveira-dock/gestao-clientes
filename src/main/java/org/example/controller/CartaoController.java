@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Conta;
 import org.example.service.CartaoService;
 import org.example.service.ContaService;
+import org.example.validator.ClienteValidator;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -66,6 +67,8 @@ public class CartaoController implements Controller {
                     DateTimeFormatter.ofPattern("dd/MM/yyyy")
             );
 
+            ClienteValidator.validarAtivo(conta.getTitular());
+
             return "Cartão criado com sucesso!\n" +
                     "O cliente " + cartaoCriado.getConta().getTitular().getNomeCompleto() +
                     ", de conta número " + cartaoCriado.getConta().getNumeroConta() +
@@ -83,6 +86,8 @@ public class CartaoController implements Controller {
             Cartao cartaoExistente = cartaoService.buscarCartaoPorNumero(numeroCartao);
             String dataVencimento = cartaoExistente.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String resposta;
+
+            ClienteValidator.validarAtivo(cartaoExistente.getConta().getTitular());
 
             while (true) {
                 System.out.println("Confirma o bloqueio do cartão " + cartaoExistente.getNumeroCartao() +
@@ -111,6 +116,8 @@ public class CartaoController implements Controller {
             Cartao cartaoExistente = cartaoService.buscarCartaoPorNumero(numeroCartao);
             String dataVencimento = cartaoExistente.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String resposta;
+
+            ClienteValidator.validarAtivo(cartaoExistente.getConta().getTitular());
 
             while (true) {
                 System.out.println("Confirma o desbloqueio do cartão " + cartaoExistente.getNumeroCartao() +
