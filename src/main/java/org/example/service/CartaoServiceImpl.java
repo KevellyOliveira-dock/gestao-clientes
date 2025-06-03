@@ -88,19 +88,7 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public List<Cartao> buscarCartaoPorCPF(Cliente titular) throws Exception {
-        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(titular.getCpf());
-
-        for (Cartao cartao : cartoes) {
-            if (!cartao.getConta().isAtivo()) {
-                throw new Exception("A conta associada ao cartão está desativada.\n");
-            }
-        }
-
-        if (cartoes.isEmpty()) {
-            throw new Exception("Esse cliente não possui cartões cadastrados.\n");
-        }
-
-        return cartoes;
+    public List<Cartao> buscarCartaoPorCPF(Cliente titular) {
+        return cartaoRepository.buscarPorCPF(titular.getCpf());
     }
 }
