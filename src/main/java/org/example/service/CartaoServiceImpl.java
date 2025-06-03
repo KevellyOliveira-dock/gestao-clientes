@@ -54,6 +54,10 @@ public class CartaoServiceImpl implements CartaoService {
             throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
         }
 
+        if (!cartao.getConta().isAtivo()) {
+            throw new Exception("A conta associada ao cartão está desativada.\n");
+        }
+
         return cartao;
     }
 
