@@ -78,7 +78,7 @@ class ClienteDesativacaoServiceTest {
         clienteDesativacaoService.desativarCliente(CPF_CLIENTE);
 
         assertFalse(contaAtiva.isAtivo());
-        assertFalse(contaInativa.isAtivo());;
+        assertFalse(contaInativa.isAtivo());
     }
 
     @Test
