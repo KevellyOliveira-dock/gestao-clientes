@@ -39,8 +39,8 @@ public class Main {
         //inicializa a ClienteService | dependencia criada fora da controller
         ClienteService clienteService = new ClienteServiceImpl(clienteRepository);
         CartaoService cartaoService = new CartaoServiceImpl(cartaoRepository);
-        ContaService contaService = new ContaServiceImpl(contaRepository, cartaoService, clienteService);
         FaturaService faturaService = new FaturaServiceImpl(faturaRepository);
+        ContaService contaService = new ContaServiceImpl(contaRepository, cartaoService, clienteService, faturaService);
 
         ClienteDesativacaoService clienteDesativacaoService = new ClienteDesativacaoService(
                clienteService, contaService, cartaoService, faturaService

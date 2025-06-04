@@ -13,16 +13,20 @@ import java.util.List;
 public class ContaServiceImpl implements ContaService {
     private final ContaRepository contaRepository;
 
+    private final ClienteService clienteService;
+
     private final CartaoService cartaoService;
 
-    private final ClienteService clienteService;
+    private final FaturaService faturaService;
 
     public ContaServiceImpl(ContaRepository contaRepository,
                             CartaoService cartaoService,
-                            ClienteService clienteService) {
+                            ClienteService clienteService,
+                            FaturaService faturaService) {
         this.contaRepository = contaRepository;
         this.cartaoService = cartaoService;
         this.clienteService = clienteService;
+        this.faturaService = faturaService;
     }
 
     @Override
@@ -49,9 +53,6 @@ public class ContaServiceImpl implements ContaService {
         var numeroConta = String.valueOf(contaRepository.buscarTamanho());
 
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
-        if (cliente == null) {
-            throw new Exception("CPF informado não encontrado. Cadastre-se e tente novamente.\n");
-        }
 
         ClienteValidator.validarAtivo(cliente);
 
@@ -95,6 +96,7 @@ public class ContaServiceImpl implements ContaService {
         for (Cartao cartao : cartoes) {
             if (!cartao.isBloqueado()) {
                 cartaoService.bloquearCartao(cartao.getNumeroCartao());
+                faturaService.fecharFatura(cartao);
             }
         }
 
