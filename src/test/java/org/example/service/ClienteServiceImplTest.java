@@ -31,12 +31,24 @@ public class ClienteServiceImplTest {
     private static final boolean IS_ATIVO_CLIENTE = true;
 
     @Test
-    public void quandoClientesCadastrarVerifiqueSeOCpfJaFoiCadastradoEntaoCadastreComSucesso() throws Exception {
+    public void quandoComandoEhClienteCadastrarECpfNaoFoiCadastradoEntaoCadastreComSucesso() throws Exception {
         Cliente cliente = clientesServiceImpl.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
 
         assertEquals(NOME_CLIENTE, cliente.getNomeCompleto());
         assertEquals(CPF_CLIENTE, cliente.getCpf());
         assertEquals(ENDERECO_CLIENTE, cliente.getEndereco());
+    }
+
+    @Test
+    public void quandoComandoEhClienteCadastrarVerifiqueSeCadastrouCpfAntesEntaoRetorneMensagem() {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
+        // () -> : lambda expression
+        Exception exception = assertThrows(Exception.class, () ->
+                clientesServiceImpl.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE)
+        );
+        assertEquals("CPF já cadastrado", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -53,7 +65,7 @@ public class ClienteServiceImplTest {
             "Kevelly, 12345678900, ''",
             "'', '', ''",
     })
-    void quandoClientesCadastrarENomeForNuloOuVazioEntaoRetorneMensagemDeErro(
+    void quandoComandoEhClienteCadastrarENomeForNuloOuVazioEntaoRetorneMensagemDeErro(
             String nomeCompleto,
             String cpf,
             String endereco
@@ -65,39 +77,7 @@ public class ClienteServiceImplTest {
     }
 
     @Test
-    public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
-        Exception exception = assertThrows(Exception.class, () ->
-                clientesServiceImpl.pesquisarClientePorNome(NOME_CLIENTE)
-        );
-        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
-    }
-
-    @Test
-    public void quandoClientesCadastrarEntaoVerifiqueSeCadastrouChaveAntes() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
-
-        when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
-        // () -> : lambda expression
-        Exception exception = assertThrows(Exception.class, () ->
-                clientesServiceImpl.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE)
-        );
-        assertEquals("CPF já cadastrado", exception.getMessage());
-    }
-
-    // Verificação do pesquisar CPF
-    @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoBuscarClientePorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) {
-        Exception exception = assertThrows(Exception.class, () -> {
-            clientesServiceImpl.buscarClientePorCPF(cpf);
-            clientesServiceImpl.cadastrarCliente(NOME_CLIENTE, cpf, ENDERECO_CLIENTE);
-        });
-        assertEquals("O CPF informado não foi encontrado. Tente novamente", exception.getMessage());
-    }
-
-    //TESTE ATUALIZAR
-    @Test
-    public void quandoClienteAtualizarVerifiqueSeOCpfJaFoiCadastradoEntaoAtualizeComSucesso() throws Exception {
+    public void quandoComandoEhClienteAtualizarVerifiqueSeOCpfJaFoiCadastradoEntaoAtualizeComSucesso() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
@@ -114,7 +94,7 @@ public class ClienteServiceImplTest {
     //permite executar o mesmo teste várias vezes com valores diferentes
     //Simula a entrada vazia, esperando que o nome continue NOME_CLIENTE
     @CsvSource({" , Kevelly"})
-    public void quandoClienteAtualizarVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior
+    public void quandoComandoEhClienteAtualizarVerfiqueSeNomeCompletoEhVazioEntaoRetorneSeuValorAnterior
             (String novoNome, String nomeEsperado) throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -133,7 +113,7 @@ public class ClienteServiceImplTest {
     @ParameterizedTest
     //permite executar o mesmo teste várias vezes com valores diferentes
     @CsvSource({" , Rua dos testes 56"})
-    public void quandoAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior
+    public void quandoComandoEhAtualizarClienteVerfiqueSeEnderecoEhVazioEntaoRetorneSeuValorAnterior
             (String novoEndereco, String enderecoEsperado) throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -148,9 +128,41 @@ public class ClienteServiceImplTest {
         assertEquals(enderecoEsperado, clienteAtualizado.getEndereco());
     }
 
-    //PESQUISAR CLIENTE
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void quandoComandoEhClienteBuscarPorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) {
+        Exception exception = assertThrows(Exception.class, () -> {
+            clientesServiceImpl.buscarClientePorCPF(cpf);
+        });
+        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
+    }
+
     @Test
-    public void quandoClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() throws Exception {
+    public void quandoComandoEhClientePesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
+        when(clienteRepository.buscarPorCPF("0123456789")).thenReturn(null);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            clientesServiceImpl.buscarClientePorCPF("0123456789");
+
+        });
+        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoComandoEhClienteBuscarPorCpfForValidoEntaoRetorneCliente() throws Exception {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
+
+        Cliente resultado = clientesServiceImpl.buscarClientePorCPF(CPF_CLIENTE);
+
+        assertEquals(NOME_CLIENTE, resultado.getNomeCompleto());
+        assertEquals(CPF_CLIENTE, resultado.getCpf());
+        assertEquals(ENDERECO_CLIENTE, resultado.getEndereco());
+    }
+
+    @Test
+    public void quandoComandoEhClientePesquisarNomeEntaoListeTodosOsClientesComEsseNome() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Cliente cliente2 = new Cliente(
                 "Joana Silva", "0000000", "rua Unitarios 123", true
@@ -182,26 +194,10 @@ public class ClienteServiceImplTest {
     }
 
     @Test
-    public void quandoClientePesquisarCpfEntaoExibaOClienteComEsseCpf() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
-
-        when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
-
-        Cliente resultado = clientesServiceImpl.buscarClientePorCPF(CPF_CLIENTE);
-
-        assertEquals(NOME_CLIENTE, resultado.getNomeCompleto());
-        assertEquals(CPF_CLIENTE, resultado.getCpf());
-        assertEquals(ENDERECO_CLIENTE, resultado.getEndereco());
-    }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
-        when(clienteRepository.buscarPorCPF("0123456789")).thenReturn(null);
-
-        Exception exception = assertThrows(Exception.class, () -> {
-            clientesServiceImpl.buscarClientePorCPF("0123456789");
-
-        });
+    public void quandoComandoEhClientePesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
+        Exception exception = assertThrows(Exception.class, () ->
+                clientesServiceImpl.pesquisarClientePorNome(NOME_CLIENTE)
+        );
         assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
 }

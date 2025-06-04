@@ -37,10 +37,6 @@ public class ClienteServiceImpl implements ClienteService {
     public Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         Cliente clienteExistente = buscarClientePorCPF(cpf);
 
-        if (clienteExistente == null) {
-            throw new Exception("CPF não cadastrado");
-        }
-
         if (nomeCompleto.isEmpty()) {
             nomeCompleto = clienteExistente.getNomeCompleto();
         }
@@ -59,14 +55,14 @@ public class ClienteServiceImpl implements ClienteService {
     public Cliente buscarClientePorCPF(String cpf) throws Exception {
         Cliente cliente = clienteRepository.buscarPorCPF(cpf);
         if (cliente == null) {
-            throw  new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         return cliente;
     }
 
     @Override
-    public List<Cliente> pesquisarClientePorNome(String nome) throws Exception{
+    public List<Cliente> pesquisarClientePorNome(String nome) throws Exception {
         List<Cliente> clientesEncontrados = new ArrayList<>();
         String nomePesquisa = nome.toLowerCase();
 

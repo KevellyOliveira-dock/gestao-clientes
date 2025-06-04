@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
+import org.example.model.Conta;
 import org.example.service.ClienteDesativacaoService;
 import org.example.service.ClienteService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -131,10 +133,29 @@ public class ClienteControllerIntegrationTest {
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
+
     @Test
     public void quandoComandoEhClientesDesativarEntaoDesativeOsClientes() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes desativar");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
+
+        var resultadoEsperado = "Cliente desativado com sucesso.\n";
+        this.inputStream.setInputs("S\n");
+        var resultadoReal = controller.executar("clientes desativar 12345678900");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhClientesDesativarDesistirEntaoExibaMensagem() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
+
+        var resultadoEsperado = "Operação cancelada\n";
+        this.inputStream.setInputs("N\n");
+        var resultadoReal = controller.executar("clientes desativar 12345678900");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
