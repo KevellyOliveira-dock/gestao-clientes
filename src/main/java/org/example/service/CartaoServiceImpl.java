@@ -50,10 +50,6 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public Cartao buscarCartaoPorNumero(String numeroCartao) throws Exception {
         Cartao cartao = cartaoRepository.buscarPorNumero(numeroCartao);
-        if (numeroCartao == null || numeroCartao.trim().isEmpty() || cartao == null) {
-            throw new Exception("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n");
-        }
-
         if (!cartao.getConta().isAtivo()) {
             throw new Exception("A conta associada ao cartão está desativada.\n");
         }
@@ -89,6 +85,14 @@ public class CartaoServiceImpl implements CartaoService {
 
     @Override
     public List<Cartao> buscarCartaoPorCPF(Cliente titular) {
-        return cartaoRepository.buscarPorCPF(titular.getCpf());
+        List<Cartao> cartoes = cartaoRepository.buscarPorCPF(titular.getCpf());
+
+        for (Cartao cartao : cartoes) {
+            if (!cartao.getConta().isAtivo()) {
+                throw new RuntimeException("A conta associada ao cartão está desativada.\n");
+            }
+        }
+
+        return cartoes;
     }
 }

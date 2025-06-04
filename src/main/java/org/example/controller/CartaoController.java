@@ -49,17 +49,18 @@ public class CartaoController implements Controller {
                 }
 
             case "cadastrar":
-                return cadastrarCartao();
+                if (partes.length == 3) {
+                    return cadastrarCartao(partes[2]);
+                } else {
+                    return "Para cadastrar o cartão é necessário informar o número da conta. Ex: cartoes cadastrar 5.\n";
+                }
 
             default:
                 return "operação inválida";
         }
     }
 
-    public String cadastrarCartao() {
-        System.out.println("Informe sua conta: ");
-        String numeroConta = scanner.nextLine();
-
+    public String cadastrarCartao(String numeroConta) {
         try {
             Conta conta = contaService.buscarContaPorNumero(numeroConta);
             Cartao cartaoCriado = cartaoService.cadastrarCartao(conta);

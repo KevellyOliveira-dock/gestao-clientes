@@ -45,7 +45,7 @@ public class CartaoServiceImplTest {
     private static final boolean IS_BLOQUEADO_CARTAO = false;
 
     @Test
-    public void quandoComandoForCadastrarCartaoVerifiqueSeOCpfEAContaFoiCadastradoEntaoCadastreComSucesso()
+    public void quandoComandoEhCadastrarCartaoVerifiqueSeOCpfEAContaFoiCadastradoEntaoCadastreComSucesso()
             throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
@@ -80,6 +80,20 @@ public class CartaoServiceImplTest {
         assertEquals(CPF_CLIENTE, resultadoReal.getConta().getTitular().getCpf());
         assertEquals(NUMERO_CONTA, resultadoReal.getConta().getNumeroConta());
         assertEquals(NUMERO_CARTAO, resultadoReal.getNumeroCartao());
+    }
+
+    @Test
+    public void quandoCartaoPesquisarNumeroCartaoEContaEstiverDesativadaEntaoRetorneBuscaComSucesso() throws Exception {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
+
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO)
+        );
+        assertEquals("A conta associada ao cartão está desativada.\n", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -164,12 +178,15 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void quandoBuscarCartaoPorCPFENaoEncontrarEntaoRetorneNull() {
+    public void quandoBuscarCartaoPorCPFEEntaoRetorneListaDeCartoes() {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
-        );
-        assertEquals("Esse cliente não possui cartões cadastrados.\n", exception.getMessage());
+        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(cartao));
+
+        var resultado = cartaoServiceImpl.buscarCartaoPorCPF(cliente);
+
+        assertEquals(List.of(cartao), resultado);
     }
 }
