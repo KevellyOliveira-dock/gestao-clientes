@@ -53,7 +53,7 @@ public class ContaController implements Controller {
         }
     }
 
-    private String pesquisarConta(String[] partes) {
+    private String pesquisarConta(String[] partes) throws Exception {
         if (partes.length == 2) {
             return """
                     ----------------------------------
@@ -109,11 +109,11 @@ public class ContaController implements Controller {
         }
     }
 
-    public String pesquisarContaPorNumero(String numeroConta) {
+    public String pesquisarContaPorNumero(String numeroConta) throws Exception {
         Conta contas = contaService.buscarContaPorNumero(numeroConta);
 
         if (contas == null) {
-            return "Nenhuma conta encontrada para o nome informado.\n";
+            return "A conta informada não foi encontrada. Cadastre-se e tente novamente.\n";
         }
 
         try {
@@ -125,12 +125,8 @@ public class ContaController implements Controller {
         return "Conta encontrada: \n" + contas;
     }
 
-    public String pesquisarContaPorTitular(String nomeCompleto) {
+    public String pesquisarContaPorTitular(String nomeCompleto) throws Exception {
         List<Conta> contas = contaService.buscarContasPorTitular(nomeCompleto);
-
-        if (contas.isEmpty()) {
-            return "Nenhuma conta encontrada para o nome informado.\n";
-        }
 
         try {
             ClienteValidator.validarAtivo(contas.get(0).getTitular());
@@ -147,24 +143,20 @@ public class ContaController implements Controller {
     }
 
     public String pesquisarContaPorCPF(String cpf) {
-        List<Conta> contas = contaService.buscarContasPorCPF(cpf);
-
-        if (contas.isEmpty()) {
-            return "Nenhuma conta encontrada para o CPF informado.\n";
-        }
-
         try {
+            List<Conta> contas = contaService.buscarContasPorCPF(cpf);
+
             ClienteValidator.validarAtivo(contas.get(0).getTitular());
+
+            StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
+            for (Conta conta : contas) {
+                resultado.append(conta.toString()).append("\n");
+            }
+
+            return resultado.toString();
         } catch (Exception e) {
             return e.getMessage();
         }
-
-        StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
-        for (Conta conta : contas) {
-            resultado.append(conta.toString()).append("\n");
-        }
-
-        return resultado.toString();
     }
 
     public String desativarConta(String numeroConta) {

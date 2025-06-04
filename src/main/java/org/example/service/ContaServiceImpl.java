@@ -65,12 +65,18 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public Conta buscarContaPorNumero(String numeroConta) {
-        return contaRepository.buscarPorNumero(numeroConta);
+    public Conta buscarContaPorNumero(String numeroConta) throws Exception {
+        Conta conta = contaRepository.buscarPorNumero(numeroConta);
+
+        if (!conta.isAtivo()) {
+            throw new Exception("Essa conta está desativada.\n");
+        }
+
+        return conta;
     }
 
     @Override
-    public List<Conta> buscarContasPorTitular(String nomeCompleto) {
+    public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contaRepository.buscarValores(nomeCompleto)) {
@@ -79,12 +85,27 @@ public class ContaServiceImpl implements ContaService {
             }
         }
 
+        if (contasEncontradas.isEmpty()) {
+            throw new Exception("Nenhuma conta encontrada para o nome informado.\n");
+        }
+
         return contasEncontradas;
     }
 
     @Override
-    public List<Conta> buscarContasPorCPF(String cpf) {
-        return contaRepository.buscarValores(cpf);
+    public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
+        List<Conta> contas = contaRepository.buscarValores(cpf);
+
+        for (Conta conta : contas) {
+            if (!conta.getTitular().getCpf().equals(cpf) || !conta.isAtivo()) {
+                throw new Exception("Essa conta está desativada.\n");
+            }
+        }
+
+        if (contas.isEmpty()) {
+            throw new Exception("Nenhuma conta encontrada para o CPF informado.\n");
+        }
+        return contas;
     }
 
     @Override

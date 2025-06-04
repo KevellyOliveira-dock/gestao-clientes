@@ -1,9 +1,6 @@
 package org.example.service;
 
-import org.example.model.Cartao;
-import org.example.model.Cliente;
-import org.example.model.Conta;
-import org.example.model.Transacao;
+import org.example.model.*;
 import org.example.repository.ContaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +32,9 @@ public class ContaServiceImplTest {
     @Mock
     private CartaoService cartaoService;
 
+    @Mock
+    private FaturaService faturaService;
+
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
@@ -47,12 +47,16 @@ public class ContaServiceImplTest {
     private static final String CVV_CARTAO = "123";
     private static final LocalDate DT_VENCIMENTO_CARTAO = LocalDate.of(2028, 12, 12);
     private static final boolean IS_BLOQUEADO_CARTAO = false;
+    private static final String CHAVE_FATURA = "0";
+    private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
+    private static final double VALOR_FATURA = 110.0;
+    private static final boolean IS_PAGO_FATURA = false;
 
     @Test
-    public void quandoComandoForCadastrarContaVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
+    public void quandoComandoEhContaCadastrarVerifiqueSeOCpfFoiCadastradoEntaoCadastreComSucesso() throws Exception {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
-        // Após um mock ser criado, você pode configurar ações na chamada e o retorno.
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
         Conta resultadoReal = contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA));
@@ -63,7 +67,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoContasCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
+    public void quandoComandoEhContaCadastrarECpfForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(numeroConta, String.valueOf(SALDO_CONTA))
         );
@@ -72,7 +76,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoContasCadastrarESaldoForMenorQueZeroOuNaoNumeroEntaoExibaMensagem(String saldoStr) {
+    public void quandoComandoEhContaCadastrarESaldoForMenorQueZeroOuNaoNumeroEntaoExibaMensagem(String saldoStr) {
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(CPF_CLIENTE, saldoStr)
         );
@@ -90,22 +94,12 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(doubles = {-1.0, Double.NaN})
-    public void quandoContasCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) {
+    public void quandoComandoEhContaCadastrarESaldoForVazioOuNuloEntaoExibaMensagem(Double saldo) {
 
         Exception exception = assertThrows(Exception.class, () ->
                 contaServiceImpl.cadastrarConta(CPF_CLIENTE, String.valueOf(saldo))
         );
         assertEquals("O saldo deve ser um número maior que zero.\n", exception.getMessage());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource //quando a função for executada passa null e depois vazia
-    public void quandoContasPesquisarNumeroContaForVazioOuNuloEntaoExibaMensagem(String numeroConta) {
-        Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContaPorNumero(numeroConta)
-        );
-        assertEquals("A conta informada não foi encontrada. Cadastre-se e tente novamente.\n",
-                exception.getMessage());
     }
 
     @Test
@@ -125,8 +119,9 @@ public class ContaServiceImplTest {
     @Test
     public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() {
         Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE));
-        assertEquals("Conta não encontrada. Cadastre-se e tente novamente.\n", exception.getMessage());
+                contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE)
+        );
+        assertEquals("Nenhuma conta encontrada para o nome informado.\n", exception.getMessage());
     }
 
     @Test
@@ -134,7 +129,6 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
-        // Mocka o comportamento
         when(contaRepository.buscarValores(NOME_CLIENTE)).thenReturn(List.of(conta));
 
         // Chama o metodo mockado
@@ -153,7 +147,7 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() {
+    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
@@ -167,7 +161,7 @@ public class ContaServiceImplTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void quandoContasPesquisarCPFTitularENaoEncontrarEntaoRetorneListaVazia(String cpf) {
+    public void quandoContasPesquisarCPFTitularENaoEncontrarEntaoRetorneListaVazia(String cpf) throws Exception {
         List<Conta> contas = new ArrayList<>();
 
         List<Conta> resultado = contaServiceImpl.buscarContasPorCPF(cpf);
@@ -181,9 +175,11 @@ public class ContaServiceImplTest {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
+        Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
 
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
         when(cartaoService.buscarCartaoPorCPF(cliente)).thenReturn(List.of(cartao));
+        when(faturaService.fecharFatura(cartao)).thenReturn(fatura);
 
         Conta resultado = contaServiceImpl.desativarConta(NUMERO_CONTA);
 

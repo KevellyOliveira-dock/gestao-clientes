@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDesativacaoService {
@@ -25,11 +26,16 @@ public class ClienteDesativacaoService {
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
         // Caso a lista seja vazia ele lança uma exceção, é necessario repensar
-        List<Conta> contas = contaService.buscarContasPorCPF(cpf);
-        for (Conta conta : contas) {
-            if (conta.isAtivo()) {
-                conta.setAtivo(false);
+        List<Conta> contas;
+        try {
+            contas = contaService.buscarContasPorCPF(cpf);
+            for (Conta conta : contas) {
+                if (conta.isAtivo()) {
+                    conta.setAtivo(false);
+                }
             }
+        } catch (Exception e) {
+            contas = new ArrayList<>();
         }
 
         List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(cliente);
