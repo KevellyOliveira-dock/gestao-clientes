@@ -26,7 +26,7 @@ public class CartaoController implements Controller {
                     ----------------------------------
                     | Bloquear {número do cartao}    |
                     | Desbloquear {número do cartao} |
-                    | Cadastrar                      |
+                    | Cadastrar {número da conta }   |
                     ----------------------------------""";
         }
 

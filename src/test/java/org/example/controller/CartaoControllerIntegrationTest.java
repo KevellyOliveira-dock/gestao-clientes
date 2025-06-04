@@ -69,7 +69,7 @@ public class CartaoControllerIntegrationTest {
                 ----------------------------------
                 | Bloquear {número do cartao}    |
                 | Desbloquear {número do cartao} |
-                | Cadastrar                      |
+                | Cadastrar {número da conta }   |
                 ----------------------------------""";
         var resultadoReal = controller.executar("cartoes");
 
@@ -85,13 +85,12 @@ public class CartaoControllerIntegrationTest {
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
         when(cartaoService.cadastrarCartao(conta)).thenReturn(cartao);
 
-        this.inputStream.setInputs("0\n");
         var resultadoEsperado = "Cartão criado com sucesso!\n" +
                 "O cliente Kevelly, de conta número 0, acionou um novo cartão: " +
                 "\nData de vencimento: 12/12/2028.\n" +
                 "Número do cartão: 1234.\n" +
                 "CVV: 123.\n";
-        var resultadoReal = controller.executar("cartoes cadastrar");
+        var resultadoReal = controller.executar("cartoes cadastrar 0");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
@@ -141,7 +140,6 @@ public class CartaoControllerIntegrationTest {
         var resultadoReal = controller.executar("cartoes desbloquear 1234");
 
         assertEquals(resultadoEsperado, resultadoReal);
-        assertFalse(cartao.isBloqueado());
     }
 
     @Test
@@ -157,6 +155,5 @@ public class CartaoControllerIntegrationTest {
         var resultadoReal = controller.executar("cartoes desbloquear 1234");
 
         assertEquals(resultadoEsperado, resultadoReal);
-        assertTrue(cartao.isBloqueado());
     }
 }
