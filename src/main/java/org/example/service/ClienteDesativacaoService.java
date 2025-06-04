@@ -21,18 +21,18 @@ public class ClienteDesativacaoService {
     }
 
 
-    public void desativarCliente(String cpf) throws Exception {
-        Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+    public Cliente desativarCliente(String cpf) throws Exception {
+        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
 
         // Caso a lista seja vazia ele lança uma exceção, é necessario repensar
         List<Conta> contas = contaService.buscarContasPorCPF(cpf);
         for (Conta conta : contas) {
-            if (!conta.isAtivo()) {
+            if (conta.isAtivo()) {
                 conta.setAtivo(false);
             }
         }
 
-        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(clienteExistente);
+        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(cliente);
         for (Cartao cartao : cartoes) {
             if (!cartao.isBloqueado()) {
                 cartao.setBloqueado(true);
@@ -40,13 +40,12 @@ public class ClienteDesativacaoService {
             }
         }
 
-        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
-
         if (cliente == null) {
             throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        clienteExistente.setAtivo(false);
+        cliente.setAtivo(false);
 
+        return cliente;
     }
 }
