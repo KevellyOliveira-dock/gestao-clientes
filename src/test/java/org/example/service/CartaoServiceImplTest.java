@@ -178,7 +178,7 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void quandoBuscarCartaoPorCPFEEntaoRetorneListaDeCartoes() {
+    public void quandoBuscarCartaoPorCPFEEntaoRetorneListaDeCartoes() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
@@ -188,5 +188,18 @@ public class CartaoServiceImplTest {
         var resultado = cartaoServiceImpl.buscarCartaoPorCPF(cliente);
 
         assertEquals(List.of(cartao), resultado);
+    }
+
+    @Test
+    public void quandoComandoEhContasPesquisarCpfTitularENaoTiverContaEntaoExibaMensagem() {
+        List<Cartao> listaCartoes = new ArrayList<>();
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(listaCartoes);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
+        );
+        assertEquals("Nenhum cartão encontrado para o CPF informado.\n", exception.getMessage());
     }
 }
