@@ -10,20 +10,18 @@ import java.util.List;
 public class ClienteDesativacaoService {
     private final ClienteService clienteService;
     private final ContaService contaService;
-    private final CartaoService cartaoService;
-    private final FaturaService faturaService;
 
-    public ClienteDesativacaoService(ClienteService clienteService, ContaService contaService,
-                                     CartaoService cartaoService, FaturaService faturaService) {
+    public ClienteDesativacaoService(ClienteService clienteService, ContaService contaService) {
         this.clienteService = clienteService;
         this.contaService = contaService;
-        this.cartaoService = cartaoService;
-        this.faturaService = faturaService;
     }
-
 
     public Cliente desativarCliente(String cpf) throws Exception {
         Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
+        }
 
         // Caso a lista seja vazia ele lança uma exceção, é necessario repensar
         List<Conta> contas;
@@ -31,23 +29,11 @@ public class ClienteDesativacaoService {
             contas = contaService.buscarContasPorCPF(cpf);
             for (Conta conta : contas) {
                 if (conta.isAtivo()) {
-                    conta.setAtivo(false);
+                    contaService.desativarConta(conta.getNumeroConta());
                 }
             }
         } catch (Exception e) {
             contas = new ArrayList<>();
-        }
-
-        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(cliente);
-        for (Cartao cartao : cartoes) {
-            if (!cartao.isBloqueado()) {
-                cartao.setBloqueado(true);
-                faturaService.fecharFatura(cartao);
-            }
-        }
-
-        if (cliente == null) {
-            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         cliente.setAtivo(false);
