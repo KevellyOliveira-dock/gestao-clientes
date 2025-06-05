@@ -111,14 +111,21 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public Conta desativarConta(String numeroConta) throws Exception {
         Conta conta = buscarContaPorNumero(numeroConta);
+        try {
+            List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(conta.getTitular());
 
-        List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(conta.getTitular());
-
-        for (Cartao cartao : cartoes) {
-            if (!cartao.isBloqueado()) {
-                cartaoService.bloquearCartao(cartao.getNumeroCartao());
-                faturaService.fecharFatura(cartao);
+            for (Cartao cartao : cartoes) {
+                if (!cartao.isBloqueado()) {
+                    try {
+                        cartaoService.bloquearCartao(cartao.getNumeroCartao());
+                    } catch (Exception e) {
+                        cartoes = new ArrayList<>();
+                    }
+                    faturaService.fecharFatura(cartao);
+                }
             }
+        } catch (Exception e) {
+            List<Cartao> cartoes = new ArrayList<>();
         }
 
         contaRepository.cadastrar(conta);
