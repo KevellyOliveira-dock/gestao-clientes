@@ -85,10 +85,6 @@ public class ContaServiceImpl implements ContaService {
             }
         }
 
-        if (contasEncontradas.isEmpty()) {
-            throw new Exception("Nenhuma conta encontrada para o nome informado.\n");
-        }
-
         return contasEncontradas;
     }
 

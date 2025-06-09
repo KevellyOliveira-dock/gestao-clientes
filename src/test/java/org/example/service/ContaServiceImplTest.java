@@ -117,14 +117,6 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContasPesquisarNomeTitularENaoEncontrarEntaoMensagemAdequada() {
-        Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE)
-        );
-        assertEquals("Nenhuma conta encontrada para o nome informado.\n", exception.getMessage());
-    }
-
-    @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
