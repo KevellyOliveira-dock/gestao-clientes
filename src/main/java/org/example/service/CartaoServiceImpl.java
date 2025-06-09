@@ -93,10 +93,6 @@ public class CartaoServiceImpl implements CartaoService {
             }
         }
 
-        if (cartoes.isEmpty()) {
-            throw new Exception("Nenhum cartão encontrado para o CPF informado.\n");
-        }
-
         return cartoes;
     }
 }

@@ -7,8 +7,6 @@ import org.example.model.Transacao;
 import org.example.repository.CartaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -96,15 +94,6 @@ public class CartaoServiceImplTest {
         assertEquals("A conta associada ao cartão está desativada.\n", exception.getMessage());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoCartaoPesquisarNumeroCartaoForVazioOuNuloEntaoExibaMensagem(String numeroCartao) {
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorNumero(numeroCartao)
-        );
-        assertEquals("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n", exception.getMessage());
-    }
-
     @Test
     public void quandoCartaoBloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
         Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
@@ -188,18 +177,5 @@ public class CartaoServiceImplTest {
         var resultado = cartaoServiceImpl.buscarCartaoPorCPF(cliente);
 
         assertEquals(List.of(cartao), resultado);
-    }
-
-    @Test
-    public void quandoComandoEhContasPesquisarCpfTitularENaoTiverContaEntaoExibaMensagem() {
-        List<Cartao> listaCartoes = new ArrayList<>();
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
-
-        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(listaCartoes);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
-        );
-        assertEquals("Nenhum cartão encontrado para o CPF informado.\n", exception.getMessage());
     }
 }

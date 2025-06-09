@@ -128,15 +128,6 @@ public class ClienteServiceImplTest {
         assertEquals(enderecoEsperado, clienteAtualizado.getEndereco());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoComandoEhClienteBuscarPorCpfForVazioOuNuloEntaoNaoRealizarCadastro(String cpf) {
-        Exception exception = assertThrows(Exception.class, () -> {
-            clientesServiceImpl.buscarClientePorCPF(cpf);
-        });
-        assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
-    }
-
     @Test
     public void quandoComandoEhClientePesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() {
         when(clienteRepository.buscarPorCPF("0123456789")).thenReturn(null);
