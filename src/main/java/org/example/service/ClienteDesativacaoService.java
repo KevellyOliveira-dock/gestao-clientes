@@ -1,19 +1,22 @@
 package org.example.service;
 
-import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
+import org.example.repository.ClienteRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDesativacaoService {
     private final ClienteService clienteService;
     private final ContaService contaService;
+    private final ClienteRepository clienteRepository;
 
-    public ClienteDesativacaoService(ClienteService clienteService, ContaService contaService) {
+    public ClienteDesativacaoService(ClienteService clienteService,
+                                     ContaService contaService,
+                                     ClienteRepository clienteRepository) {
         this.clienteService = clienteService;
         this.contaService = contaService;
+        this.clienteRepository = clienteRepository;
     }
 
     public Cliente desativarCliente(String cpf) throws Exception {
@@ -23,20 +26,15 @@ public class ClienteDesativacaoService {
             throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        // Caso a lista seja vazia ele lança uma exceção, é necessario repensar
-        List<Conta> contas;
-        try {
-            contas = contaService.buscarContasPorCPF(cpf);
-            for (Conta conta : contas) {
-                if (conta.isAtivo()) {
-                    contaService.desativarConta(conta.getNumeroConta());
-                }
+        List<Conta> contas = contaService.buscarContasPorCPF(cpf);
+        for (Conta conta : contas) {
+            if (conta.isAtivo()) {
+                contaService.desativarConta(conta.getNumeroConta());
             }
-        } catch (Exception e) {
-            contas = new ArrayList<>();
         }
 
         cliente.setAtivo(false);
+        clienteRepository.cadastrar(cliente);
 
         return cliente;
     }
