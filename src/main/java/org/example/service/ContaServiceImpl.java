@@ -99,7 +99,7 @@ public class ContaServiceImpl implements ContaService {
         List<Conta> contas = contaRepository.buscarValores(cpf);
 
         for (Conta conta : contas) {
-            if (!conta.getTitular().getCpf().equals(cpf) || !conta.isAtivo()) {
+            if (!conta.getTitular().getCpf().equals(cpf) && !conta.isAtivo()) {
                 throw new Exception("Essa conta está desativada.\n");
             }
         }
