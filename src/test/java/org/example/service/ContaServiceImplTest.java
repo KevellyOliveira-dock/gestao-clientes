@@ -117,6 +117,17 @@ public class ContaServiceImplTest {
     }
 
     @Test
+    public void quandoContaPesquisarNumeroContaoVerifiqueSeContaNaoExisteContaEntaoExibaMensagem() {
+        when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(null);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                contaServiceImpl.buscarContaPorNumero(NUMERO_CONTA)
+        );
+        assertEquals("Conta não encontrada.\n",
+                exception.getMessage());
+    }
+
+    @Test
     public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);

@@ -70,6 +70,10 @@ public class ContaServiceImpl implements ContaService {
     public Conta buscarContaPorNumero(String numeroConta) throws Exception {
         Conta conta = contaRepository.buscarPorNumero(numeroConta);
 
+        if (conta == null) {
+            throw new Exception("Conta não encontrada.\n");
+        }
+
         if (!conta.isAtivo()) {
             throw new Exception("Essa conta está desativada.\n");
         }
