@@ -82,7 +82,7 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public List<Conta> buscarContasPorTitular(String nomeCompleto) throws Exception {
+    public List<Conta> buscarContasPorTitular(String nomeCompleto) {
         List<Conta> contasEncontradas = new ArrayList<>();
 
         for (Conta conta : contaRepository.buscarValores(nomeCompleto)) {
