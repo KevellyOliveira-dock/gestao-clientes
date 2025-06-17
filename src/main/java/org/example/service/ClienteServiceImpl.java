@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cliente;
 import org.example.repository.ClienteRepository;
+import org.example.validator.ClienteValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         Cliente clienteExistente = buscarClientePorCPF(cpf);
+
+        ClienteValidator.validarAtivo(clienteExistente);
 
         if (nomeCompleto.isEmpty()) {
             nomeCompleto = clienteExistente.getNomeCompleto();

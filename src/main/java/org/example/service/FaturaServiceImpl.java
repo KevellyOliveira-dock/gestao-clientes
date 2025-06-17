@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Fatura;
 import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
+import org.example.validator.ClienteValidator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class FaturaServiceImpl implements FaturaService {
 
     @Override
     public Fatura fecharFatura(Cartao cartao) throws Exception {
+        ClienteValidator.validarAtivo(cartao.getConta().getTitular());
+
         // Pega a data de agora, se for antes do dia 10 desse mês, fechar a fatura ainda nesse mes.
         // A partir do dia 11 deve ser no proximo mês.
         LocalDate hoje = LocalDate.now();
@@ -67,6 +70,8 @@ public class FaturaServiceImpl implements FaturaService {
     @Override
     public Fatura pagarFatura(Cartao cartao) throws Exception {
         List<Fatura> faturas = faturaRepository.buscarFaturaPorNumeroCartao(cartao);
+
+        ClienteValidator.validarAtivo(cartao.getConta().getTitular());
 
         Fatura fatura = null;
         LocalDate hoje = LocalDate.now();

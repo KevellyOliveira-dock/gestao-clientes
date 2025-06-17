@@ -56,6 +56,8 @@ public class ContaServiceImpl implements ContaService {
 
         ClienteValidator.validarAtivo(cliente);
 
+        ClienteValidator.validarAtivo(cliente);
+
         List<Transacao> todaTransacao = new ArrayList<>();
 
         var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
@@ -104,6 +106,8 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public Conta desativarConta(String numeroConta) throws Exception {
         Conta conta = buscarContaPorNumero(numeroConta);
+
+        ClienteValidator.validarAtivo(conta.getTitular());
 
         List<Cartao> cartoes = cartaoService.buscarCartaoPorCPF(conta.getTitular());
 

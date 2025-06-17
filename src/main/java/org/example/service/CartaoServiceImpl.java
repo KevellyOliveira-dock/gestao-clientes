@@ -4,6 +4,7 @@ import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.repository.CartaoRepository;
+import org.example.validator.ClienteValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ public class CartaoServiceImpl implements CartaoService {
 
     @Override
     public Cartao cadastrarCartao(Conta conta) throws Exception {
+        ClienteValidator.validarAtivo(conta.getTitular());
+
         if (!conta.isAtivo()) {
             throw new Exception("A conta informada não está ativa.\n");
         }
@@ -61,6 +64,8 @@ public class CartaoServiceImpl implements CartaoService {
     public Cartao bloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
 
+        ClienteValidator.validarAtivo(cartao.getConta().getTitular());
+
         if (cartao.isBloqueado()) {
             throw new Exception("Esse cartão já está bloqueado.\n");
         }
@@ -73,6 +78,8 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public Cartao desbloquearCartao(String numeroCartao) throws Exception {
         Cartao cartao = buscarCartaoPorNumero(numeroCartao);
+
+        ClienteValidator.validarAtivo(cartao.getConta().getTitular());
 
         if (!cartao.isBloqueado()) {
             throw new Exception("Esse cartão já está desbloqueado.\n");
