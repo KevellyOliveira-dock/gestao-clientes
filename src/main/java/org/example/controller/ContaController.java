@@ -107,14 +107,13 @@ public class ContaController implements Controller {
         }
     }
 
-    public String pesquisarContaPorNumero(String numeroConta) throws Exception {
-        Conta contas = contaService.buscarContaPorNumero(numeroConta);
-
-        if (contas == null) {
-            return "A conta informada não foi encontrada. Cadastre-se e tente novamente.\n";
+    public String pesquisarContaPorNumero(String numeroConta) {
+        try {
+            Conta conta = contaService.buscarContaPorNumero(numeroConta);
+            return "Conta encontrada: \n" + conta;
+        } catch (Exception e) {
+            return e.getMessage();
         }
-
-        return "Conta encontrada: \n" + contas;
     }
 
     public String pesquisarContaPorTitular(String nomeCompleto) throws Exception {
