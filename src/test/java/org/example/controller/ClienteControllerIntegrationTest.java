@@ -197,7 +197,7 @@ public class ClienteControllerIntegrationTest {
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
-        var resultadoEsperado = "Cliente cadastrado com sucesso!\n" +
+        var resultadoEsperado = "Cliente encontrado: \n" +
                 "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";
         var resultadoReal = controller.executar("clientes pesquisar cpf 12345678900");
 

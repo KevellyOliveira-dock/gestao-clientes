@@ -147,7 +147,7 @@ public class ClienteController implements Controller {
     public String pesquisarClientesPorCPF(String cpf) {
         try {
             Cliente cliente = clienteService.buscarClientePorCPF(cpf);
-            return "Cliente cadastrado com sucesso!\n" + cliente.toString();
+            return "Cliente encontrado: \n" + cliente.toString();
         } catch (Exception e) {
             return e.getMessage();
         }
