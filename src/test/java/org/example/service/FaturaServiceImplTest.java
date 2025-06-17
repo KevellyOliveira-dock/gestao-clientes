@@ -42,7 +42,7 @@ public class FaturaServiceImplTest {
     private static final boolean IS_BLOQUEADO_CARTAO = false;
     private static final String CHAVE_FATURA = "0";
     private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
-    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 7, 10);
     private static final double VALOR_FATURA = 110.0;
     private static final boolean IS_PAGO_FATURA = false;
 
@@ -164,9 +164,9 @@ public class FaturaServiceImplTest {
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        Fatura fatura1 = new Fatura("1", LISTA_DE_FATURA, LocalDate.of(2025, 6, 10),
+        Fatura fatura1 = new Fatura("1", LISTA_DE_FATURA, LocalDate.of(2025, 7, 10),
                 cartao, 50.0, false);
-        Fatura fatura2 = new Fatura("2", LISTA_DE_FATURA, LocalDate.of(2025, 5, 10),
+        Fatura fatura2 = new Fatura("2", LISTA_DE_FATURA, LocalDate.of(2025, 6, 10),
                 cartao, 60.0, false);
 
         when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura1, fatura2));
