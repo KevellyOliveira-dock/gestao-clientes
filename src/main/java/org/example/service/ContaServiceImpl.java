@@ -56,8 +56,6 @@ public class ContaServiceImpl implements ContaService {
 
         ClienteValidator.validarAtivo(cliente);
 
-        ClienteValidator.validarAtivo(cliente);
-
         List<Transacao> todaTransacao = new ArrayList<>();
 
         var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
@@ -74,37 +72,17 @@ public class ContaServiceImpl implements ContaService {
             throw new Exception("Conta não encontrada.\n");
         }
 
-        if (!conta.isAtivo()) {
-            throw new Exception("Essa conta está desativada.\n");
-        }
-
         return conta;
     }
 
     @Override
     public List<Conta> buscarContasPorTitular(String nomeCompleto) {
-        List<Conta> contasEncontradas = new ArrayList<>();
-
-        for (Conta conta : contaRepository.buscarValores(nomeCompleto)) {
-            if (conta.getTitular().getNomeCompleto().equals(nomeCompleto) && conta.isAtivo()) {
-                contasEncontradas.add(conta);
-            }
-        }
-
-        return contasEncontradas;
+        return contaRepository.buscarPorNomeCompleto(nomeCompleto);
     }
 
     @Override
-    public List<Conta> buscarContasPorCPF(String cpf) throws Exception {
-        List<Conta> contas = contaRepository.buscarValores(cpf);
-
-        for (Conta conta : contas) {
-            if (!conta.getTitular().getCpf().equals(cpf) && !conta.isAtivo()) {
-                throw new Exception("Essa conta está desativada.\n");
-            }
-        }
-
-        return contas;
+    public List<Conta> buscarContasPorCPF(String cpf) {
+        return contaRepository.buscarPorCPF(cpf);
     }
 
     @Override

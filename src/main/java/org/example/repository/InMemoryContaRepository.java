@@ -17,11 +17,23 @@ public class InMemoryContaRepository implements ContaRepository {
     }
 
     @Override
-    public List<Conta> buscarValores(String cpf) {
+    public List<Conta> buscarPorCPF(String cpf) {
         List<Conta> contas = new ArrayList<>();
 
         for (Conta conta : contaRepository.values()) {
-            if (conta.getTitular().getCpf().equals(cpf) && conta.isAtivo()) {
+            if (conta.getTitular().getCpf().equals(cpf)) {
+                contas.add(conta);
+            }
+        }
+        return contas;
+    }
+
+    @Override
+    public List<Conta> buscarPorNomeCompleto(String nomeCompleto) {
+        List<Conta> contas = new ArrayList<>();
+
+        for (Conta conta : contaRepository.values()) {
+            if (conta.getTitular().getNomeCompleto().trim().equals(nomeCompleto)) {
                 contas.add(conta);
             }
         }

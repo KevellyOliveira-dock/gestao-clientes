@@ -103,20 +103,6 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContaPesquisarNumeroContaoVerifiqueSeContaEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
-        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
-
-        when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                contaServiceImpl.buscarContaPorNumero(NUMERO_CONTA)
-        );
-        assertEquals("Essa conta está desativada.\n",
-                exception.getMessage());
-    }
-
-    @Test
     public void quandoContaPesquisarNumeroContaoVerifiqueSeContaNaoExisteContaEntaoExibaMensagem() {
         when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(null);
 
@@ -128,11 +114,11 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
+    public void quandoContasPesquisarNomeTitularEEncontrarEntaoAdicioneNaLista() {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
-        when(contaRepository.buscarValores(NOME_CLIENTE)).thenReturn(List.of(conta));
+        when(contaRepository.buscarPorNomeCompleto(NOME_CLIENTE)).thenReturn(List.of(conta));
 
         // Chama o metodo mockado
         List<Conta> resultado = contaServiceImpl.buscarContasPorTitular(NOME_CLIENTE);
@@ -142,11 +128,11 @@ public class ContaServiceImplTest {
     }
 
     @Test
-    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() throws Exception {
+    public void quandoContasPesquisarCPFTitularEEncontrarEntaoAdicioneNaLista() {
         var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
-        when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(List.of(conta));
+        when(contaRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(conta));
 
         List<Conta> resultado = contaServiceImpl.buscarContasPorCPF(CPF_CLIENTE);
 

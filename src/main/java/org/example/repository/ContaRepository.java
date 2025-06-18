@@ -8,8 +8,9 @@ import java.util.List;
 public interface ContaRepository {
     Conta cadastrar(Conta conta);
 
-    // Colletion -> armazena um grupo de objetos. Mais genérico e flexível
-    List<Conta> buscarValores(String cpf);
+    List<Conta> buscarPorCPF(String cpf);
+
+    List<Conta> buscarPorNomeCompleto(String nomeCompleto);
 
     Conta buscarPorNumero(String numeroConta);
 
