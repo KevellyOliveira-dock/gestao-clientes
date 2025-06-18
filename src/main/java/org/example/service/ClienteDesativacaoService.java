@@ -26,6 +26,10 @@ public class ClienteDesativacaoService {
             throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
+        if (!cliente.isAtivo()) {
+            throw new Exception("Esse cliente já está desativado.\n");
+        }
+
         List<Conta> contas = contaService.buscarContasPorCPF(cpf);
         for (Conta conta : contas) {
             if (conta.isAtivo()) {

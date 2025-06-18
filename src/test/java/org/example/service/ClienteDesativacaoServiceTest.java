@@ -70,7 +70,7 @@ class ClienteDesativacaoServiceTest {
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
         clienteService.buscarClientePorCPF(CPF_CLIENTE);
 
-        when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(List.of(conta1, conta2));
+        when(contaRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(conta1, conta2));
         List<Conta> listaContas = contaService.buscarContasPorCPF(CPF_CLIENTE);
         for (Conta conta : listaContas) {
             when(contaRepository.buscarPorNumero(conta.getNumeroConta())).thenReturn(conta);
@@ -90,7 +90,7 @@ class ClienteDesativacaoServiceTest {
         when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
         clienteService.buscarClientePorCPF(CPF_CLIENTE);
 
-        when(contaRepository.buscarValores(CPF_CLIENTE)).thenReturn(emptyList());
+        when(contaRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(emptyList());
         List<Conta> listaContas = contaService.buscarContasPorCPF(CPF_CLIENTE);
 
         var resultado = clienteDesativacaoService.desativarCliente(CPF_CLIENTE);
@@ -106,4 +106,18 @@ class ClienteDesativacaoServiceTest {
         );
         assertEquals("Cliente não encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
     }
+
+    @Test
+    public void quandoComandoEhDesativarClienteEClienteJaEstaDesativadoEntaoExibaMensagem() throws Exception {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, false);
+
+        when(clienteRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(cliente);
+        clienteService.buscarClientePorCPF(CPF_CLIENTE);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                clienteDesativacaoService.desativarCliente(CPF_CLIENTE)
+        );
+        assertEquals("Esse cliente já está desativado.\n", exception.getMessage());
+    }
+
 }
