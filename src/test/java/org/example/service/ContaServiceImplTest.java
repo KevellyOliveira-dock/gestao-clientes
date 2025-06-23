@@ -167,4 +167,33 @@ public class ContaServiceImplTest {
         assertEquals(CPF_CLIENTE, resultado.getTitular().getCpf());
         assertFalse(resultado.isAtivo());
     }
+
+    @Test
+    public void quandoContasExtratoentaoRetorneListaDetransacaoDosUltimosTrintaDias() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+
+        TRANSACAO_CONTA.add(new Transacao(LocalDate.of(2025, 6, 20), "Uber", 50.0));
+        TRANSACAO_CONTA.add(new Transacao(LocalDate.now(), "Uber", 50.0));
+        TRANSACAO_CONTA.add(new Transacao(LocalDate.now(), "Uber", 50.0));
+
+        List<Transacao> transacoes = new ArrayList<>();
+        LocalDate hoje = LocalDate.now();
+        LocalDate trintaDiasAtras = hoje.minusDays(30);
+
+        for (Transacao transacao : conta.getTransacao()) {
+            LocalDate dataTransacao = transacao.getDataTransacao();
+
+            if (!dataTransacao.isBefore(trintaDiasAtras) && !dataTransacao.isAfter(hoje)) {
+                transacoes.add(transacao);
+            }
+        }
+
+        when(contaRepository.buscarPorNumero(NUMERO_CONTA)).thenReturn(conta);
+
+        List<Transacao> resultado = contaServiceImpl.verExtrato(NUMERO_CONTA);
+
+        assertEquals(transacoes.size(), resultado.size());
+        assertEquals(TRANSACAO_CONTA, resultado);
+    }
 }

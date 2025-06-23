@@ -7,6 +7,7 @@ import org.example.model.Transacao;
 import org.example.repository.ContaRepository;
 import org.example.validator.ClienteValidator;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,5 +105,25 @@ public class ContaServiceImpl implements ContaService {
         contaRepository.cadastrar(conta);
 
         return conta;
+    }
+
+    @Override
+    public List<Transacao> verExtrato(String numeroConta) {
+        Conta conta = contaRepository.buscarPorNumero(numeroConta);
+
+        // Pegando as transações dos últimos 30 dias contando com o dia de hoje
+        List<Transacao> transacoes = new ArrayList<>();
+        LocalDate hoje = LocalDate.now();
+        LocalDate trintaDiasAtras = hoje.minusDays(30);
+
+        for (Transacao transacao : conta.getTransacao()) {
+            LocalDate dataTransacao = transacao.getDataTransacao();
+
+            if (!dataTransacao.isBefore(trintaDiasAtras) && !dataTransacao.isAfter(hoje)) {
+                transacoes.add(transacao);
+            }
+        }
+
+        return transacoes;
     }
 }

@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Conta;
+import org.example.model.Transacao;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface ContaService {
     List<Conta> buscarContasPorCPF(String cpf) throws Exception;
 
     Conta desativarConta(String numeroConta) throws Exception;
+
+    List<Transacao> verExtrato(String numeroConta);
 }
