@@ -11,4 +11,8 @@ public class Transacao {
     private LocalDate dataTransacao;
     private String descricao;
     private double valor;
+
+    public String toString() {
+        return "\n" + descricao + ", valor de " + valor + ", no dia " + dataTransacao + ".\n";
+    }
 }
