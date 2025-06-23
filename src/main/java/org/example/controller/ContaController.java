@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Conta;
+import org.example.model.Transacao;
 import org.example.service.ContaService;
 
 import java.util.Arrays;
@@ -43,7 +44,11 @@ public class ContaController implements Controller {
                 }
 
             case "extrato":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return verExtrato(partes[2]);
+                } else {
+                    return "Para ver o extrato da conta é necessário informar o número. Ex: contas extrato 0.\n";
+                }
 
             case "pesquisar":
                 return pesquisarConta(partes);
@@ -166,6 +171,19 @@ public class ContaController implements Controller {
 
                 System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
             }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public String verExtrato(String numeroConta) {
+        List<Transacao> transacoes = contaService.verExtrato(numeroConta);
+
+        try {
+            Conta contaExistente = contaService.buscarContaPorNumero(numeroConta);
+
+            return "Saldo atual de " + contaExistente.getSaldo() + ".\n" +
+                    "Transações dos últimos 30 dias: " + transacoes.toString();
         } catch (Exception e) {
             return e.getMessage();
         }

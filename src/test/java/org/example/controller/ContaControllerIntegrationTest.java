@@ -119,8 +119,17 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasExtratoEntaoExibaOExtradoDasContas() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("contas extrato");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+
+        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+        when(contaService.verExtrato(NUMERO_CONTA)).thenReturn(TRANSACAO_CONTA);
+
+        var resultadoEsperado = "Saldo atual de 123.43.\n" +
+                "Transações dos últimos 30 dias: []";
+        var resultadoReal = controller.executar("contas extrato 0");
+
+
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
