@@ -4,10 +4,12 @@ import org.example.model.Cartao;
 import org.example.model.Cliente;
 import org.example.model.Conta;
 import org.example.model.Transacao;
+import org.example.model.Checkpoint;
 import org.example.repository.ContaRepository;
 import org.example.validator.ClienteValidator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,13 @@ public class ContaServiceImpl implements ContaService {
 
         List<Transacao> todaTransacao = new ArrayList<>();
 
-        var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, true);
+        Checkpoint checkpoint = null;
+
+        var conta = new Conta(numeroConta, cliente, saldo, todaTransacao, checkpoint, true);
+
+        checkpoint = atualizarCheckpoint(numeroConta);
+        conta.setCheckpoint(checkpoint);
+
         contaRepository.cadastrar(conta);
 
         return conta;
@@ -125,5 +133,18 @@ public class ContaServiceImpl implements ContaService {
         }
 
         return transacoes;
+    }
+
+    @Override
+    public Checkpoint atualizarCheckpoint(String numeroConta) {
+        Conta conta = contaRepository.buscarPorNumero(numeroConta);
+
+        double saldoAtual = conta.getSaldo();
+        Checkpoint ultimoCheckpoint = new Checkpoint(saldoAtual, LocalDateTime.now());
+
+        conta.setCheckpoint(ultimoCheckpoint);
+        contaRepository.cadastrar(conta);
+
+        return ultimoCheckpoint;
     }
 }

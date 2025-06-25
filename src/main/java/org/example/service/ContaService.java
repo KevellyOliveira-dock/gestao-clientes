@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Checkpoint;
 import org.example.model.Conta;
 import org.example.model.Transacao;
 
@@ -17,4 +18,6 @@ public interface ContaService {
     Conta desativarConta(String numeroConta) throws Exception;
 
     List<Transacao> verExtrato(String numeroConta);
+
+    Checkpoint atualizarCheckpoint(String numeroConta);
 }
