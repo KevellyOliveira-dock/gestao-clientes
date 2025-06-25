@@ -12,6 +12,7 @@ public class Conta {
     private Cliente titular;
     private Double saldo;
     private List<Transacao> transacao;
+    private Checkpoint checkpoint;
     private boolean isAtivo;
 
     public String toString() {
