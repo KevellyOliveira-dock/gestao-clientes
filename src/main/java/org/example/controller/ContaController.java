@@ -182,7 +182,7 @@ public class ContaController implements Controller {
         try {
             Conta contaExistente = contaService.buscarContaPorNumero(numeroConta);
 
-            return "Saldo atual de " + contaExistente.getSaldo() + ".\n" +
+            return "Saldo atual de " + contaExistente.getCheckpoint() + ".\n" +
                     "Transações dos últimos 30 dias: " + transacoes.toString();
         } catch (Exception e) {
             return e.getMessage();
