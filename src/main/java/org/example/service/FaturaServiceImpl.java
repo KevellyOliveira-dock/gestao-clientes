@@ -100,6 +100,9 @@ public class FaturaServiceImpl implements FaturaService {
         Transacao pagamentoTransacao = new Transacao(LocalDate.now(), "Pagamento de fatura", valor);
 
         fatura.getCartao().getConta().getTransacao().add(pagamentoTransacao);
+
+        faturaRepository.cadastrar(fatura);
+
         return fatura;
     }
 }
