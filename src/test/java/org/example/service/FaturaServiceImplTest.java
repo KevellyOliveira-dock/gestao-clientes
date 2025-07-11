@@ -8,8 +8,6 @@ import org.example.model.Transacao;
 import org.example.repository.FaturaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,14 +26,12 @@ public class FaturaServiceImplTest {
     private FaturaServiceImpl faturaServiceImpl;
 
     @Mock
-    private CartaoService cartaoService;
-
-    @Mock
     private FaturaRepository faturaRepository;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
@@ -46,68 +42,44 @@ public class FaturaServiceImplTest {
     private static final boolean IS_BLOQUEADO_CARTAO = false;
     private static final String CHAVE_FATURA = "0";
     private static final List<Transacao> LISTA_DE_FATURA = new ArrayList<>();
-    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 6, 10);
+    private static final LocalDate DT_VENCIMENTO_FATURA = LocalDate.of(2025, 7, 10);
     private static final double VALOR_FATURA = 110.0;
     private static final boolean IS_PAGO_FATURA = false;
 
     @Test
     public void quandoFaturaFecharVefiriqueSeCartaoExisteEntaoRetorneFatura() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-
-        Fatura resultadoReal = faturaServiceImpl.fecharFatura(NUMERO_CARTAO);
+        Fatura resultadoReal = faturaServiceImpl.fecharFatura(cartao);
 
         assertEquals(NUMERO_CARTAO, resultadoReal.getCartao().getNumeroCartao());
         assertEquals(DT_VENCIMENTO_FATURA, resultadoReal.getDataVencimento());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoFaturaFecharENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) {
-        Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.fecharFatura(numeroCartao)
-        );
-        assertEquals("O número do cartão não pode ser nulo ou vazio.\n", exception.getMessage());
-    }
-
     @Test
-    public void quandoFaturaFecharVerifiqueSeCartaoExisteSeNaoEntaoRetorneMensagem() throws Exception {
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(null);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.fecharFatura(NUMERO_CARTAO)
-        );
-        assertEquals("O cartão informado não foi encontrado.\n", exception.getMessage());
-    }
-
-    @Test
-    public void quandoFaturaFecharEBuscarPorCartaoEEncontrarEntaoRetorneMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+    public void quandoFaturaFecharEBuscarPorCartaoEEncontrarEntaoRetorneMensagem() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
         Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, IS_PAGO_FATURA);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura));
 
         Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.fecharFatura(NUMERO_CARTAO)
+                faturaServiceImpl.fecharFatura(cartao)
         );
         assertEquals("A fatura já está fechada.\n", exception.getMessage());
     }
 
     @Test
     public void quandoFaturaFecharAntesDoDiaDezEntaoFecheNoMesAtual() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-
-        Fatura resultadoReal = faturaServiceImpl.fecharFatura(NUMERO_CARTAO);
+        Fatura resultadoReal = faturaServiceImpl.fecharFatura(cartao);
 
         LocalDate hoje = LocalDate.now();
         LocalDate vencimento;
@@ -122,9 +94,9 @@ public class FaturaServiceImplTest {
 
     @Test
     public void quandoFaturaPagarEntaoVerifiqueSeOValorDoFechamentoDaFaturaEstaCorreto() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         List<Transacao> listaDeTransacao = new ArrayList<>();
         listaDeTransacao.add(new Transacao(LocalDate.of(2025, 5, 1), "Compra 1", 40.0));
@@ -136,94 +108,70 @@ public class FaturaServiceImplTest {
 
         Fatura fatura = new Fatura(CHAVE_FATURA, listaDeTransacao, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, false);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura));
 
-        var resultado = faturaServiceImpl.pagarFatura(NUMERO_CARTAO);
+        var resultado = faturaServiceImpl.pagarFatura(cartao);
 
         assertEquals(totalTransacoes, resultado.getValor());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoFaturaPagarENumeroCartaoForVazioOuNuloEntaoRetorneMensagem(String numeroCartao) {
-        Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.pagarFatura(numeroCartao)
-        );
-        assertEquals("O número do cartão não pode ser nulo ou vazio.\n", exception.getMessage());
-    }
-
     @Test
-    public void quandoFaturPagarVerifiqueSeCartaoExisteSeNaoEntaoRetorneMensagem() throws Exception {
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(null);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.pagarFatura(NUMERO_CARTAO)
-        );
-        assertEquals("O cartão informado não foi encontrado.\n", exception.getMessage());
-    }
-
-    @Test
-    public void quandoFaturaPagarVerifiqueSeFaturaExisteSeNaoEntaoRetorneMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+    public void quandoFaturaPagarVerifiqueSeFaturaExisteSeNaoEntaoRetorneMensagem() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(emptyList());
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(emptyList());
 
         Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.pagarFatura(NUMERO_CARTAO)
+                faturaServiceImpl.pagarFatura(cartao)
         );
         assertEquals("Nenhuma fatura disponível para pagamento.\n", exception.getMessage());
     }
 
     @Test
-    public void quandoFaturaPagarVerifiqueSeHaSaldoNaContaSeNaoEntaoRetorneMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+    public void quandoFaturaPagarVerifiqueSeHaSaldoNaContaSeNaoEntaoRetorneMensagem() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, 100.0, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
         Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, false);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura));
 
         Exception exception = assertThrows(Exception.class, () ->
-                faturaServiceImpl.pagarFatura(NUMERO_CARTAO)
+                faturaServiceImpl.pagarFatura(cartao)
         );
         assertEquals("Saldo insuficiente para pagar a fatura.\n", exception.getMessage());
     }
 
     @Test
     public void quandoFaturaPagarVerifiqueSeFaturaExisteEntaoRetorneFatura() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
         Fatura fatura = new Fatura(CHAVE_FATURA, LISTA_DE_FATURA, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, false);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura));
 
-        var resultado = faturaServiceImpl.pagarFatura(NUMERO_CARTAO);
+        var resultado = faturaServiceImpl.pagarFatura(cartao);
 
         assertEquals(fatura, resultado);
     }
 
     @Test
-    public void quandoMultiplasFaturasValiidasEntaoEscolhaAFaturaComVencimentoMaisProximo() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+    public void quandoMultiplasFaturasValidasEntaoEscolhaAFaturaComVencimentoMaisProximo() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
-        Fatura fatura1 = new Fatura("1", LISTA_DE_FATURA, LocalDate.of(2025, 6, 10),
+        Fatura fatura1 = new Fatura("1", LISTA_DE_FATURA, LocalDate.of(2025, 7, 10),
                 cartao, 50.0, false);
-        Fatura fatura2 = new Fatura("2", LISTA_DE_FATURA, LocalDate.of(2025, 5, 10),
+        Fatura fatura2 = new Fatura("2", LISTA_DE_FATURA, LocalDate.of(2025, 6, 10),
                 cartao, 60.0, false);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura1, fatura2));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura1, fatura2));
 
-        var resultado = faturaServiceImpl.pagarFatura(NUMERO_CARTAO);
+        var resultado = faturaServiceImpl.pagarFatura(cartao);
 
         assertEquals(fatura1.getChave(), resultado.getChave());
         assertTrue(resultado.isPago());
@@ -232,16 +180,15 @@ public class FaturaServiceImplTest {
     @Test
     public void quandoFaturaPagarEFinalizarPagamentoEntaoVerifiqueSeTransacaoFoiRegistradaEmContas()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
         var listaDeFatura = new ArrayList<Transacao>();
         Fatura fatura = new Fatura(CHAVE_FATURA, listaDeFatura, DT_VENCIMENTO_FATURA, cartao, VALOR_FATURA, false);
 
-        when(cartaoService.buscarCartaoPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
-        when(faturaRepository.buscarFaturaPorNumeroCartao(NUMERO_CARTAO)).thenReturn(List.of(fatura));
+        when(faturaRepository.buscarFaturaPorNumeroCartao(cartao)).thenReturn(List.of(fatura));
 
-        var resultado = faturaServiceImpl.pagarFatura(NUMERO_CARTAO);
+        var resultado = faturaServiceImpl.pagarFatura(cartao);
 
         assertEquals(1, resultado.getCartao().getConta().getTransacao().size());
 

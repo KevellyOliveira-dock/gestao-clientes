@@ -11,7 +11,6 @@ public class Cartao {
     private String numeroCartao;
     private String cvv;
     private LocalDate dataVencimento;
-    private Cliente cliente;
     private Conta conta;
     private boolean isBloqueado;
 }

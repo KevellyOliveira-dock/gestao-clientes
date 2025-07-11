@@ -7,8 +7,6 @@ import org.example.model.Transacao;
 import org.example.repository.CartaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,17 +27,12 @@ public class CartaoServiceImplTest {
     private CartaoServiceImpl cartaoServiceImpl;
 
     @Mock
-    private ClienteService clienteService;
-
-    @Mock
-    private ContaService contaService;
-
-    @Mock
     private CartaoRepository cartaoRepository;
 
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final boolean IS_ATIVO_CONTA = true;
@@ -50,108 +43,62 @@ public class CartaoServiceImplTest {
     private static final boolean IS_BLOQUEADO_CARTAO = false;
 
     @Test
-    public void quandoComandoForCadastrarCartaoVerifiqueSeOCpfEAContaFoiCadastradoEntaoCadastreComSucesso()
+    public void quandoComandoEhCadastrarCartaoVerifiqueSeOCpfEAContaFoiCadastradoEntaoCadastreComSucesso()
             throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
-        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
-        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
+        Cartao resultadoReal = cartaoServiceImpl.cadastrarCartao(conta);
 
-        Cartao resultadoReal = cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA);
-
-        assertEquals(cliente, resultadoReal.getCliente());
+        assertEquals(cliente, resultadoReal.getConta().getTitular());
         assertEquals(conta, resultadoReal.getConta());
     }
 
     @Test
-    public void quandoCadastrarCartaoVerifiqueSeCPFEstaCadastradoSeNaoEntaoRetorneMensagem() throws Exception {
-        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(null);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)
-        );
-        assertEquals("O CPF informado não foi encontrado. Cadastre-se e tente novamente.\n", exception.getMessage());
-    }
-
-    @Test
-    public void quandoCadastrarCartaoVerifiqueSeContaEstaCadastradaSeNaoEntaoRetorneMensagem() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
-        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
-        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(null);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)
-        );
-        assertEquals("A conta informada não foi encontrada. Cadastre e tente novamente.\n", exception.getMessage());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoCadastrarCartaoENumeroContaForVazioOuNuloEntaoRetorneMensagem(String numeroConta) throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-
-        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
-
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, numeroConta)
-        );
-        assertEquals("O número da conta não pode ser nulo ou vazio.\n", exception.getMessage());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoCadastrarCartaoECpfVazioOuNuloEntaoRetorneMensagem(String cpf) {
-        Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.cadastrarCartao(cpf, NUMERO_CONTA)
-        );
-        assertEquals("O CPF não pode ser nulo ou vazio.\n", exception.getMessage());
-    }
-
-    @Test
-    public void quandoCadastrarCartaoEContaNaaoEstiverAtivaEntaoExibaMensagem() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+    public void quandoCadastrarCartaoEContaNaoEstiverAtivaEntaoExibaMensagem() throws Exception {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
 
-        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
-        when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
-
         Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.cadastrarCartao(CPF_CLIENTE, NUMERO_CONTA)
+                cartaoServiceImpl.cadastrarCartao(conta)
         );
         assertEquals("A conta informada não está ativa.\n", exception.getMessage());
     }
 
     @Test
     public void quandoCartaoPesquisarNumeroCartaoEntaoRetorneBuscaComSucesso() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Cartao resultadoReal = cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO);
 
-        assertEquals(CPF_CLIENTE, resultadoReal.getCliente().getCpf());
+        assertEquals(CPF_CLIENTE, resultadoReal.getConta().getTitular().getCpf());
         assertEquals(NUMERO_CONTA, resultadoReal.getConta().getNumeroConta());
         assertEquals(NUMERO_CARTAO, resultadoReal.getNumeroCartao());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void quandoCartaoPesquisarNumeroCartaoForVazioOuNuloEntaoExibaMensagem(String numeroCartao) {
+    @Test
+    public void quandoCartaoPesquisarNumeroCartaoEContaEstiverDesativadaEntaoRetorneBuscaComSucesso() throws Exception {
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
+
+        when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
+
         Exception exception = assertThrows(Exception.class, () ->
-                cartaoServiceImpl.buscarCartaoPorNumero(numeroCartao)
+                cartaoServiceImpl.buscarCartaoPorNumero(NUMERO_CARTAO)
         );
-        assertEquals("O cartão informado não foi encontrado. Cadastre-o e tente novamente.\n", exception.getMessage());
+        assertEquals("A conta associada ao cartão está desativada.\n", exception.getMessage());
     }
 
     @Test
     public void quandoCartaoBloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
 
         when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
@@ -164,23 +111,23 @@ public class CartaoServiceImplTest {
     @Test
     public void quandoCartoesBloquearNumeroCartaoEEncontrarEntaoBloqueieCartao()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Cartao resultado = cartaoServiceImpl.bloquearCartao(NUMERO_CARTAO);
 
-        assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
+        assertEquals(CPF_CLIENTE, resultado.getConta().getTitular().getCpf());
         assertTrue(resultado.isBloqueado());
     }
 
     @Test
     public void quandoCartaoDesbloquearNumeroCartaoVerifiqueSeCartaoEstaBloqueadoEntaoExibaMensagem() {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         Conta conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, IS_BLOQUEADO_CARTAO);
+        Cartao cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
 
         when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
@@ -193,15 +140,42 @@ public class CartaoServiceImplTest {
     @Test
     public void quandoCartoesDesbloquearNumeroCartaoEEncontrarEntaoDesbloqueieCartao()
             throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
-        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, cliente, conta, true);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
 
         when(cartaoRepository.buscarPorNumero(NUMERO_CARTAO)).thenReturn(cartao);
 
         Cartao resultado = cartaoServiceImpl.desbloquearCartao(NUMERO_CARTAO);
 
-        assertEquals(CPF_CLIENTE, resultado.getCliente().getCpf());
+        assertEquals(CPF_CLIENTE, resultado.getConta().getTitular().getCpf());
         assertFalse(resultado.isBloqueado());
+    }
+
+    @Test
+    public void quandoBuscarCartaoPorCPFEContaEstiverDesativadaEntaoNaoDesbloquearCartao() {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, false);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, true);
+
+        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(cartao));
+
+        Exception exception = assertThrows(Exception.class, () ->
+                cartaoServiceImpl.buscarCartaoPorCPF(cliente)
+        );
+        assertEquals("A conta associada ao cartão está desativada.\n", exception.getMessage());
+    }
+
+    @Test
+    public void quandoBuscarCartaoPorCPFEEntaoRetorneListaDeCartoes() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
+        var cartao = new Cartao(NUMERO_CARTAO, CVV_CARTAO, DT_VENCIMENTO_CARTAO, conta, IS_BLOQUEADO_CARTAO);
+
+        when(cartaoRepository.buscarPorCPF(CPF_CLIENTE)).thenReturn(List.of(cartao));
+
+        var resultado = cartaoServiceImpl.buscarCartaoPorCPF(cliente);
+
+        assertEquals(List.of(cartao), resultado);
     }
 }

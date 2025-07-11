@@ -35,6 +35,7 @@ public class ContaControllerIntegrationTest {
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
     private static final Double SALDO_CONTA = 123.43;
     private static final String NUMERO_CONTA = "0";
     private static final List<Transacao> TRANSACAO_CONTA = new ArrayList<>();
@@ -68,7 +69,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasCadastrarEntaoCadastreAsContas() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaService.cadastrarConta(CPF_CLIENTE, String.valueOf(SALDO_CONTA))).thenReturn(conta);
@@ -88,7 +89,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasDesativarEntaoDesativeAsContas() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
@@ -103,7 +104,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasDesativarEDesistirEntaoExibaMensagem() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);
@@ -139,7 +140,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarCpfTitularEntaoExibaAsContasEncontradas() throws Exception {
-        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var clienteConta2 = new Conta("1", cliente1, 5000.0,
                 List.of(new Transacao(LocalDate.of(2025, 5, 12), "Mercado", 40.0)), true
@@ -171,7 +172,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNomeTitularEntaoExibaAsContasEncontradas() throws Exception {
-        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente1 = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var clienteConta1 = new Conta(NUMERO_CONTA, cliente1, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
         var clienteConta2 = new Conta("1", cliente1, 5000.0,
                 List.of(new Transacao(LocalDate.of(2025, 5, 12), "Mercado", 40.0)), true
@@ -203,7 +204,7 @@ public class ContaControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhContasPesquisarNumeroEntaoExibaDetalhesDaConta() throws Exception {
-        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
         var conta = new Conta(NUMERO_CONTA, cliente, SALDO_CONTA, TRANSACAO_CONTA, IS_ATIVO_CONTA);
 
         when(contaService.buscarContaPorNumero(NUMERO_CONTA)).thenReturn(conta);

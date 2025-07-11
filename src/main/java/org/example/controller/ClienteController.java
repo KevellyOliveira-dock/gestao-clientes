@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Cliente;
+import org.example.service.ClienteDesativacaoService;
 import org.example.service.ClienteService;
 
 import java.util.List;
@@ -10,12 +11,17 @@ public class ClienteController implements Controller {
     private Scanner scanner;
 
     //atributo que será injetado no construtor
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
+
+    private final ClienteDesativacaoService clienteDesativacaoService;
 
     //Injeção de Dependencia -> dependencia é passada para a controller via construtor
-    public ClienteController(ClienteService clienteService, Scanner scanner) {
+    public ClienteController(ClienteService clienteService,
+                             Scanner scanner,
+                             ClienteDesativacaoService clienteDesativacaoService) {
         this.scanner = scanner;
         this.clienteService = clienteService;
+        this.clienteDesativacaoService = clienteDesativacaoService;
     }
 
     public String executar(String comando) throws Exception {
@@ -44,7 +50,12 @@ public class ClienteController implements Controller {
                 return cadastrarCliente();
 
             case "desativar":
-                return "não implementado";
+                if (partes.length == 3) {
+                    return desativarCliente(partes[2]);
+                } else {
+                    return "Para desativar é necessário informar o CPF. Ex: clientes desativar 12345678901.\n";
+                }
+
 
             case "pesquisar":
                 return pesquisarCliente(partes);
@@ -122,13 +133,8 @@ public class ClienteController implements Controller {
         }
     }
 
-    public String pesquisarClientesPorNome(String nome) {
+    public String pesquisarClientesPorNome(String nome) throws Exception {
         List<Cliente> clientes = clienteService.pesquisarClientePorNome(nome);
-        //String clientes2 = clientes.toString();
-
-        if (clientes.isEmpty()) {
-            return "Cliente não encontrado. Cadastre-se e tente novamente.\n";
-        }
 
         StringBuilder resultado = new StringBuilder("Clientes encontrados: \n");
         for (Cliente cliente : clientes) {
@@ -138,13 +144,38 @@ public class ClienteController implements Controller {
         return resultado.toString();
     }
 
-    public String pesquisarClientesPorCPF(String cpf) throws Exception {
-        Cliente cliente = clienteService.buscarClientePorCPF(cpf);
-
-        if (cliente == null) {
-            return "Cliente não encontrado. Cadastre-se e tente novamente.\n";
+    public String pesquisarClientesPorCPF(String cpf) {
+        try {
+            Cliente cliente = clienteService.buscarClientePorCPF(cpf);
+            return "Cliente encontrado: \n" + cliente.toString();
+        } catch (Exception e) {
+            return e.getMessage();
         }
 
-        return cliente.toString();
+    }
+
+    public String desativarCliente(String cpf) {
+        try {
+            Cliente clienteExistente = clienteService.buscarClientePorCPF(cpf);
+            String resposta;
+
+            while (true) {
+                System.out.println("Confirma a desativação da cliente " + clienteExistente.getNomeCompleto() +
+                        ", portador do CPF " + clienteExistente.getCpf() +
+                        "?\n" + "Digite \"S\" para sim ou \"N\" para não: ");
+                resposta = scanner.nextLine().toUpperCase();
+
+                if (resposta.equals("S")) {
+                    clienteDesativacaoService.desativarCliente(cpf);
+                    return "Cliente desativado com sucesso.\n";
+                } else if (resposta.equals("N")) {
+                    return "Operação cancelada\n";
+                }
+
+                System.out.println("\nDigite somente \"S\" para sim ou \"N\" para não.");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

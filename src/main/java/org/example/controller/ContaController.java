@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.Conta;
 import org.example.service.ContaService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,7 +53,7 @@ public class ContaController implements Controller {
         }
     }
 
-    private String pesquisarConta(String[] partes) {
+    private String pesquisarConta(String[] partes) throws Exception {
         if (partes.length == 2) {
             return """
                     ----------------------------------
@@ -73,7 +74,7 @@ public class ContaController implements Controller {
 
             case "nome-titular":
                 if (partes.length > 3) {
-                    return pesquisarContaPorTitular(partes[3]);
+                    return pesquisarContaPorTitular(partes);
                 } else {
                     return "Informe o nome do titular da conta que deseja pesquisar. " +
                             "Ex: contas pesquisar nome-titular Kevelly.\n";
@@ -99,8 +100,9 @@ public class ContaController implements Controller {
         String saldoStr = scanner.nextLine();
 
         try {
-            return "Conta cadastrada com sucesso!\n" +
-                    contaService.cadastrarConta(cpf, saldoStr).toString(); // valueOf() -> converte para String
+            Conta conta = contaService.cadastrarConta(cpf, saldoStr);
+
+            return "Conta cadastrada com sucesso!\n" + conta;
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -108,19 +110,18 @@ public class ContaController implements Controller {
 
     public String pesquisarContaPorNumero(String numeroConta) {
         try {
-            return "Conta encontrada: \n" + contaService.buscarContaPorNumero(numeroConta).toString();
+            Conta conta = contaService.buscarContaPorNumero(numeroConta);
+            return "Conta encontrada: \n" + conta;
         } catch (Exception e) {
             return e.getMessage();
         }
     }
 
-    public String pesquisarContaPorTitular(String nomeCompleto) {
-        List<Conta> contas;
-        try {
-            contas = contaService.buscarContasPorTitular(nomeCompleto);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+    public String pesquisarContaPorTitular(String[] partes) throws Exception {
+        // Junta todas as partes do nome após o índice 3
+        String nomeCompleto = String.join(" ", Arrays.copyOfRange(partes, 3, partes.length)).trim();
+        List<Conta> contas = contaService.buscarContasPorTitular(nomeCompleto);
+
         StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
         for (Conta conta : contas) {
             resultado.append(conta.toString()).append("\n");
@@ -130,18 +131,18 @@ public class ContaController implements Controller {
     }
 
     public String pesquisarContaPorCPF(String cpf) {
-        List<Conta> contas;
         try {
-            contas = contaService.buscarContasPorCPF(cpf);
+            List<Conta> contas = contaService.buscarContasPorCPF(cpf);
+
+            StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
+            for (Conta conta : contas) {
+                resultado.append(conta.toString()).append("\n");
+            }
+
+            return resultado.toString();
         } catch (Exception e) {
             return e.getMessage();
         }
-        StringBuilder resultado = new StringBuilder("Contas encontradas: \n");
-        for (Conta conta : contas) {
-            resultado.append(conta.toString()).append("\n");
-        }
-
-        return resultado.toString();
     }
 
     public String desativarConta(String numeroConta) {

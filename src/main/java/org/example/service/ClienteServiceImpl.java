@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Cliente;
 import org.example.repository.ClienteRepository;
+import org.example.validator.ClienteValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new Exception("CPF já cadastrado");
         }
 
-        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco);
+        var clienteCadastrar = new Cliente(nomeCompleto, cpf, endereco, true);
         clienteRepository.cadastrar(clienteCadastrar);
 
         return clienteCadastrar;
@@ -37,9 +38,7 @@ public class ClienteServiceImpl implements ClienteService {
     public Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception {
         Cliente clienteExistente = buscarClientePorCPF(cpf);
 
-        if (clienteExistente == null) {
-            throw new Exception("CPF não cadastrado");
-        }
+        ClienteValidator.validarAtivo(clienteExistente);
 
         if (nomeCompleto.isEmpty()) {
             nomeCompleto = clienteExistente.getNomeCompleto();
@@ -49,7 +48,7 @@ public class ClienteServiceImpl implements ClienteService {
             endereco = clienteExistente.getEndereco();
         }
 
-        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco);
+        var clienteAtualizar = new Cliente(nomeCompleto, cpf, endereco, true);
         clienteRepository.cadastrar(clienteAtualizar);
 
         return clienteAtualizar;
@@ -57,15 +56,16 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente buscarClientePorCPF(String cpf) throws Exception {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            throw new Exception("O CPF informado não foi encontrado. Tente novamente");
+        Cliente cliente = clienteRepository.buscarPorCPF(cpf);
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
-        return clienteRepository.buscarPorCPF(cpf);
+        return cliente;
     }
 
     @Override
-    public List<Cliente> pesquisarClientePorNome(String nome) {
+    public List<Cliente> pesquisarClientePorNome(String nome) throws Exception {
         List<Cliente> clientesEncontrados = new ArrayList<>();
         String nomePesquisa = nome.toLowerCase();
 
@@ -73,6 +73,10 @@ public class ClienteServiceImpl implements ClienteService {
             if (cliente.getNomeCompleto().toLowerCase().contains(nomePesquisa)) {
                 clientesEncontrados.add(cliente);
             }
+        }
+
+        if (clientesEncontrados.isEmpty()) {
+            throw new Exception("Cliente não encontrado. Cadastre-se e tente novamente.\n");
         }
 
         return clientesEncontrados;

@@ -11,5 +11,5 @@ public interface ClienteService {
 
     Cliente atualizarCliente(String nomeCompleto, String cpf, String endereco) throws Exception;
 
-    List<Cliente> pesquisarClientePorNome(String nome);
+    List<Cliente> pesquisarClientePorNome(String nome) throws Exception;
 }

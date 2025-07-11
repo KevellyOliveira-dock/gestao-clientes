@@ -1,7 +1,9 @@
 package org.example.controller;
 
 import org.example.model.Cartao;
+import org.example.model.Conta;
 import org.example.service.CartaoService;
+import org.example.service.ContaService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -9,10 +11,12 @@ import java.util.Scanner;
 public class CartaoController implements Controller {
     private final Scanner scanner;
     private final CartaoService cartaoService;
+    private final ContaService contaService;
 
-    public CartaoController(CartaoService cartaoService, Scanner scanner) {
+    public CartaoController(CartaoService cartaoService, Scanner scanner, ContaService contaService) {
         this.scanner = scanner;
         this.cartaoService = cartaoService;
+        this.contaService = contaService;
     }
 
     public String executar(String comando) throws Exception {
@@ -21,7 +25,7 @@ public class CartaoController implements Controller {
                     ----------------------------------
                     | Bloquear {número do cartao}    |
                     | Desbloquear {número do cartao} |
-                    | Cadastrar                      |
+                    | Cadastrar {número da conta }   |
                     ----------------------------------""";
         }
 
@@ -44,28 +48,27 @@ public class CartaoController implements Controller {
                 }
 
             case "cadastrar":
-                return cadastrarCartao();
+                if (partes.length == 3) {
+                    return cadastrarCartao(partes[2]);
+                } else {
+                    return "Para cadastrar o cartão é necessário informar o número da conta. Ex: cartoes cadastrar 5.\n";
+                }
 
             default:
                 return "operação inválida";
         }
     }
 
-    public String cadastrarCartao() {
-        System.out.println("Informe seu CPF: ");
-        String cpf = scanner.nextLine();
-
-        System.out.println("Informe sua conta: ");
-        String conta = scanner.nextLine();
-
+    public String cadastrarCartao(String numeroConta) {
         try {
-            Cartao cartaoCriado = cartaoService.cadastrarCartao(cpf, conta);
+            Conta conta = contaService.buscarContaPorNumero(numeroConta);
+            Cartao cartaoCriado = cartaoService.cadastrarCartao(conta);
             String dataVencimentoCartao = cartaoCriado.getDataVencimento().format(
                     DateTimeFormatter.ofPattern("dd/MM/yyyy")
             );
 
             return "Cartão criado com sucesso!\n" +
-                    "O cliente " + cartaoCriado.getCliente().getNomeCompleto() +
+                    "O cliente " + cartaoCriado.getConta().getTitular().getNomeCompleto() +
                     ", de conta número " + cartaoCriado.getConta().getNumeroConta() +
                     ", acionou um novo cartão: " +
                     "\nData de vencimento: " + dataVencimentoCartao + "." +
@@ -85,8 +88,8 @@ public class CartaoController implements Controller {
             while (true) {
                 System.out.println("Confirma o bloqueio do cartão " + cartaoExistente.getNumeroCartao() +
                         ", com vencimento em " + dataVencimento +
-                        ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
-                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        ", de titularidade de " + cartaoExistente.getConta().getTitular().getNomeCompleto() +
+                        ", portador do CPF " + cartaoExistente.getConta().getTitular().getCpf() +
                         "?\nDigite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 
@@ -113,8 +116,8 @@ public class CartaoController implements Controller {
             while (true) {
                 System.out.println("Confirma o desbloqueio do cartão " + cartaoExistente.getNumeroCartao() +
                         ", com vencimento em " + dataVencimento +
-                        ", de titularidade de " + cartaoExistente.getCliente().getNomeCompleto() +
-                        ", portador do CPF " + cartaoExistente.getCliente().getCpf() +
+                        ", de titularidade de " + cartaoExistente.getConta().getTitular().getNomeCompleto() +
+                        ", portador do CPF " + cartaoExistente.getConta().getTitular().getCpf() +
                         "?\nDigite \"S\" para sim ou \"N\" para não: ");
                 resposta = scanner.nextLine().toUpperCase();
 

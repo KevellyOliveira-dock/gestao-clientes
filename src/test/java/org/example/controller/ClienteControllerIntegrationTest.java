@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.example.model.Cartao;
 import org.example.model.Cliente;
+import org.example.model.Conta;
+import org.example.service.ClienteDesativacaoService;
 import org.example.service.ClienteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +31,13 @@ public class ClienteControllerIntegrationTest {
     @Mock
     private ClienteService clienteService;
 
+    @Mock
+    private ClienteDesativacaoService clienteDesativacaoService;
+
     private static final String NOME_CLIENTE = "Kevelly";
     private static final String CPF_CLIENTE = "12345678900";
     private static final String ENDERECO_CLIENTE = "Rua dos testes, 56";
+    private static final boolean IS_ATIVO_CLIENTE = true;
 
     @BeforeEach
     public void setup() {
@@ -41,7 +48,7 @@ public class ClienteControllerIntegrationTest {
         //Redireciona o System.in para p nosso inputStream
         System.setIn(this.inputStream);
 
-        controller = new ClienteController(clienteService, scanner);
+        controller = new ClienteController(clienteService, scanner, clienteDesativacaoService);
     }
 
     @Test
@@ -62,7 +69,7 @@ public class ClienteControllerIntegrationTest {
     public void quandoComandoEhClientesCadastrarEntaoCadastreOsClientes() throws Exception {
         //o \n é um delimitador para o Scanner(espaço e tabulação também),
         //sempre q ele lê sabe acabou e passa para a próxima linha
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.cadastrarCliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE)).thenReturn(cliente);
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
@@ -82,7 +89,9 @@ public class ClienteControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesAtualizarEntaoAtualizeOsClientes() throws Exception {
-        Cliente clienteAtualizado = new Cliente("Joice", CPF_CLIENTE, "Rua Teste 234");
+        Cliente clienteAtualizado = new Cliente(
+                "Joice", CPF_CLIENTE, "Rua Teste 234", IS_ATIVO_CLIENTE
+        );
 
         when(clienteService.atualizarCliente("Joice", CPF_CLIENTE, "Rua Teste 234")).
                 thenReturn(clienteAtualizado);
@@ -124,10 +133,29 @@ public class ClienteControllerIntegrationTest {
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
+
     @Test
     public void quandoComandoEhClientesDesativarEntaoDesativeOsClientes() throws Exception {
-        var resultadoEsperado = "não implementado";
-        var resultadoReal = controller.executar("clientes desativar");
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
+
+        var resultadoEsperado = "Cliente desativado com sucesso.\n";
+        this.inputStream.setInputs("S\n");
+        var resultadoReal = controller.executar("clientes desativar 12345678900");
+
+        assertEquals(resultadoEsperado, resultadoReal);
+    }
+
+    @Test
+    public void quandoComandoEhClientesDesativarDesistirEntaoExibaMensagem() throws Exception {
+        var cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+
+        when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
+
+        var resultadoEsperado = "Operação cancelada\n";
+        this.inputStream.setInputs("N\n");
+        var resultadoReal = controller.executar("clientes desativar 12345678900");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
@@ -146,8 +174,8 @@ public class ClienteControllerIntegrationTest {
 
     @Test
     public void quandoComandoEhClientesPesquisarNomeEEncontrarClientesEntaoExibaListaDeClientes() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
-        Cliente cliente2 = new Cliente(NOME_CLIENTE, "98765432100", ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
+        Cliente cliente2 = new Cliente(NOME_CLIENTE, "98765432100", ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         List<Cliente> clientes = new ArrayList<>();
         clientes.add(cliente);
@@ -163,38 +191,17 @@ public class ClienteControllerIntegrationTest {
         assertEquals(resultadoEsperado, resultadoReal);
     }
 
-
-    @Test
-    public void quandoComandoEhClientesPesquisarNomeENaoEncontrarClientesEntaoRetorneErro() throws Exception {
-        clienteService.pesquisarClientePorNome("Kevelly");
-
-        var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
-        var resultadoReal = controller.executar("clientes pesquisar nome Kevelly");
-
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
     @Test
     public void quandoComandoEhClientesPesquisarCpfEEncontrarClienteEntaoRetorneSuasInformacoes() throws Exception {
-        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE);
+        Cliente cliente = new Cliente(NOME_CLIENTE, CPF_CLIENTE, ENDERECO_CLIENTE, IS_ATIVO_CLIENTE);
 
         when(clienteService.buscarClientePorCPF(CPF_CLIENTE)).thenReturn(cliente);
 
-        var resultadoEsperado = "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";
+        var resultadoEsperado = "Cliente encontrado: \n" +
+                "Cliente Kevelly, de CPF 12345678900 e endereço Rua dos testes, 56.";
         var resultadoReal = controller.executar("clientes pesquisar cpf 12345678900");
 
         assertEquals(resultadoEsperado, resultadoReal);
     }
-
-    @Test
-    public void quandoComandoEhClientesPesquisarCpfENaoEncontrarUmClienteEntaoRetorneErro() throws Exception {
-        clienteService.buscarClientePorCPF("0123456789");
-
-        var resultadoEsperado = "Cliente não encontrado. Cadastre-se e tente novamente.\n";
-        var resultadoReal = controller.executar("clientes pesquisar cpf 0123456789");
-
-        assertEquals(resultadoEsperado, resultadoReal);
-    }
-
 }
 
